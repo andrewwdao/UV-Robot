@@ -15,7 +15,12 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        {% block app_content %}{% endblock %}
-    </div>
+  <div class="container">
+      {% block app_content %}{% endblock %}
+  </div>
+  
+  <div id="pwrdby">
+    <strong><br /><a id="acredits" href="{{url_for('about')}}"> &copy; 2020 Minh-Luan Nguyen, Minh-An Dao.</a></strong><br />
+    <strong>Maker Innovation Space, Can Tho University</strong>
+  </div>
 {% endblock %}
