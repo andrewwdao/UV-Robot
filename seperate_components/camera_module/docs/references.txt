@@ -1,0 +1,3 @@
+https://blog.miguelgrinberg.com/post/video-streaming-with-flask
+https://blog.miguelgrinberg.com/post/flask-video-streaming-revisited
+https://github.com/miguelgrinberg/flask-video-streaming
