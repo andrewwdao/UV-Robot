@@ -1,0 +1,3 @@
+https://riptutorial.com/flask/example/30387/timing--out-the-login-session
+https://stackoverflow.com/questions/18662558/flask-login-session-times-out-too-soon
+https://stackoverflow.com/questions/39718259/flask-logout-if-sessions-expires-if-no-activity-and-redirect-for-login-page

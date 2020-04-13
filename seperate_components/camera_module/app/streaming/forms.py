@@ -17,7 +17,7 @@ from app.models import User
 class LoginForm(FlaskForm):
     username = StringField('Username: ', validators=[DataRequired()])
     password = StringField('Password: ', validators=[DataRequired()])
-    save = SubmitField('Sign in')
+    submit = SubmitField('Sign in')
 
     # def validate_mssv(self, mssv):
 

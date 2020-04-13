@@ -12,6 +12,9 @@
     <hr>
     <div id="userLogin">
       <!-- Display error message if any -->
+      {% if form.errors %}
+        {{ form.errors }}
+      {% endif %}
       {% with messages = get_flashed_messages() %}
       {% if messages %}
       <ul>
@@ -25,13 +28,13 @@
       {% endwith %}
       <!-- Start the form -->
       <!-- {{wtf.quick_form(form)}} -->
-      <form action="" method="post" class="form" role="form">
+      <form action="" method="POST" class="form" role="form">
         {{ form.hidden_tag() }}
         <d1>
           {{ wtf.form_field(form.username, class="form-control", size=32, placeholder='Username') }}
           {{ wtf.form_field(form.password, class="form-control", size=32, placeholder='Password', type='password') }}
         </d1>
-        <p>{{ render_button(form.save, class="btn btn-primary btn-block") }}</p>
+        <p>{{ render_button(form.submit, class="btn btn-primary btn-block") }}</p>
         <!-- <a href="#" onclick="close_window();return false;" class="btn btn-primary btn-block" role="button">Close</a> -->
       </form>
     </div>

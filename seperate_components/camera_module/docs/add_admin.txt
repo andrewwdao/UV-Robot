@@ -1,3 +1,7 @@
+$ flask db init
+$ flask db migrate -m "users table"
+$ flask db upgrade
+
 from app.models import User
 from app import db
 u = User(username='admin')

@@ -1,3 +1,15 @@
+"""------------------------------------------------------------*-
+  Base camera module for Flask server
+  Tested on: Raspberry Pi 3 B+
+  (c) Minh-An Dao 2020
+  (c) Miguel Grinberg 2011-2019
+  version 1.10 - 13/04/2020
+ --------------------------------------------------------------
+ * This has been modified to force admin (all user) to re-login
+ * after 7s of closing browser tab
+ --------------------------------------------------------------"""
+from app import streaming_app
+import os
 import time
 import threading
 try:
@@ -96,9 +108,11 @@ class BaseCamera(object):
             time.sleep(0)
 
             # if there hasn't been any clients asking for frames in
-            # the last 10 seconds then stop the thread
-            if time.time() - BaseCamera.last_access > 10:
+            # the last 7 seconds then stop the thread
+            if time.time() - BaseCamera.last_access > 7:
                 frames_iterator.close()
+                streaming_app.secret_key = os.urandom(32) # this is a workaround to reset all sessions to force admin to re-login, this will delete all logged in users. ref: https://stackoverflow.com/questions/14737531/how-to-i-delete-all-flask-sessions
+                print('Admin need to re-login from now on...')
                 print('Stopping camera thread due to inactivity.')
                 break
         BaseCamera.thread = None

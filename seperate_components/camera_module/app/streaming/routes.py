@@ -8,8 +8,8 @@
  *  html routes for functions of the server
  *
  --------------------------------------------------------------"""
-from flask import render_template, flash, redirect, url_for, request, Response
-from flask_login import current_user, login_user, login_required
+from flask import render_template, flash, redirect, url_for, request, Response, session
+from flask_login import current_user, login_user, login_required, logout_user
 from app import streaming_app, db
 from app.streaming.forms import LoginForm
 from app.models import User
@@ -17,7 +17,7 @@ from app.camera_pi import Camera # Raspberry Pi camera module (requires picamera
 import os
 # import signal
 # import subprocess as subpro
-
+from datetime import timedelta
 
 # shutdown production server
 # def shutdownServer():
@@ -48,17 +48,21 @@ def gen(camera):
 @streaming_app.route('/', methods=['GET', 'POST'])
 @streaming_app.route('/index', methods=['GET', 'POST'])
 @login_required
+# @fresh_login_required
 def index():
+    
     templateData = {
         'server_title': 'MIS-CTU UV Robot', # title on browser
         'main_title': 'Disinfection Robot Controller',
     }
+
     """Video streaming home page."""
     return render_template('streaming/index.html', **templateData)
 
 
 @streaming_app.route('/video_feed')
 @login_required
+# @fresh_login_required
 def video_feed():
     """Video streaming route. Put this in the src attribute of an img tag."""
     return Response(gen(Camera()),
@@ -69,14 +73,17 @@ def video_feed():
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
+
     form = LoginForm()
+    
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
-            return redirect(url_for('login'))
-        login_user(user, remember=False) # only login 1 time, no remember
+            return redirect(url_for('login')) # , duration = timedelta(seconds=5)
+        login_user(user, remember = False) # only login 1 time - no remember
         return redirect(url_for('index'))
+
     templateData = {
         'server_title': 'MIS-CTU UV Robot', # title on browser
         'main_title': 'UV Disinfection Robot',
@@ -89,3 +96,9 @@ def login():
 @streaming_app.route('/about')
 def about():
     return render_template('about.html')
+
+@streaming_app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
