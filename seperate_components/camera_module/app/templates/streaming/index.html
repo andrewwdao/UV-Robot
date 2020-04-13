@@ -4,9 +4,9 @@
 
 {% block app_content %}
   <div id="app">
-    <div id="video">
+    <div class="camera-box">
       <h1>{{main_title}}</h1>
-      <img src="{{ url_for('video_feed') }}"> <!-- video stream here -->
+      <img class='camera' src="{{ url_for('video_feed') }}"> <!-- video stream here -->
     </div>
     
   </div>
