@@ -19,7 +19,7 @@ img {
     margin-right: auto;
 }
 
-/* Make the stream fit any windows  */
+/* Make the stream fit any windows. ref: https://stackoverflow.com/questions/6169666/how-to-resize-an-image-to-fit-in-the-browser-window */
 .camera-box {
     display: grid;
     height: 100%;
