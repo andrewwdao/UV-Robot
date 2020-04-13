@@ -6,7 +6,20 @@ if [ 'root' != $( whoami ) ] ; then
   echo "Please run as root! ( sudo ${0} )"
   exit 1;
 fi
+
 cd app
+
+if [ -f "./database.db" ] ; then # check if database.db exist or not
+	rm -rf database.db
+fi
+
+if [ -d "./migrations" ] ; then  # check if the directory exist or not
+	rm -rf migrations
+fi
+
+if [ -d "./logs" ] ; then  # check if the directory exist or not
+	rm -rf logs
+fi
 
 flask db init
 flask db migrate -m "users table"
