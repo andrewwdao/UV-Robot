@@ -7,6 +7,9 @@ if [ 'root' != $( whoami ) ] ; then
   exit 1;
 fi
 
+apt-get update 
+apt-get upgrade -y
+
 cd app
 
 if [ -f "./database.db" ] ; then # check if database.db exist or not
@@ -28,3 +31,6 @@ flask db upgrade
 cd ..
 
 python3 admin_init.py
+
+
+## (c) 2020 Minh-An Dao. All right reserved
