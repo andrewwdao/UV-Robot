@@ -14,17 +14,17 @@ cd app
 
 # delete old database (admin information)
 if [ -f "./database.db" ] ; then # check if database.db exist or not
-	rm -rf database.db
+	rm -rf ./database.db
 fi
 
 # delete old migrations folder
 if [ -d "./migrations" ] ; then  # check if the directory exist or not
-	rm -rf migrations
+	rm -rf ./migrations
 fi
 
 # delete old log folder in the app folder
 if [ -d "./logs" ] ; then  # check if the directory exist or not
-	rm -rf logs
+	rm -rf ./logs
 fi
 
 
@@ -36,7 +36,7 @@ cd .. # return to main project folder
 
 # delete old log again in the main folder
 if [ -d "./logs" ] ; then  # check if the directory exist or not
-	rm -rf logs
+	rm -rf ./logs
 fi
 
 python3 admin_init.py
