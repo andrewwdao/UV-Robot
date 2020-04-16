@@ -32,7 +32,7 @@ import struct
 import time
 
 WAIT_TIME = 0.3
-PWM_STEP = 10 # must be multiple of 10
+PWM_STEP = 50 # must be multiple of 10
 DEPART_PWM = 300
 STOP_PWM = 100 # value in which the motors almost don't move, so we can set them to zero immediately
 
