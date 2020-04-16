@@ -9,17 +9,19 @@
  --------------------------------------------------------------"""
 from motor import Motor
 
+PWM_STEP = 20 # must be multiple of 10
+
 try:
   while True:
     data = input('What do you want to do?f/b/l/r/s: ')
     if data == 'f':
-      Motor.move_fw(50)
+      Motor.move_fw(PWM_STEP)
     if data == 'b':
-      Motor.move_bw(50)
+      Motor.move_bw(PWM_STEP)
     if data == 'l':
-      Motor.turn_left(50)
+      Motor.turn_left(PWM_STEP)
     if data == 'r':
-      Motor.turn_right(50)
+      Motor.turn_right(PWM_STEP)
     if data == 's':
       Motor.release()
 except KeyboardInterrupt:

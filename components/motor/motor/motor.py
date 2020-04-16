@@ -31,9 +31,9 @@ import serial
 import struct
 import time
 
-WAIT_TIME = 0.3
-PWM_STEP = 50 # must be multiple of 10
-DEPART_PWM = 300
+WAIT_TIME = 0.1
+PWM_STEP = 20 # must be multiple of 10
+DEPART_PWM = 200
 STOP_PWM = 100 # value in which the motors almost don't move, so we can set them to zero immediately
 
 class Motor_UART(object):
@@ -133,7 +133,7 @@ class Motor_UART(object):
 
     def move_bw(self, accel): # move forward, so both motor rotate at the same time
         if self.pwm is 0 :
-            self.pwm = DEPART_PWM
+            self.pwm = -DEPART_PWM
         else:
             self.pwm -= accel # faster a little bit
         cmd = "{N0 P" + str(self.pwm) + "}" # {N1 P500} - set speed for pwm
