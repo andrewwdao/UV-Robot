@@ -30,6 +30,7 @@ import os
 import serial
 import struct
 
+WAIT_TIME = 0.3
 PWM_STEP = 10 # must be multiple of 10
 DEPART_PWM = 300
 STOP_PWM = 100 # value in which the motors almost don't move, so we can set them to zero immediately
@@ -87,20 +88,17 @@ class Motor_UART(object):
         cmd = cmd.encode('utf-8')
         self.__serial.write(cmd) # send to the driver
 
-    def __release(self, pwm): # support frame for release method
-        if 0 < pwm < STOP_PWM : # limiter for fw rotation
-            pwm = 0 # stop now
-            return pwm
-        elif pwm > STOP_PWM :
-            pwm -= PWM_STEP # slow down a little bit
-            return pwm
+    def __release(self, pwm_in): # support frame for release method
+        time.sleep(WAIT_TIME) # give time for other task and slowly slow down
 
-        if 0 > pwm > -STOP_PWM : # limiter for bw rotation
-            pwm = 0 # stop now
-            return pwm
-        else:
-            pwm += PWM_STEP # slow down a little bit
-            return pwm
+        pwm_out = 0 # 0 stop now --> 0 < pwm_in < STOP_PWM or -STOP_PWM < pwm_in < 0
+    
+        if pwm_in > STOP_PWM :
+            pwm_out = pwm_in - PWM_STEP # slow down a little bit
+        elif pwm_in < -STOP_PWM : # limiter for bw rotation
+            pwm_out = pwm_in + PWM_STEP # slow down a little bit
+        
+        return pwm_out
 
     def release(self): # slow down slowly until really stop -  IMPORTANT function
         while self.pwm != 0 or self.pwm_1 != 0 or self.pwm_2 != 0 : # 0 is stable, so try your best to become one
@@ -136,7 +134,7 @@ class Motor_UART(object):
         if self.pwm is 0 :
             self.pwm = DEPART_PWM
         else:
-            self.pwm -= accel # slower a little bit
+            self.pwm -= accel # faster a little bit
         cmd = "{N0 P" + str(self.pwm) + "}" # {N1 P500} - set speed for pwm
         self.__send(cmd) # format and send to the driver
 
