@@ -13,15 +13,19 @@ PWM_STEP = 20 # must be multiple of 10
 
 try:
   while True:
-    data = input('What do you want to do?f/b/l/r/s: ')
+    data = input('What do you want to do?f/b/lf/lb/rf/rb/s: ')
     if data == 'f':
       Motor.move_fw(PWM_STEP)
     if data == 'b':
       Motor.move_bw(PWM_STEP)
-    if data == 'l':
-      Motor.turn_left(PWM_STEP)
-    if data == 'r':
-      Motor.turn_right(PWM_STEP)
+    if data == 'lf':
+      Motor.turn_left(Motor.FORWARD, PWM_STEP)
+    if data == 'lb':
+      Motor.turn_left(Motor.BACKWARD, PWM_STEP)
+    if data == 'rf':
+      Motor.turn_right(Motor.FORWARD, PWM_STEP)
+    if data == 'rb':
+      Motor.turn_right(Motor.BACKWARD, PWM_STEP)
     if data == 's':
       Motor.release()
 except KeyboardInterrupt:
