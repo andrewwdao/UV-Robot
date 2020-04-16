@@ -77,6 +77,7 @@ class Motor_UART(object):
         cmd_0 = cmd_0.encode('utf-8')
         cmd_1 = cmd_1.encode('utf-8')
         self.__serial.write(cmd_0)
+        time.sleep(WAIT_TIME/2) # stablize time
         self.__serial.write(cmd_1)
 
     def __del__(self):
@@ -118,7 +119,7 @@ class Motor_UART(object):
                     self.pwm_2 = self.__release(self.pwm_2) # calculate value to really slow down
                     cmd = "{N1 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
                     self.__send(cmd) # format and send to the driver
-                    time.sleep(WAIT_TIME/2)
+                    time.sleep(WAIT_TIME/2) # stablize time
                     cmd = "{N2 P" + str(self.pwm_2) + "}" # {N1 P500} - set speed for pwm
                     self.__send(cmd) # format and send to the driver
                 else: # now pwm_2 is really 0, we can take care of pwm_1 fully
@@ -132,7 +133,7 @@ class Motor_UART(object):
                     self.pwm_2 = self.__release(self.pwm_2) # calculate value to really slow down
                     cmd = "{N1 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
                     self.__send(cmd) # format and send to the driver
-                    time.sleep(WAIT_TIME/2)
+                    time.sleep(WAIT_TIME/2) # stablize time
                     cmd = "{N2 P" + str(self.pwm_2) + "}" # {N1 P500} - set speed for pwm
                     self.__send(cmd) # format and send to the driver
                 else: # now pwm_1 is really 0, we can take care of pwm_2 fully
