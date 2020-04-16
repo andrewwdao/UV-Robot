@@ -11,7 +11,7 @@ from motor import Motor
 
 try:
   while True:
-    data = input('What do you want to do?f/b/l/r/s')
+    data = input('What do you want to do?f/b/l/r/s: ')
     if data == 'f':
       Motor.move_fw(50)
     if data == 'b':

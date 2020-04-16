@@ -29,6 +29,7 @@
 import os
 import serial
 import struct
+import time
 
 WAIT_TIME = 0.3
 PWM_STEP = 10 # must be multiple of 10
