@@ -112,7 +112,7 @@ class PS2X(object):
             self._ps2data[1] != 0x42 and
             self._ps2data[1] != 0x73 and
             self._ps2data[1] != 0x79): 
-            raise "No controller found, please check wiring" # return error code 1 - Controller mode not matched or no controller found, expected 0x41, 0x42, 0x73 or 0x79
+            raise Exception("No controller found, please check wiring again.") # return error code 1 - Controller mode not matched or no controller found, expected 0x41, 0x42, 0x73 or 0x79
 
         for y in range(0,11):
             self.__sendCommand(enter_config) # start config run
@@ -145,13 +145,13 @@ class PS2X(object):
                 if self._ps2data[1] == 0x79:
                     break
                 if self._ps2data[1] == 0x73:
-                    raise "Controller refusing to enter Pressures mode, may not support it."
+                    raise Exception("Controller refusing to enter Pressures mode, may not support it.")
             
             if self._ps2data[1] == 0x73:
                 break
 
             if y is 10:
-                raise "Controller found but not accepting commands."
+                raise Exception("Controller found but not accepting commands.")
 
             read_delay_s += 0.001 # add 1ms to read_delay_s
 
