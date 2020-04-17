@@ -10,6 +10,9 @@ fi
 apt-get update
 apt-get upgrade -y
 
+# pip installation
+apt-get install python3-pip -y
+
 # RPi.GPIO installation
 pip3 install RPi.GPIO
 
