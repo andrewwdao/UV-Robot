@@ -21,7 +21,7 @@ PS2_CLK = 22 # BCM mode
 # CTRL_BYTE_DELAY = 0.000018 # 18us
 CTRL_BYTE_DELAY = 0.000005 # 18us
 CTRL_CLK = 0.000005 # 5us
-UPDATE_INTERVAL = 30000 # us --> 50ms
+UPDATE_INTERVAL = 70000 # us --> 50ms
 EXPIRED_INTERVAL = 1500000 # us --> 1,5s
 
 enter_config = (0x01,0x43,0x00,0x01,0x00)
@@ -121,11 +121,11 @@ class PS2X(object):
         
         # ------ read controller type
         self.__sendCommand(enter_config) # start config run
-        time.sleep(CTRL_BYTE_DELAY)
+        # time.sleep(CTRL_BYTE_DELAY)
         GPIO.output(self.cmd, GPIO.HIGH) # CMD_SET
         GPIO.output(self.clk, GPIO.HIGH) # CLK_SET
         GPIO.output(self.sel, GPIO.LOW)  # SEL_CLR - enable joystick
-        time.sleep(CTRL_BYTE_DELAY)
+        # time.sleep(CTRL_BYTE_DELAY)
 
         temp = [0]*9
         for i in range(0,9):
@@ -186,11 +186,11 @@ class PS2X(object):
     
     def __sendCommand(self, string):
         GPIO.output(self.sel, GPIO.LOW)  # SEL_CLR - enable joystick
-        time.sleep(CTRL_BYTE_DELAY)
+        # time.sleep(CTRL_BYTE_DELAY)
         for y in range(0,len(string)):
             self.__shiftinout(string[y])
         GPIO.output(self.sel, GPIO.HIGH) # SEL_SET - disable joystick
-        time.sleep(CTRL_BYTE_DELAY)
+        # time.sleep(CTRL_BYTE_DELAY)
         # time.sleep(self.read_delay_s)
 
     def __reconfig(self):
@@ -220,7 +220,7 @@ class PS2X(object):
             time.sleep(CTRL_CLK)
         
         GPIO.output(self.cmd, GPIO.HIGH) # CMD_SET
-        time.sleep(CTRL_BYTE_DELAY)
+        # time.sleep(CTRL_BYTE_DELAY)
         return tmp
 
     def update(self):
@@ -230,14 +230,14 @@ class PS2X(object):
             self.__reconfig()
 
         if temp < UPDATE_INTERVAL: # us --> wait a little bit longer before read
-            time.sleep(0.03)
+            time.sleep(0.07)
             # return
         
         # get new data
         GPIO.output(self.cmd, GPIO.HIGH) # CMD_SET
         GPIO.output(self.clk, GPIO.HIGH) # CLK_SET
         GPIO.output(self.sel, GPIO.LOW)  # SEL_CLR - enable joystick
-        time.sleep(CTRL_BYTE_DELAY)
+        # time.sleep(CTRL_BYTE_DELAY)
     
         # Send the command to get button and joystick data;
         for x in range(0,9):
