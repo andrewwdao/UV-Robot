@@ -23,7 +23,8 @@ try:
     #     print("Start is pressed once")
     # if ps2.isPressing(ps2.START):
     #     print("Start is pressing")
-
+    if ps2.pressed(ps2.CROSS):
+      print('Hello')
     if ps2.isPressing(ps2.UP):
       print("UP is pressing this hard: ", ps2.analogRead(ps2.UP))
     if ps2.isPressing(ps2.DOWN):
