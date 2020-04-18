@@ -18,7 +18,8 @@ PS2_CMD = 17 # BCM mode
 PS2_SEL = 27 # BCM mode
 PS2_CLK = 22 # BCM mode
 
-CTRL_BYTE_DELAY = 0.000018 # 18us
+# CTRL_BYTE_DELAY = 0.000018 # 18us
+CTRL_BYTE_DELAY = 0.000005 # 18us
 CTRL_CLK = 0.000005 # 5us
 
 enter_config = (0x01,0x43,0x00,0x01,0x00)
@@ -139,7 +140,7 @@ class PS2X(object):
             self.__sendCommand(set_bytes_large)
         self.__sendCommand(exit_config)
 
-        # -- Done first config, now check response of the system
+        # ------- Done first config, now check response of the system
         self.update() # read to see if new data is comming
 
         if self.en_Pressures:
@@ -187,7 +188,8 @@ class PS2X(object):
         for y in range(0,len(string)):
             self.__shiftinout(string[y])
         GPIO.output(self.sel, GPIO.HIGH) # SEL_SET - disable joystick
-        time.sleep(self.read_delay_s)
+        time.sleep(CTRL_BYTE_DELAY)
+        # time.sleep(self.read_delay_s)
 
     def __reconfig(self):
         self.__sendCommand(enter_config)
