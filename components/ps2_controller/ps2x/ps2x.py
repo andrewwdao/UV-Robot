@@ -118,16 +118,32 @@ class PS2X(object):
             # read gamepad to see if it's talking
             self.__getData(self.data_request)
         
-            print('0x42: ', self._ps2data)
-            # see if mode came back. 
-            # If still anything but 41, 73 or 79, then it's not talking
+            print('Command 0x42: ', self._ps2data)
+            '''
+            All mode: self._ps2data[1]
+            0x41: Digital mode with ONE 16 bit words (2 bytes) follow the header.
+                  Contains only digital states of the buttons (byte 4 and byte 5)
+            
+            0x73: Analog mode with THREE 16 bit words (6 bytes) follow the header.
+                  Contain digital states of the buttons (byte 4 + byte 5)
+                  Contain 02 joystick ADC values:
+                   - Right Joystick (byte 6 + byte 7)
+                   - Left Joystick (byte 8 + byte 9)
+            0x79: Analog mode with NINE 16 bit words (18 bytes) follow the header.
+                  Contain digital states of the buttons (byte 4 + byte 5)
+                  Contain 02 joystick ADC values:
+                   - Right Joystick (byte 6 + byte 7)
+                   - Left Joystick (byte 8 + byte 9)
+                  Contain adc value of 12 Button (pressures) (from byte 10 to byte 21) 
+            
+            '''
+            # check if mode came back.
             if (self._ps2data[1] == 0x41 or
-                self._ps2data[1] == 0x42 or
-                self._ps2data[1] == 0x73 or # Analog mode with NO pressures return 
-                self._ps2data[1] == 0x79):  # Analog mode with pressures return
+                self._ps2data[1] == 0x73 or
+                self._ps2data[1] == 0x79):
                 break
 
-            if (datetime.now().second - watchdog) > 1:
+            if (datetime.now().second - watchdog) > 1: # one second to connect, if not connected then raise error
                 raise Exception("No controller found, please check wiring again.") # return error code 1 - Controller mode not matched or no controller found, expected 0x41, 0x42, 0x73 or 0x79
         
         # ------ entering config mode
@@ -136,7 +152,7 @@ class PS2X(object):
         self.__getData(type_read)
         
         print('0x45: ', self._ps2data)
-        if self._ps2data[0:3] == [0xFF,0xF3,0x5A]: # if package header is correct 
+        if self._ps2data[0:3]&0xf0 == [0xF0,0xF0,0x50]: # if package header is correct [0xFF,0xF1-0xF3-0xF9,0x5A]
             controller_type = self._ps2data[3] # this is exactly what we want
         else: # package header is wrong
             controller_type = 0xFF # tell the system that something is wrong
@@ -171,7 +187,7 @@ class PS2X(object):
         elif controller_type == 0xFF:
             print("Wrong package header. Please check again")
         else:
-            print("Unknown")
+            print("Unknown type")
         return # all good
 
     def __del__(self):
@@ -193,6 +209,27 @@ class PS2X(object):
     def __chk(self, x, y):
         return x&(1<<y)
     
+    def __shiftinout(self, byte):
+        received = 0 # received data default to be 0
+        for i in range(0,8):
+            if self.__chk(byte, i):
+                GPIO.output(self.cmd, GPIO.HIGH) # CMD_SET
+            else:
+                GPIO.output(self.cmd, GPIO.LOW) # CMD_CLR
+            
+            GPIO.output(self.clk, GPIO.LOW) # CLK_CLR
+            time.sleep(CTRL_CLK)
+
+            if GPIO.input(self.dat) == GPIO.HIGH:
+                received = self.__set(received, i)
+            
+            GPIO.output(self.clk, GPIO.HIGH) # CLK_SET
+            time.sleep(CTRL_CLK)
+        
+        GPIO.output(self.cmd, GPIO.HIGH) # CMD_SET
+        time.sleep(CTRL_BYTE_DELAY)
+        return received
+    
     def __sendCommand(self, command):
         GPIO.output(self.sel, GPIO.LOW)  # SEL_CLR - enable joystick
         time.sleep(CTRL_BYTE_DELAY)
@@ -210,26 +247,6 @@ class PS2X(object):
             self.__sendCommand(set_bytes_large)
         self.__sendCommand(exit_config)
 
-    def __shiftinout(self, byte):
-        tmp = 0
-        for i in range(0,8):
-            if self.__chk(byte, i):
-                GPIO.output(self.cmd, GPIO.HIGH) # CMD_SET
-            else:
-                GPIO.output(self.cmd, GPIO.LOW) # CMD_CLR
-            
-            GPIO.output(self.clk, GPIO.LOW) # CLK_CLR
-            time.sleep(CTRL_CLK)
-
-            if GPIO.input(self.dat) == GPIO.HIGH:
-                tmp = self.__set(tmp, i)
-            
-            GPIO.output(self.clk, GPIO.HIGH) # CLK_SET
-            time.sleep(CTRL_CLK)
-        
-        GPIO.output(self.cmd, GPIO.HIGH) # CMD_SET
-        time.sleep(CTRL_BYTE_DELAY)
-        return tmp
 
     def __getData(self, command): # send command to ps2 and get response to the self._ps2data
         # get new data
@@ -238,11 +255,12 @@ class PS2X(object):
         GPIO.output(self.sel, GPIO.LOW)  # SEL_CLR - enable joystick
         time.sleep(CTRL_BYTE_DELAY)
     
-        # Send the command to get button and joystick data;
+        # Send the command to get button and joystick data
         for x in range(0,9):
             self._ps2data[x] = self.__shiftinout(command[x])
 
-        # if controller is in full data return mode, get the rest of the data
+        # if controller is in full analog return mode
+        # get the rest of the data
         if self._ps2data[1] == 0x79:
             for x in range(0,12):
                 self._ps2data[x+9] = self.__shiftinout(0)
@@ -273,11 +291,11 @@ class PS2X(object):
             self.__reconfig() # try to get back into Analog mode.
             return 
         
-        # store the previous buttons states
+        # store the previous buttons states before get the new one
         self.last_buttons = self.buttons 
 
         # byte 4 and 5 of the data is the status of all buttons
-        # store as one value
+        # store as one variable
         self.buttons = (self._ps2data[4] << 8) + self._ps2data[3]
 
         self.last_millis = datetime.now().microsecond
