@@ -113,17 +113,22 @@ class PS2X(object):
         # -----------(0x01,0x42,0,Motor1,Motor2,0,0,0,0)
         self.command = [0x01,0x42,0,False,0x00,0,0,0,0]
 
-        # read gamepad to see if it's talking
-        self.update()
+        watchdog = datetime.now().second
+        while True:
+            # read gamepad to see if it's talking
+            self.update()
         
-        print(self._ps2data)
-        # see if mode came back. 
-        # If still anything but 41, 73 or 79, then it's not talking
-        if (self._ps2data[1] != 0x41 and
-            self._ps2data[1] != 0x42 and
-            self._ps2data[1] != 0x73 and
-            self._ps2data[1] != 0x79): 
-            raise Exception("No controller found, please check wiring again.") # return error code 1 - Controller mode not matched or no controller found, expected 0x41, 0x42, 0x73 or 0x79
+            print(self._ps2data)
+            # see if mode came back. 
+            # If still anything but 41, 73 or 79, then it's not talking
+            if (self._ps2data[1] == 0x41 or
+                self._ps2data[1] == 0x42 or
+                self._ps2data[1] == 0x73 or # Analog mode with NO pressures return 
+                self._ps2data[1] == 0x79):  # Analog mode with pressures return
+                break
+
+            if (datetime.now().second - watchdog) > 1:
+                raise Exception("No controller found, please check wiring again.") # return error code 1 - Controller mode not matched or no controller found, expected 0x41, 0x42, 0x73 or 0x79
         
         # ------ entering config mode
         self.__sendCommand(enter_config) # start config run
@@ -141,12 +146,10 @@ class PS2X(object):
         GPIO.output(self.sel, GPIO.HIGH) # SEL_SET - disable joystick
 
         print('0x45: ', __data)
-        if __data[0:3] is [0xFF,0xF3,0x5A]: # if package header is correct 
+        if __data[0:3] == [0xFF,0xF3,0x5A]: # if package header is correct 
             controller_type = __data[3] # this is exactly what we want
         else: # package header is wrong
             controller_type = 0xFF # tell the system that something is wrong
-
-        
 
         self.__sendCommand(set_mode_analog)
         if self.en_Rumble:
@@ -165,6 +168,7 @@ class PS2X(object):
                 print("Controller refusing to enter Pressures mode, may not support it.")
 
         if self._ps2data[1] != 0x79 and self._ps2data[1] != 0x73:
+            print(self._ps2data[1])
             raise Exception("Controller found but not accepting commands.")
 
         print("Configured successful. Controller:")
