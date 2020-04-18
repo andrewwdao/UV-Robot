@@ -152,6 +152,7 @@ class PS2X(object):
         self.__getData(type_read)
         
         print('0x45: ', self._ps2data)
+        print(self._ps2data[0:3]*0xf0)
         if self._ps2data[0:3]*0xf0 == [0xF0,0xF0,0x50]: # if package header is correct [0xFF,0xF1-0xF3-0xF9,0x5A]
             controller_type = self._ps2data[3] # this is exactly what we want
         else: # package header is wrong
