@@ -136,11 +136,11 @@ class PS2X(object):
                    - Left Joystick (byte 8 + byte 9)
                   Contain adc value of 12 Button (pressures) (from byte 10 to byte 21) 
             
+            0xFx: Config mode
+
             '''
-            # check if mode came back.
-            if (self._ps2data[1] == 0x41 or
-                self._ps2data[1] == 0x73 or
-                self._ps2data[1] == 0x79):
+            # check if valid mode came back.
+            if [0x41,0x73,0x79,0xF1,0xF3,0xF9].count(self._ps2data[1]):
                 break
 
             if (datetime.now().second - watchdog) > 1: # one second to connect, if not connected then raise error
