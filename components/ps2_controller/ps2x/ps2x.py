@@ -111,7 +111,7 @@ class PS2X(object):
         self.L_STICK_Y = 8
         
         # -----------(0x01,0x42,0,Motor1,Motor2,0,0,0,0)
-        self.command = [0x01,0x42,0,False,0x00,0,0,0,0]
+        self.data_request = [0x01,0x42,0,False,0x00,0,0,0,0]
 
         watchdog = datetime.now().second
         while True:
@@ -133,21 +133,22 @@ class PS2X(object):
         # ------ entering config mode
         self.__sendCommand(enter_config) # start config run
         
-        time.sleep(CTRL_BYTE_DELAY)
-        GPIO.output(self.cmd, GPIO.HIGH) # CMD_SET
-        GPIO.output(self.clk, GPIO.HIGH) # CLK_SET
-        GPIO.output(self.sel, GPIO.LOW)  # SEL_CLR - enable joystick
-        time.sleep(CTRL_BYTE_DELAY)
+        self.__getData(type_read)
+        # time.sleep(CTRL_BYTE_DELAY)
+        # GPIO.output(self.cmd, GPIO.HIGH) # CMD_SET
+        # GPIO.output(self.clk, GPIO.HIGH) # CLK_SET
+        # GPIO.output(self.sel, GPIO.LOW)  # SEL_CLR - enable joystick
+        # time.sleep(CTRL_BYTE_DELAY)
 
-        __data = [0]*9
-        for i in range(0,9):
-            __data[i] = self.__shiftinout(type_read[i]) # get status info of the controller
+        # __data = [0]*9
+        # for i in range(0,9):
+        #     __data[i] = self.__shiftinout(type_read[i]) # get status info of the controller
 
-        GPIO.output(self.sel, GPIO.HIGH) # SEL_SET - disable joystick
+        # GPIO.output(self.sel, GPIO.HIGH) # SEL_SET - disable joystick
 
-        print('0x45: ', __data)
-        if __data[0:3] == [0xFF,0xF3,0x5A]: # if package header is correct 
-            controller_type = __data[3] # this is exactly what we want
+        print('0x45: ', self._ps2data)
+        if self._ps2data[0:3] == [0xFF,0xF3,0x5A]: # if package header is correct 
+            controller_type = self._ps2data[3] # this is exactly what we want
         else: # package header is wrong
             controller_type = 0xFF # tell the system that something is wrong
 
@@ -242,6 +243,25 @@ class PS2X(object):
         time.sleep(CTRL_BYTE_DELAY)
         return tmp
 
+    def __getData(self, command): # send command to ps2 and get response to the self._ps2data
+        # get new data
+        GPIO.output(self.cmd, GPIO.HIGH) # CMD_SET
+        GPIO.output(self.clk, GPIO.HIGH) # CLK_SET
+        GPIO.output(self.sel, GPIO.LOW)  # SEL_CLR - enable joystick
+        time.sleep(CTRL_BYTE_DELAY)
+    
+        # Send the command to get button and joystick data;
+        for x in range(0,9):
+            self._ps2data[x] = self.__shiftinout(command[x])
+
+        # if controller is in full data return mode, get the rest of the data
+        if self._ps2data[1] == 0x79:
+            for x in range(0,12):
+                self._ps2data[x+9] = self.__shiftinout(0)
+        
+        GPIO.output(self.sel, GPIO.HIGH) # SEL_SET - disable joystick
+
+
     def update(self):
         temp = datetime.now().microsecond - self.last_millis
 
@@ -252,22 +272,23 @@ class PS2X(object):
             time.sleep(0.08)
             # return
         
-        # get new data
-        GPIO.output(self.cmd, GPIO.HIGH) # CMD_SET
-        GPIO.output(self.clk, GPIO.HIGH) # CLK_SET
-        GPIO.output(self.sel, GPIO.LOW)  # SEL_CLR - enable joystick
-        time.sleep(CTRL_BYTE_DELAY)
+        self.__getData(self.data_request)
+        # # get new data
+        # GPIO.output(self.cmd, GPIO.HIGH) # CMD_SET
+        # GPIO.output(self.clk, GPIO.HIGH) # CLK_SET
+        # GPIO.output(self.sel, GPIO.LOW)  # SEL_CLR - enable joystick
+        # time.sleep(CTRL_BYTE_DELAY)
     
-        # Send the command to get button and joystick data;
-        for x in range(0,9):
-            self._ps2data[x] = self.__shiftinout(self.command[x])
+        # # Send the command to get button and joystick data;
+        # for x in range(0,9):
+        #     self._ps2data[x] = self.__shiftinout(self.command[x])
 
-        # if controller is in full data return mode, get the rest of the data
-        if self._ps2data[1] == 0x79:
-            for x in range(0,12):
-                self._ps2data[x+9] = self.__shiftinout(0)
+        # # if controller is in full data return mode, get the rest of the data
+        # if self._ps2data[1] == 0x79:
+        #     for x in range(0,12):
+        #         self._ps2data[x+9] = self.__shiftinout(0)
         
-        GPIO.output(self.sel, GPIO.HIGH) # SEL_SET - disable joystick
+        # GPIO.output(self.sel, GPIO.HIGH) # SEL_SET - disable joystick
 
         # Check to see if we received valid data or not.  
         # We should be in analog mode for our data to be valid (analog == 0x7_)
