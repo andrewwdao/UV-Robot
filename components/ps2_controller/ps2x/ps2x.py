@@ -25,7 +25,7 @@ UPDATE_INTERVAL = 70000 # us --> 50ms
 EXPIRED_INTERVAL = 1500000 # us --> 1,5s
 
 enter_config = (0x01,0x43,0x00,0x01,0x00)
-set_mode = (0x01,0x44,0x00,0x01,0x03,0x00,0x00,0x00,0x00)
+set_mode = ((0x01,0x44,0x00,0x00,0x03,0x00,0x00,0x00,0x00), (0x01,0x44,0x00,0x01,0x03,0x00,0x00,0x00,0x00)) # setmode[0] = digital, setmode[1] = analog 
 set_bytes_large = (0x01,0x4F,0x00,0xFF,0xFF,0x03,0x00,0x00,0x00)
 exit_config = (0x01,0x43,0x00,0x00,0x5A,0x5A,0x5A,0x5A,0x5A)
 enable_rumble = (0x01,0x4D,0x00,0x00,0x01)
@@ -115,6 +115,7 @@ class PS2X(object):
         # read gamepad to see if it's talking
         self.update()
         
+        print(self._ps2data)
         # see if mode came back. 
         # If still anything but 41, 73 or 79, then it's not talking
         if (self._ps2data[1] != 0x41 and
@@ -123,8 +124,9 @@ class PS2X(object):
             self._ps2data[1] != 0x79): 
             raise Exception("No controller found, please check wiring again.") # return error code 1 - Controller mode not matched or no controller found, expected 0x41, 0x42, 0x73 or 0x79
         
-        # ------ read controller type
+        # ------ entering config mode, will return status info too
         self.__sendCommand(enter_config) # start config run
+        
         time.sleep(CTRL_BYTE_DELAY)
         GPIO.output(self.cmd, GPIO.HIGH) # CMD_SET
         GPIO.output(self.clk, GPIO.HIGH) # CLK_SET
@@ -137,9 +139,25 @@ class PS2X(object):
 
         GPIO.output(self.sel, GPIO.HIGH) # SEL_SET - disable joystick
 
+        print('0x43: ', temp)
         controller_type = temp[3]
 
-        self.__sendCommand(set_mode)
+        self.__sendCommand(type_read) # read config of this controller
+
+        time.sleep(CTRL_BYTE_DELAY)
+        GPIO.output(self.cmd, GPIO.HIGH) # CMD_SET
+        GPIO.output(self.clk, GPIO.HIGH) # CLK_SET
+        GPIO.output(self.sel, GPIO.LOW)  # SEL_CLR - enable joystick
+        time.sleep(CTRL_BYTE_DELAY)
+
+        temp2 = [0]*9
+        for i in range(0,9):
+            temp2[i] = self.__shiftinout(type_read[i])
+
+        GPIO.output(self.sel, GPIO.HIGH) # SEL_SET - disable joystick
+        print('0x45: ', temp2)
+
+        self.__sendCommand(set_mode[0])
         if self.en_Rumble:
             self.__sendCommand(enable_rumble)
         if self.en_Pressures:
