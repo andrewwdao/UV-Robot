@@ -13,7 +13,7 @@ PWM_STEP = 20 # must be multiple of 10
 
 try:
   while True:
-    time.sleep(0.05) # 50ms
+    # time.sleep(0.05) # 50ms
     ps2.update()
 
     # if ps2.changed(): # check if any button is changed
@@ -32,6 +32,6 @@ try:
       print("RIGHT is pressing this hard: ", ps2.analogRead(ps2.RIGHT))
     if ps2.isPressing(ps2.LEFT):
       print("LEFT is pressing this hard: ", ps2.analogRead(ps2.LEFT))
-      
+
 except KeyboardInterrupt:
   pass

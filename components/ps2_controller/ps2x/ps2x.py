@@ -73,11 +73,13 @@ class PS2X(object):
         GPIO.setup(self.sel, GPIO.OUT)
         GPIO.setup(self.clk, GPIO.OUT, initial=GPIO.HIGH)
         self.last_millis = datetime.now().microsecond
-        self.read_delay_s = 0.001 # 1ms
+        self.read_delay_s = 0.005 # 1ms
         self._ps2data = [0]*21
         self.last_buttons = 0
         self.buttons = 0
-        
+        self.motor1 = False
+        self.motor2 = 0x00
+
         # DualShock button constants
         self.SELECT     = 0x0001
         self.L3         = 0x0002
@@ -102,10 +104,11 @@ class PS2X(object):
         self.L_STICK_X = 7
         self.L_STICK_Y = 8
         
+        self.command = [0x01,0x42,0,self.motor1,self.motor2,0,0,0,0]
+
         # read gamepad a few times to see if it's talking
         self.update()
-        self.update()
-
+        
         # see if mode came back. 
         # If still anything but 41, 73 or 79, then it's not talking
         if (self._ps2data[1] != 0x41 and
@@ -114,47 +117,20 @@ class PS2X(object):
             self._ps2data[1] != 0x79): 
             raise Exception("No controller found, please check wiring again.") # return error code 1 - Controller mode not matched or no controller found, expected 0x41, 0x42, 0x73 or 0x79
 
-        for y in range(0,11):
-            self.__sendCommand(enter_config) # start config run
+        self.__config()
 
-            # read type
-            time.sleep(CTRL_BYTE_DELAY)
-            GPIO.output(self.cmd, GPIO.HIGH) # CMD_SET
-            GPIO.output(self.clk, GPIO.HIGH) # CLK_SET
-            GPIO.output(self.sel, GPIO.LOW)  # SEL_CLR - enable joystick
-            time.sleep(CTRL_BYTE_DELAY)
+        self.update() # read to see if new data is comming
 
-            temp = [0]*9
-            for i in range(0,9):
-                temp[i] = self.__shiftinout(type_read[i])
-
-            GPIO.output(self.sel, GPIO.HIGH) # SEL_SET - disable joystick
-
-            controller_type = temp[3]
-
-            self.__sendCommand(set_mode)
-            if self.en_Rumble:
-                self.__sendCommand(enable_rumble)
-            if self.en_Pressures:
-                self.__sendCommand(set_bytes_large)
-            self.__sendCommand(exit_config)
-
-            self.update() # read to see if new data is comming
-
-            if self.en_Pressures:
-                if self._ps2data[1] == 0x79:
-                    break
-                if self._ps2data[1] == 0x73:
-                    raise Exception("Controller refusing to enter Pressures mode, may not support it.")
-            
+        if self.en_Pressures:
+            if self._ps2data[1] == 0x79:
+                print("Entered Pressures mode")
             if self._ps2data[1] == 0x73:
-                break
+                print("Controller refusing to enter Pressures mode, may not support it.")
 
-            if y is 10:
-                raise Exception("Controller found but not accepting commands.")
+        if self._ps2data[1] != 0x79 and self._ps2data[1] != 0x73:
+            raise Exception("Controller found but not accepting commands.")
 
-            read_delay_s += 0.001 # add 1ms to read_delay_s
-
+        controller_type = self._ps2data[3]
         print("Configured successful. Controller:")
         if controller_type == 0x03:
             print("DualShock")
@@ -193,7 +169,7 @@ class PS2X(object):
         GPIO.output(self.sel, GPIO.HIGH) # SEL_SET - disable joystick
         time.sleep(self.read_delay_s)
 
-    def __reconfig(self):
+    def __config(self):
         self.__sendCommand(enter_config)
         self.__sendCommand(set_mode)
         if self.en_Rumble:
@@ -227,25 +203,22 @@ class PS2X(object):
         temp = datetime.now().microsecond - self.last_millis
 
         if temp > 1500000: # 1,5s -- waited too long
-            self.__reconfig()
+            self.__config()
 
         if temp < self.read_delay_s*1000000: # converted to us, waited too short
             time.sleep(self.read_delay_s - float(float(temp)/1000000))
         
-        # -----(0x01,0x42,0,Motor1,Motor2,0,0,0,0)
-        dword = (0x01,0x42,0,False,0x00,0,0,0,0)
-
+        
         # try a few times to get valid data...
         for i in range(0,5):
             GPIO.output(self.cmd, GPIO.HIGH) # CMD_SET
             GPIO.output(self.clk, GPIO.HIGH) # CLK_SET
             GPIO.output(self.sel, GPIO.LOW)  # SEL_CLR - enable joystick
-      
             time.sleep(CTRL_BYTE_DELAY)
         
-            # Send the command to send button and joystick data;
+            # Send the command to get button and joystick data;
             for x in range(0,9):
-                self._ps2data[x] = self.__shiftinout(dword[x])
+                self._ps2data[x] = self.__shiftinout(self.command[x])
 
             # if controller is in full data return mode, get the rest of the data
             if self._ps2data[1] == 0x79:
@@ -260,7 +233,7 @@ class PS2X(object):
                 break
 
             # If we got here, we are not in analog mode, try to recover...
-            self.__reconfig() # try to get back into Analog mode.
+            self.__config() # try to get back into Analog mode.
             time.sleep(self.read_delay_s)
         
         # If we get here and still not in analog mode (=0x7_), try increasing the read_delay...
@@ -292,3 +265,122 @@ class PS2X(object):
     def released(self, button): # will be true only once when button is released
         return self.changed() & ((~self.last_buttons & button) > 0)
     
+
+    # def __init__(self, dat = PS2_DAT, cmd = PS2_CMD, sel = PS2_SEL, clk = PS2_CLK, press = False, rumble = False):
+    #     """
+    #     Constructor
+    #     @param dat: an integer indicates the data pin of the PS2
+    #     @param cmd: an integer indicates the command pin of the PS2
+    #     @param sel: an integer indicates the select pin of the PS2
+    #     @param clk: an integer indicates the clock pin of the PS2
+    #     @param en_Pressures: a boolean indicates the pressure function of the PS2
+    #     @param en_Rumble: aa boolean indicates the rumble of the PS2
+    #     """
+    #     self.dat = dat
+    #     self.cmd = cmd
+    #     self.sel = sel
+    #     self.clk = clk
+    #     self.en_Pressures = press
+    #     self.en_Rumble = rumble     
+
+    #     GPIO.setmode(GPIO.BCM)
+    #     GPIO.setup(self.dat, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    #     GPIO.setup(self.cmd, GPIO.OUT, initial=GPIO.HIGH)
+    #     GPIO.setup(self.sel, GPIO.OUT)
+    #     GPIO.setup(self.clk, GPIO.OUT, initial=GPIO.HIGH)
+    #     self.last_millis = datetime.now().microsecond
+    #     self.read_delay_s = 0.001 # 1ms
+    #     self._ps2data = [0]*21
+    #     self.last_buttons = 0
+    #     self.buttons = 0
+        
+    #     # DualShock button constants
+    #     self.SELECT     = 0x0001
+    #     self.L3         = 0x0002
+    #     self.R3         = 0x0004
+    #     self.START      = 0x0008
+    #     self.UP         = 0x0010
+    #     self.RIGHT      = 0x0020
+    #     self.DOWN       = 0x0040
+    #     self.LEFT       = 0x0080
+    #     self.L2         = 0x0100
+    #     self.R2         = 0x0200
+    #     self.L1         = 0x0400
+    #     self.R1         = 0x0800
+    #     self.TRIANGLE   = 0x1000
+    #     self.CIRCLE     = 0x2000
+    #     self.CROSS      = 0x4000
+    #     self.SQUARE     = 0x8000
+
+    #     # stick values
+    #     self.R_STICK_X = 5
+    #     self.R_STICK_Y = 6
+    #     self.L_STICK_X = 7
+    #     self.L_STICK_Y = 8
+        
+    #     # -----------(0x01,0x42,0,Motor1,Motor2,0,0,0,0)
+    #     self.dword = [0x01,0x42,0,False,0x00,0,0,0,0]
+
+    #     # read gamepad a few times to see if it's talking
+    #     self.update()
+    #     self.update()
+
+    #     # see if mode came back. 
+    #     # If still anything but 41, 73 or 79, then it's not talking
+    #     if (self._ps2data[1] != 0x41 and
+    #         self._ps2data[1] != 0x42 and
+    #         self._ps2data[1] != 0x73 and
+    #         self._ps2data[1] != 0x79): 
+    #         raise Exception("No controller found, please check wiring again.") # return error code 1 - Controller mode not matched or no controller found, expected 0x41, 0x42, 0x73 or 0x79
+
+    #     for y in range(0,11):
+    #         self.__sendCommand(enter_config) # start config run
+
+    #         # read type
+    #         time.sleep(CTRL_BYTE_DELAY)
+    #         GPIO.output(self.cmd, GPIO.HIGH) # CMD_SET
+    #         GPIO.output(self.clk, GPIO.HIGH) # CLK_SET
+    #         GPIO.output(self.sel, GPIO.LOW)  # SEL_CLR - enable joystick
+    #         time.sleep(CTRL_BYTE_DELAY)
+
+    #         temp = [0]*9
+    #         for i in range(0,9):
+    #             temp[i] = self.__shiftinout(type_read[i])
+
+    #         GPIO.output(self.sel, GPIO.HIGH) # SEL_SET - disable joystick
+
+    #         controller_type = temp[3]
+
+    #         self.__sendCommand(set_mode)
+    #         if self.en_Rumble:
+    #             self.__sendCommand(enable_rumble)
+    #         if self.en_Pressures:
+    #             self.__sendCommand(set_bytes_large)
+    #         self.__sendCommand(exit_config)
+
+    #         self.update() # read to see if new data is comming
+
+    #         if self.en_Pressures:
+    #             if self._ps2data[1] == 0x79:
+    #                 break
+    #             if self._ps2data[1] == 0x73:
+    #                 raise Exception("Controller refusing to enter Pressures mode, may not support it.")
+            
+    #         if self._ps2data[1] == 0x73:
+    #             break
+
+    #         if y is 10:
+    #             raise Exception("Controller found but not accepting commands.")
+
+    #         read_delay_s += 0.001 # add 1ms to read_delay_s
+
+    #     print("Configured successful. Controller:")
+    #     if controller_type == 0x03:
+    #         print("DualShock")
+    #     elif controller_type == 0x01 and self._ps2data[1] != 0x42:
+    #         print("GuitarHero (Not supported yet)")
+    #     elif controller_type == 0x0C:
+    #         print("2.4G Wireless DualShock")
+    #     else:
+    #         print("Unknown")
+    #     return # all good
