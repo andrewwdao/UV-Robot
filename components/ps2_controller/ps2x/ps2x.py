@@ -25,7 +25,8 @@ UPDATE_INTERVAL = 70000 # us --> 50ms
 EXPIRED_INTERVAL = 1500000 # us --> 1,5s
 
 enter_config = (0x01,0x43,0x00,0x01,0x00)
-set_mode = ((0x01,0x44,0x00,0x00,0x03,0x00,0x00,0x00,0x00), (0x01,0x44,0x00,0x01,0x03,0x00,0x00,0x00,0x00)) # setmode[0] = digital, setmode[1] = analog 
+set_mode_analog = (0x01,0x44,0x00,0x01,0x03,0x00,0x00,0x00,0x00)
+set_mode_digital = (0x01,0x44,0x00,0x00,0x03,0x00,0x00,0x00,0x00)
 set_bytes_large = (0x01,0x4F,0x00,0xFF,0xFF,0x03,0x00,0x00,0x00)
 exit_config = (0x01,0x43,0x00,0x00,0x5A,0x5A,0x5A,0x5A,0x5A)
 enable_rumble = (0x01,0x4D,0x00,0x00,0x01)
@@ -124,7 +125,7 @@ class PS2X(object):
             self._ps2data[1] != 0x79): 
             raise Exception("No controller found, please check wiring again.") # return error code 1 - Controller mode not matched or no controller found, expected 0x41, 0x42, 0x73 or 0x79
         
-        # ------ entering config mode, will return status info too
+        # ------ entering config mode
         self.__sendCommand(enter_config) # start config run
         
         time.sleep(CTRL_BYTE_DELAY)
@@ -133,31 +134,21 @@ class PS2X(object):
         GPIO.output(self.sel, GPIO.LOW)  # SEL_CLR - enable joystick
         time.sleep(CTRL_BYTE_DELAY)
 
-        temp = [0]*9
+        __data = [0]*9
         for i in range(0,9):
-            temp[i] = self.__shiftinout(type_read[i])
+            __data[i] = self.__shiftinout(type_read[i]) # get status info of the controller
 
         GPIO.output(self.sel, GPIO.HIGH) # SEL_SET - disable joystick
 
-        print('0x43: ', temp)
-        controller_type = temp[3]
+        print('0x45: ', __data)
+        if __data[0:3] is [0xFF,0xF3,0x5A]: # if package header is correct 
+            controller_type = __data[3] # this is exactly what we want
+        else: # package header is wrong
+            controller_type = 0xFF # tell the system that something is wrong
 
-        self.__sendCommand(type_read) # read config of this controller
+        
 
-        time.sleep(CTRL_BYTE_DELAY)
-        GPIO.output(self.cmd, GPIO.HIGH) # CMD_SET
-        GPIO.output(self.clk, GPIO.HIGH) # CLK_SET
-        GPIO.output(self.sel, GPIO.LOW)  # SEL_CLR - enable joystick
-        time.sleep(CTRL_BYTE_DELAY)
-
-        temp2 = [0]*9
-        for i in range(0,9):
-            temp2[i] = self.__shiftinout(type_read[i])
-
-        GPIO.output(self.sel, GPIO.HIGH) # SEL_SET - disable joystick
-        print('0x45: ', temp2)
-
-        self.__sendCommand(set_mode[0])
+        self.__sendCommand(set_mode_analog)
         if self.en_Rumble:
             self.__sendCommand(enable_rumble)
         if self.en_Pressures:
@@ -183,6 +174,8 @@ class PS2X(object):
             print("GuitarHero (Not supported yet)")
         elif controller_type == 0x0C:
             print("2.4G Wireless DualShock")
+        elif controller_type == 0xFF:
+            print("Wrong package header. Please check again")
         else:
             print("Unknown")
         return # all good
@@ -217,7 +210,7 @@ class PS2X(object):
 
     def __reconfig(self):
         self.__sendCommand(enter_config)
-        self.__sendCommand(set_mode)
+        self.__sendCommand(set_mode_analog)
         if self.en_Rumble:
             self.__sendCommand(enable_rumble)
         if self.en_Pressures:
