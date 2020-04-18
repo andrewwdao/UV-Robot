@@ -121,11 +121,11 @@ class PS2X(object):
         
         # ------ read controller type
         self.__sendCommand(enter_config) # start config run
-        # time.sleep(CTRL_BYTE_DELAY)
+        time.sleep(CTRL_BYTE_DELAY)
         GPIO.output(self.cmd, GPIO.HIGH) # CMD_SET
         GPIO.output(self.clk, GPIO.HIGH) # CLK_SET
         GPIO.output(self.sel, GPIO.LOW)  # SEL_CLR - enable joystick
-        # time.sleep(CTRL_BYTE_DELAY)
+        time.sleep(CTRL_BYTE_DELAY)
 
         temp = [0]*9
         for i in range(0,9):
@@ -186,11 +186,11 @@ class PS2X(object):
     
     def __sendCommand(self, string):
         GPIO.output(self.sel, GPIO.LOW)  # SEL_CLR - enable joystick
-        # time.sleep(CTRL_BYTE_DELAY)
+        time.sleep(CTRL_BYTE_DELAY)
         for y in range(0,len(string)):
             self.__shiftinout(string[y])
         GPIO.output(self.sel, GPIO.HIGH) # SEL_SET - disable joystick
-        # time.sleep(CTRL_BYTE_DELAY)
+        time.sleep(CTRL_BYTE_DELAY)
         # time.sleep(self.read_delay_s)
 
     def __reconfig(self):
