@@ -21,7 +21,7 @@ PS2_CLK = 22 # BCM mode
 # CTRL_BYTE_DELAY = 0.000018 # 18us
 CTRL_BYTE_DELAY = 0.000005 # 18us
 CTRL_CLK = 0.000005 # 5us
-UPDATE_INTERVAL = 10000 # us --> 10ms
+UPDATE_INTERVAL = 50000 # us --> 50ms
 EXPIRED_INTERVAL = 1500000 # us --> 1,5s
 
 enter_config = (0x01,0x43,0x00,0x01,0x00)
@@ -231,7 +231,7 @@ class PS2X(object):
             self.__reconfig()
 
         if temp < UPDATE_INTERVAL: # us --> wait a little bit longer before read
-            time.sleep(0.01)
+            time.sleep(0.05)
             # return
         
         # get new data
