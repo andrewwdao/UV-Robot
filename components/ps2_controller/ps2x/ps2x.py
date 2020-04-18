@@ -18,14 +18,15 @@ PS2_CMD = 17 # BCM mode
 PS2_SEL = 27 # BCM mode
 PS2_CLK = 22 # BCM mode
 
-# CTRL_BYTE_DELAY = 0.000005 # 18us
 CTRL_BYTE_DELAY = 0.000005 # 18us
 CTRL_CLK = 0.000005 # 5us
-UPDATE_INTERVAL = 70000 # us --> 50ms
+UPDATE_INTERVAL = 70000.0 # us --> 50ms, must set .0 to make it a float
 EXPIRED_INTERVAL = 1500000 # us --> 1,5s
 
 enter_config = (0x01,0x43,0x00,0x01,0x00)
 set_mode_analog = (0x01,0x44,0x00,0x01,0x03,0x00,0x00,0x00,0x00)
+# Controller defaults to digital mode and only transmits the on / off status of the buttons in the 4th and 5th byte.
+# No joystick data, pressure or vibration control capabilities.
 set_mode_digital = (0x01,0x44,0x00,0x00,0x03,0x00,0x00,0x00,0x00)
 set_bytes_large = (0x01,0x4F,0x00,0xFF,0xFF,0x03,0x00,0x00,0x00)
 exit_config = (0x01,0x43,0x00,0x00,0x5A,0x5A,0x5A,0x5A,0x5A)
@@ -81,8 +82,7 @@ class PS2X(object):
         GPIO.setup(self.sel, GPIO.OUT)
         GPIO.setup(self.clk, GPIO.OUT, initial=GPIO.HIGH)
         self.last_millis = datetime.now().microsecond
-        # self.read_delay_s = 0.005 # 1ms
-        self._ps2data = [0]*21
+        self._ps2data = [0]*21 # full data frame
         self.last_buttons = 0
         self.buttons = 0
 
@@ -116,9 +116,9 @@ class PS2X(object):
         watchdog = datetime.now().second
         while True:
             # read gamepad to see if it's talking
-            self.update()
+            self.__getData(self.data_request)
         
-            print(self._ps2data)
+            print('0x42: ', self._ps2data)
             # see if mode came back. 
             # If still anything but 41, 73 or 79, then it's not talking
             if (self._ps2data[1] == 0x41 or
@@ -134,18 +134,7 @@ class PS2X(object):
         self.__sendCommand(enter_config) # start config run
         
         self.__getData(type_read)
-        # time.sleep(CTRL_BYTE_DELAY)
-        # GPIO.output(self.cmd, GPIO.HIGH) # CMD_SET
-        # GPIO.output(self.clk, GPIO.HIGH) # CLK_SET
-        # GPIO.output(self.sel, GPIO.LOW)  # SEL_CLR - enable joystick
-        # time.sleep(CTRL_BYTE_DELAY)
-
-        # __data = [0]*9
-        # for i in range(0,9):
-        #     __data[i] = self.__shiftinout(type_read[i]) # get status info of the controller
-
-        # GPIO.output(self.sel, GPIO.HIGH) # SEL_SET - disable joystick
-
+        
         print('0x45: ', self._ps2data)
         if self._ps2data[0:3] == [0xFF,0xF3,0x5A]: # if package header is correct 
             controller_type = self._ps2data[3] # this is exactly what we want
@@ -160,7 +149,7 @@ class PS2X(object):
         self.__sendCommand(exit_config)
 
         # ------- Done first config, now check response of the system
-        self.update() # read to see if new data is comming
+        self.__getData(self.data_request) # read to see if new data is comming
 
         if self.en_Pressures:
             if self._ps2data[1] == 0x79:
@@ -204,14 +193,13 @@ class PS2X(object):
     def __chk(self, x, y):
         return x&(1<<y)
     
-    def __sendCommand(self, string):
+    def __sendCommand(self, command):
         GPIO.output(self.sel, GPIO.LOW)  # SEL_CLR - enable joystick
         time.sleep(CTRL_BYTE_DELAY)
-        for y in range(0,len(string)):
-            self.__shiftinout(string[y])
+        for y in range(0,len(command)):
+            self.__shiftinout(command[y])
         GPIO.output(self.sel, GPIO.HIGH) # SEL_SET - disable joystick
         time.sleep(CTRL_BYTE_DELAY)
-        # time.sleep(self.read_delay_s)
 
     def __reconfig(self):
         self.__sendCommand(enter_config)
@@ -260,39 +248,24 @@ class PS2X(object):
                 self._ps2data[x+9] = self.__shiftinout(0)
         
         GPIO.output(self.sel, GPIO.HIGH) # SEL_SET - disable joystick
-
+        time.sleep(CTRL_BYTE_DELAY)
 
     def update(self):
         temp = datetime.now().microsecond - self.last_millis
 
         if temp > EXPIRED_INTERVAL: # us --> waited too long
+            print("Waited too long. Try to reset...")
             self.__reconfig()
 
         if temp < UPDATE_INTERVAL: # us --> wait a little bit longer before read
-            time.sleep(0.08)
-            # return
+            time.sleep(UPDATE_INTERVAL/1000000) # transfer to second, becareful, UPDATE_INTERVAL has to be float
         
         self.__getData(self.data_request)
-        # # get new data
-        # GPIO.output(self.cmd, GPIO.HIGH) # CMD_SET
-        # GPIO.output(self.clk, GPIO.HIGH) # CLK_SET
-        # GPIO.output(self.sel, GPIO.LOW)  # SEL_CLR - enable joystick
-        # time.sleep(CTRL_BYTE_DELAY)
-    
-        # # Send the command to get button and joystick data;
-        # for x in range(0,9):
-        #     self._ps2data[x] = self.__shiftinout(self.command[x])
-
-        # # if controller is in full data return mode, get the rest of the data
-        # if self._ps2data[1] == 0x79:
-        #     for x in range(0,12):
-        #         self._ps2data[x+9] = self.__shiftinout(0)
         
-        # GPIO.output(self.sel, GPIO.HIGH) # SEL_SET - disable joystick
-
         # Check to see if we received valid data or not.  
         # We should be in analog mode for our data to be valid (analog == 0x7_)
         if (self._ps2data[1] & 0xf0) != 0x70:
+            print(self._ps2data[1])
             print("Not valid data received. Try to recover...")
             self._ps2data = [0]*21 # if not valid, then reset the whole frame
             # If we got here, we are not in analog mode, try to recover...
@@ -300,19 +273,15 @@ class PS2X(object):
             self.__reconfig() # try to get back into Analog mode.
             return 
         
-        # # If we get here and still not in analog mode (=0x7_), try increasing the read_delay...
-        # if (self._ps2data[1] & 0xf0) != 0x70:
-        #     if self.read_delay_s < 0.010: # 10ms
-        #         self.read_delay_s += 0.001   # see if this helps out...
-
         # store the previous buttons states
         self.last_buttons = self.buttons 
 
-        #store as one value for multiple functions
+        # byte 4 and 5 of the data is the status of all buttons
+        # store as one value
         self.buttons = (self._ps2data[4] << 8) + self._ps2data[3]
 
         self.last_millis = datetime.now().microsecond
-        return  # True --> OK = analog mode - 0 --> NOT OK
+        return
 
     def changed(self): # will be TRUE if any button changes state (on to off, or off to on)
         return (self.last_buttons^self.buttons)>0
