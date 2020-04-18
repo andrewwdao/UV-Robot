@@ -18,10 +18,10 @@ PS2_CMD = 17 # BCM mode
 PS2_SEL = 27 # BCM mode
 PS2_CLK = 22 # BCM mode
 
-CTRL_BYTE_DELAY = 0.000018 # 18us
 # CTRL_BYTE_DELAY = 0.000005 # 18us
+CTRL_BYTE_DELAY = 0.000005 # 18us
 CTRL_CLK = 0.000005 # 5us
-UPDATE_INTERVAL = 80000 # us --> 50ms
+UPDATE_INTERVAL = 70000 # us --> 50ms
 EXPIRED_INTERVAL = 1500000 # us --> 1,5s
 
 enter_config = (0x01,0x43,0x00,0x01,0x00)
@@ -76,7 +76,7 @@ class PS2X(object):
         GPIO.setup(self.sel, GPIO.OUT)
         GPIO.setup(self.clk, GPIO.OUT, initial=GPIO.HIGH)
         self.last_millis = datetime.now().microsecond
-        self.read_delay_s = 0.005 # 1ms
+        # self.read_delay_s = 0.005 # 1ms
         self._ps2data = [0]*21
         self.last_buttons = 0
         self.buttons = 0
@@ -256,8 +256,8 @@ class PS2X(object):
             print("Not valid data received. Try to recover...")
             self._ps2data = [0]*21 # if not valid, then reset the whole frame
             # If we got here, we are not in analog mode, try to recover...
+            time.sleep(0.07)
             self.__reconfig() # try to get back into Analog mode.
-            time.sleep(self.read_delay_s)
             return 
         
         # # If we get here and still not in analog mode (=0x7_), try increasing the read_delay...
