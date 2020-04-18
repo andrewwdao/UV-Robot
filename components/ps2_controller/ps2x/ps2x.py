@@ -33,10 +33,10 @@ type_read = (0x01,0x45,0x00,0x5A,0x5A,0x5A,0x5A,0x5A,0x5A)
 
 # DualShock analog slot number
 analogSlot = {
-         5 : 5
-         6 : 6
-         7 : 7
-         8 : 8
+         5 : 5,
+         6 : 6,
+         7 : 7,
+         8 : 8,
     0x0010 : 11, # UP
     0x0020 : 9,  # RIGHT
     0x0040 : 12, # DOWN
