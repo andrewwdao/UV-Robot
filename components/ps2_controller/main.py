@@ -19,7 +19,9 @@ try:
     if ps2.changed(): # check if any button is changed
       if ps2.pressed(ps2.START):
         print("Start is pressed once")
-      if ps2.isPressing(ps2.START):
+    if ps2.pressed(ps2.START):
+        print("Start is pressed once")
+    if ps2.isPressing(ps2.START):
         print("Start is pressing")
 
 except KeyboardInterrupt:
