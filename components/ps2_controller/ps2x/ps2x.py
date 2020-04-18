@@ -109,7 +109,7 @@ class PS2X(object):
         self.command = [0x01,0x42,0,False,0x00,0,0,0,0]
 
         # read gamepad to see if it's talking
-        time.sleep(UPDATE_INTERVAL) # need to do this to overcome first init
+        time.sleep(0.01) # need to do this to overcome first init
         self.update()
         
         # see if mode came back. 
