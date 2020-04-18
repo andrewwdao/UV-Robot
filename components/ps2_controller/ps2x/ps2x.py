@@ -33,6 +33,10 @@ type_read = (0x01,0x45,0x00,0x5A,0x5A,0x5A,0x5A,0x5A,0x5A)
 
 # DualShock analog slot number
 analogSlot = {
+         5 : 5
+         6 : 6
+         7 : 7
+         8 : 8
     0x0010 : 11, # UP
     0x0020 : 9,  # RIGHT
     0x0040 : 12, # DOWN
@@ -145,14 +149,14 @@ class PS2X(object):
         # ------- Done first config, now check response of the system
         self.update() # read to see if new data is comming
 
-        # if self.en_Pressures:
-        #     if self._ps2data[1] == 0x79:
-        #         print("Entered Pressures mode")
-        #     if self._ps2data[1] == 0x73:
-        #         print("Controller refusing to enter Pressures mode, may not support it.")
+        if self.en_Pressures:
+            if self._ps2data[1] == 0x79:
+                print("Entered Pressures mode")
+            if self._ps2data[1] == 0x73:
+                print("Controller refusing to enter Pressures mode, may not support it.")
 
-        # if self._ps2data[1] != 0x79 and self._ps2data[1] != 0x73:
-        #     raise Exception("Controller found but not accepting commands.")
+        if self._ps2data[1] != 0x79 and self._ps2data[1] != 0x73:
+            raise Exception("Controller found but not accepting commands.")
 
         print("Configured successful. Controller:")
         if controller_type == 0x03:

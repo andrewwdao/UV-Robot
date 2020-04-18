@@ -9,7 +9,6 @@
  --------------------------------------------------------------"""
 from ps2x import ps2
 import time
-PWM_STEP = 20 # must be multiple of 10
 
 try:
   while True:
@@ -33,6 +32,7 @@ try:
       print("RIGHT is pressing this hard: ", ps2.analogRead(ps2.RIGHT))
     if ps2.isPressing(ps2.LEFT):
       print("LEFT is pressing this hard: ", ps2.analogRead(ps2.LEFT))
+    print("X: ", ps2.analogRead(ps2.L_STICK_X), "Y: ", ps2.analogRead(ps2.L_STICK_Y))
 
 except KeyboardInterrupt:
   pass
