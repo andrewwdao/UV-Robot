@@ -158,7 +158,7 @@ class PS2X(object):
                 print("Controller refusing to enter Pressures mode, may not support it.")
 
         if self._ps2data[1] != 0x79 and self._ps2data[1] != 0x73:
-            print(self._ps2data[1])
+            print(self._ps2data)
             raise Exception("Controller found but not accepting commands.")
 
         print("Configured successful. Controller:")
