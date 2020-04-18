@@ -231,8 +231,8 @@ class PS2X(object):
             self.__reconfig()
 
         if temp < UPDATE_INTERVAL: # us --> wait a little bit longer before read
-            # time.sleep(self.read_delay_s - float(float(temp)/1000000))
-            return
+            time.sleep(0.01)
+            # return
         
         # get new data
         GPIO.output(self.cmd, GPIO.HIGH) # CMD_SET
