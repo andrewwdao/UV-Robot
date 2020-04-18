@@ -21,7 +21,7 @@ PS2_CLK = 22 # BCM mode
 # CTRL_BYTE_DELAY = 0.000018 # 18us
 CTRL_BYTE_DELAY = 0.000005 # 18us
 CTRL_CLK = 0.000005 # 5us
-UPDATE_INTERVAL = 70000 # us --> 50ms
+UPDATE_INTERVAL = 30000 # us --> 50ms
 EXPIRED_INTERVAL = 1500000 # us --> 1,5s
 
 enter_config = (0x01,0x43,0x00,0x01,0x00)
@@ -109,7 +109,6 @@ class PS2X(object):
         self.command = [0x01,0x42,0,False,0x00,0,0,0,0]
 
         # read gamepad to see if it's talking
-        # time.sleep(0.07) # need to do this to overcome first init
         self.update()
         
         # see if mode came back. 
@@ -231,7 +230,7 @@ class PS2X(object):
             self.__reconfig()
 
         if temp < UPDATE_INTERVAL: # us --> wait a little bit longer before read
-            time.sleep(0.07)
+            time.sleep(0.03)
             # return
         
         # get new data
