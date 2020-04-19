@@ -40,9 +40,9 @@ LIBS =                                                                     \
 ###############################################################################
 # DEFINES
 ###############################################################################
-CFLAGS  = -lwiringPi -lpthread -lrt  -Wall -O -I$(IDIR)                            \
+CFLAGS  = -l wiringPi -lpthread -lrt  -Wall -O2 -pipe -I$(IDIR)                              \
 
-$(ODIR)/%.o: %.c $(DEPS)
+$(ODIR)/%.o: %.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 ps2x: $(OBJ)
