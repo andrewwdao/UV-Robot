@@ -14,10 +14,8 @@ apt-get upgrade -y
 apt-get install wiringpi -y
 # load the SPI drivers into the kernel # https://www.raspberrypi.org/documentation/hardware/raspberrypi/spi/README.md
 									   # http://wiringpi.com/reference/spi-library/
-# check if the phrase "dtparam=spi=on" has been uncommented in the file or not
-if [ 0 -eq $( grep -c '#dtparam=spi=on' /boot/config.txt ) ]; then
-	sed -i '/dtparam=spi=on/s/^#//g' /boot/config.txt
-fi
+# uncomment "dtparam=spi=on" (already taken into account multiple leading #) ref: https://stackoverflow.com/questions/24889346/how-to-uncomment-a-line-that-contains-a-specific-string-using-sed/24889374
+sed -i '/dtparam=spi=on/s/^#*//g' /boot/config.txt
 
 
 echo "Please reboot to make SPI enable."

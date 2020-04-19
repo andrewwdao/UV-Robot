@@ -14,6 +14,7 @@ apt-get upgrade -y
 apt-get install python3-serial -y
 # check if the phrase "enable_uart=1" existed in the file or not
 if [ 0 -eq $( grep -c 'enable_uart=1' /boot/config.txt ) ]; then
+	# if not exist this phrase, then add it
 	echo "enable_uart=1" | tee -a /boot/config.txt
 fi
 
