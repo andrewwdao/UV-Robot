@@ -16,6 +16,11 @@
  *  -1 D1-pin: GPIO pin for data1 pulse (wiringPi pin)
  *
  -------------------------------------------------------------- */
+#include <time.h>
+#include <unistd.h>
+#include <memory.h>
+#include <sys/time.h>
+#include <signal.h>
 #include "pi_ps2x.h"
 
 // --- Defaults, change with command-line options
