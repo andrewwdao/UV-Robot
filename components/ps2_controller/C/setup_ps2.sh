@@ -18,6 +18,8 @@ apt-get install wiringpi -y
 sed -i '/dtparam=spi=on/s/^#*\s*//g' /boot/config.txt
 
 
+echo
+echo
 echo "Please reboot to make SPI enable."
 
 ## (c) 2020 Minh-An Dao. All right reserved
