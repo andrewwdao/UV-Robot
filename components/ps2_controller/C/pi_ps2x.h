@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <math.h>
+#include <string.h>
 #include <wiringPi.h>
 #include <wiringPiSPI.h>
 
@@ -40,13 +41,14 @@ class PS2X {
 
     
   private:
-    byte* __shiftout(byte*); // performs a simultaneous write/read transaction over the selected SPI bus
+    void __shiftout(byte*); // performs a simultaneous write/read transaction over the selected SPI bus
 
     byte spi_channel;
     int spi_speed;
     bool en_analog;
     bool en_pressure;
     bool en_rumble;
+    byte* message;
     
 };
 #endif //__PI_PS2X_H

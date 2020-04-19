@@ -110,7 +110,7 @@ byte data_frame[] = {0x01,0x42,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 //--------------------------------------------------------------
 // FUNCTION DEFINITIONS
 //--------------------------------------------------------------
-PS2X::PS2X(int channel = SPI_CHANNEL, int speed = SPI_SPEED, bool analog_enable, bool pressure_enable, bool rumble_enable)
+PS2X::PS2X(int channel = SPI_CHANNEL, int speed = SPI_SPEED, bool analog_enable = true, bool pressure_enable = false, bool rumble_enable = false)
 {
     /*
         Constructor
@@ -138,7 +138,7 @@ PS2X::PS2X(int channel = SPI_CHANNEL, int speed = SPI_SPEED, bool analog_enable,
     {
         // begin sending request to the read gamepad
         // to see if it's responding or not
-        byte* message = this->__shiftout(begin_request);
+        this->__shiftout(begin_request);
 
         /*All mode:
             0x41: Digital mode with ONE 16 bit words (2 bytes) follow the header.
@@ -160,9 +160,9 @@ PS2X::PS2X(int channel = SPI_CHANNEL, int speed = SPI_SPEED, bool analog_enable,
         */
             
         //check if valid mode came back.
-        if (message[1] == 0x41 || message[1] == 0x73 ||
-            message[1] == 0x79 || message[1] == 0xF1 ||
-            message[1] == 0xF3 || message[1] == 0xF9 )
+        if (this->message[1] == 0x41 || this->message[1] == 0x73 ||
+            this->message[1] == 0x79 || this->message[1] == 0xF1 ||
+            this->message[1] == 0xF3 || this->message[1] == 0xF9 )
         {break;}
         
         if ((millis() - watchdog) > 1000) // one second to connect, if not connected then raise error
@@ -177,31 +177,31 @@ PS2X::PS2X(int channel = SPI_CHANNEL, int speed = SPI_SPEED, bool analog_enable,
 
     // --- get controller type
     byte controller_type = 0xFF;
-    byte* message = this->__shiftout(type_read);
+    this->__shiftout(type_read);
     // if package header is correct [0xFF,0xF1-0xF3-0xF9,0x5A]
-    if ((message[0] == 0xFF) && (message[2] == 0x5A))
-        {controller_type = message[3];} // this is exactly what we want
+    if ((this->message[0] == 0xFF) && (this->message[2] == 0x5A))
+        {controller_type = this->message[3];} // this is exactly what we want
 
     // --- config the controller as we want
     this->__shiftout(set_mode_analog);
-    if (en_rumble)   {this->__shiftout(enable_rumble);}
-    if (en_pressure) {this->__shiftout(enable_pressure);}
+    if (this->en_rumble)   {this->__shiftout(enable_rumble);}
+    if (this->en_pressure) {this->__shiftout(enable_pressure);}
     this->__shiftout(exit_config);
 
     // ------- Done first config, now check response of the system
-    unsigned int watchdog = millis();
+    watchdog = millis();
     while (1)
     {
-        byte* message = this->__shiftout(data_frame); // read to see if new data is comming
+        this->__shiftout(data_frame); // read to see if new data is comming
 
-        if ((message[1] & 0xf0) == 0x70) {
+        if ((this->message[1] & 0xf0) == 0x70) {
             printf("Analog Mode");
-            if (en_pressures) {
-                if (message[1] == 0x79) {printf("Pressures mode");}
-                if (message[1] == 0x73) {printf("Controller refusing to enter Pressures mode, may not support it.");}
+            if (this->en_pressure) {
+                if (this->message[1] == 0x79) {printf("Pressures mode");}
+                if (this->message[1] == 0x73) {printf("Controller refusing to enter Pressures mode, may not support it.");}
                 break;
             }
-        } else if (message[1] == 0x41) {printf("Digital Mode"); break;}
+        } else if (this->message[1] == 0x41) {printf("Digital Mode"); break;}
         
         if ((millis() - watchdog) > 1000) // one second to connect, if not connected then raise error
         {
@@ -211,13 +211,12 @@ PS2X::PS2X(int channel = SPI_CHANNEL, int speed = SPI_SPEED, bool analog_enable,
     }//end while
 
     printf("Configured successful. Controller:");
-    if      (controller_type == 0x03) {print("DualShock");}
-    else if (controller_type == 0x01) {print("GuitarHero (Not supported yet)");}
-    else if (controller_type == 0x0C) {print("2.4G Wireless DualShock");}
-    else if (controller_type == 0xFF) {print("Wrong package header. Please check again");}
-    else                              {print("Unknown type");}
+    if      (controller_type == 0x03) {printf("DualShock");}
+    else if (controller_type == 0x01) {printf("GuitarHero (Not supported yet)");}
+    else if (controller_type == 0x0C) {printf("2.4G Wireless DualShock");}
+    else if (controller_type == 0xFF) {printf("Wrong package header. Please check again");}
+    else                              {printf("Unknown type");}
 
-    return 0;
 }//end constructor
 
 PS2X::~PS2X()
@@ -225,15 +224,17 @@ PS2X::~PS2X()
 
 }//end destructor
 
-byte* PS2X::__shiftout(byte* command)
+void PS2X::__shiftout(byte* command)
 {
-    byte message[sizeof(command)];
-    memcpy(command, message, sizeof(command));
-    wiringPiSPIDataRW (spi_channel, message, sizeof(message));
+    byte mes[sizeof(command)];
+    memcpy(command, mes, sizeof(command));
+    wiringPiSPIDataRW (spi_channel, mes, sizeof(mes));
+    memcpy(message, this->message, sizeof(command));
     printf("Received: ");
-    for (int i=0;i<sizeof(message);i++) {printf("%02X", *(message+i));}
+    for (unsigned int i=0;i<sizeof(message);i++) {printf("%02X", *(message+i));}
     printf("\n");
-    return message;
+
+    return;
 }//end __shiftout
 
 #endif //__PI_PS2X_CPP
