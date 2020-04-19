@@ -12,8 +12,9 @@ apt-get upgrade -y
 
 # Pyserial package install  ## https://pyserial.readthedocs.io/en/latest/shortintro.html#opening-serial-ports
 apt-get install python3-serial -y
-if [ 0 -eq $( grep -c 'enable_uart = 1' /boot/config.txt ) ]; then # check if the phrase "enable_uart = 1" existed in the file or not
-	echo "enable_uart = 1" | tee -a /boot/config.txt
+# check if the phrase "enable_uart=1" existed in the file or not
+if [ 0 -eq $( grep -c 'enable_uart=1' /boot/config.txt ) ]; then
+	echo "enable_uart=1" | tee -a /boot/config.txt
 fi
 
 # show all usb plugged in
