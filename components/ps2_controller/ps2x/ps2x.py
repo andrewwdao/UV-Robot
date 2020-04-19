@@ -181,20 +181,25 @@ class PS2X(object):
         self.__sendCommand(exit_config)
 
         # ------- Done first config, now check response of the system
-        self.__getData(self.data_request) # read to see if new data is comming
+        watchdog = datetime.now().second
+        while True:
+            self.__getData(self.data_request) # read to see if new data is comming
 
-        if (self._ps2data[1] & 0xf0) == 0x70:
-            print("Analog Mode")
-            if self.en_Pressures:
-                if self._ps2data[1] == 0x79:
-                    print("Pressures mode")
-                if self._ps2data[1] == 0x73:
-                    print("Controller refusing to enter Pressures mode, may not support it.")
-        elif self._ps2data[1] == 0x41:
-            print("Digital Mode")
-        else: # not a recognizable mode
-            print("Unrecognized message:", self._ps2data)
-            raise Exception("Controller found but not in an recognizable mode")
+            if (self._ps2data[1] & 0xf0) == 0x70:
+                print("Analog Mode")
+                if self.en_Pressures:
+                    if self._ps2data[1] == 0x79:
+                        print("Pressures mode")
+                    if self._ps2data[1] == 0x73:
+                        print("Controller refusing to enter Pressures mode, may not support it.")
+                break
+            elif self._ps2data[1] == 0x41:
+                print("Digital Mode")
+                break
+            
+            if (datetime.now().second - watchdog) > 1: # one second to connect, if not connected then raise error
+                print("Unrecognized mode:", self._ps2data)
+                raise Exception("Controller found but not in an recognizable mode")
 
         print("Configured successful. Controller:")
         if controller_type == 0x03:
