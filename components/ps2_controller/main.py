@@ -12,7 +12,6 @@ import time
 
 try:
   while True:
-    # time.sleep(0.05) # 50ms
     ps2.update()
 
     # if ps2.changed(): # check if any button is changed

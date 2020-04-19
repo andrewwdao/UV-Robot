@@ -23,15 +23,21 @@ CTRL_CLK = 0.000005 # 5us
 UPDATE_INTERVAL = 70000.0 # us --> 50ms, must set .0 to make it a float
 EXPIRED_INTERVAL = 1500000 # us --> 1,5s
 
-enter_config = (0x01,0x43,0x00,0x01,0x00)
-set_mode_analog = (0x01,0x44,0x00,0x01,0x03,0x00,0x00,0x00,0x00)
-# Controller defaults to digital mode and only transmits the on / off status of the buttons in the 4th and 5th byte.
+# ====================== Modes ========================
+# Controller defaults to digital mode (0x41)
+# It will only transmits the on / off status of the buttons in the 4th and 5th byte.
 # No joystick data, pressure or vibration control capabilities.
+begin_request    = (0x01,0x42,0x00,0x00,0x00)
+enter_config     = (0x01,0x43,0x00,0x01,0x00)
+# Once in config / escape mode, all packets will have 9 bytes (6 bytes of command / data after the header).
+type_read        = (0x01,0x45,0x00,0x5A,0x5A,0x5A,0x5A,0x5A,0x5A)
+set_mode_analog  = (0x01,0x44,0x00,0x01,0x03,0x00,0x00,0x00,0x00)
 set_mode_digital = (0x01,0x44,0x00,0x00,0x03,0x00,0x00,0x00,0x00)
-set_bytes_large = (0x01,0x4F,0x00,0xFF,0xFF,0x03,0x00,0x00,0x00)
-exit_config = (0x01,0x43,0x00,0x00,0x5A,0x5A,0x5A,0x5A,0x5A)
-enable_rumble = (0x01,0x4D,0x00,0x00,0x01)
-type_read = (0x01,0x45,0x00,0x5A,0x5A,0x5A,0x5A,0x5A,0x5A)
+enable_pressure  = (0x01,0x4F,0x00,0xFF,0xFF,0x03,0x00,0x00,0x00)
+enable_rumble    = (0x01,0x4D,0x00,0x00,0x01,0xFF,0xFF,0xFF,0xFF)
+exit_config      = (0x01,0x43,0x00,0x00,0x5A,0x5A,0x5A,0x5A,0x5A)
+
+
 
 # DualShock analog slot number
 analogSlot = {
@@ -59,7 +65,13 @@ class PS2X(object):
 
     """
 
-    def __init__(self, dat = PS2_DAT, cmd = PS2_CMD, sel = PS2_SEL, clk = PS2_CLK, press = False, rumble = False):
+    def __init__(self, dat = PS2_DAT,
+                       cmd = PS2_CMD,
+                       sel = PS2_SEL,
+                       clk = PS2_CLK,
+                       analog = True,
+                       press = False,
+                       rumble = False):
         """
         Constructor
         @param dat: an integer indicates the data pin of the PS2
@@ -73,6 +85,7 @@ class PS2X(object):
         self.cmd = cmd
         self.sel = sel
         self.clk = clk
+        self.analog = analog
         self.en_Pressures = press
         self.en_Rumble = rumble     
 
@@ -115,10 +128,11 @@ class PS2X(object):
 
         watchdog = datetime.now().second
         while True:
-            # read gamepad to see if it's talking
-            self.__getData(self.data_request)
+            # begin sending request to the read gamepad
+            # to see if it's responding or not
+            self.__getData(begin_request)
         
-            print('Command 0x42: ', self._ps2data)
+            print('0x42: ', self._ps2data)
             '''
             All mode: self._ps2data[1]
             0x41: Digital mode with ONE 16 bit words (2 bytes) follow the header.
@@ -149,8 +163,8 @@ class PS2X(object):
         # ------ entering config mode
         self.__sendCommand(enter_config) # start config run
         
+        # --- get controller type
         self.__getData(type_read)
-        
         print('0x45: ', self._ps2data)
         # if package header is correct [0xFF,0xF1-0xF3-0xF9,0x5A]
         if (self._ps2data[0] == 0xFF) and (self._ps2data[2] == 0x5A):
@@ -158,25 +172,29 @@ class PS2X(object):
         else: # package header is wrong
             controller_type = 0xFF # tell the system that something is wrong
 
+        # --- config the controller as we want
         self.__sendCommand(set_mode_analog)
         if self.en_Rumble:
             self.__sendCommand(enable_rumble)
         if self.en_Pressures:
-            self.__sendCommand(set_bytes_large)
+            self.__sendCommand(enable_pressure)
         self.__sendCommand(exit_config)
 
         # ------- Done first config, now check response of the system
         self.__getData(self.data_request) # read to see if new data is comming
 
-        if self.en_Pressures:
-            if self._ps2data[1] == 0x79:
-                print("Entered Pressures mode")
-            if self._ps2data[1] == 0x73:
-                print("Controller refusing to enter Pressures mode, may not support it.")
-
-        if self._ps2data[1] != 0x79 and self._ps2data[1] != 0x73:
-            print(self._ps2data)
-            raise Exception("Controller found but not accepting commands.")
+        if (self._ps2data[1] & 0xf0) == 0x70:
+            print("Analog Mode")
+            if self.en_Pressures:
+                if self._ps2data[1] == 0x79:
+                    print("Pressures mode")
+                if self._ps2data[1] == 0x73:
+                    print("Controller refusing to enter Pressures mode, may not support it.")
+        elif self._ps2data[1] == 0x41:
+            print("Digital Mode")
+        else: # not a recognizable mode
+            print("Unrecognized message:", self._ps2data)
+            raise Exception("Controller found but not in an recognizable mode")
 
         print("Configured successful. Controller:")
         if controller_type == 0x03:
@@ -245,7 +263,7 @@ class PS2X(object):
         if self.en_Rumble:
             self.__sendCommand(enable_rumble)
         if self.en_Pressures:
-            self.__sendCommand(set_bytes_large)
+            self.__sendCommand(enable_pressure)
         self.__sendCommand(exit_config)
 
 
@@ -282,25 +300,38 @@ class PS2X(object):
         self.__getData(self.data_request)
         
         # Check to see if we received valid data or not.  
-        # We should be in analog mode for our data to be valid (analog == 0x7_)
-        if (self._ps2data[1] & 0xf0) != 0x70:
-            print(self._ps2data[1])
-            print("Not valid data received. Try to recover...")
+        # We should be in digital mode (0x41) or analog mode (0x73, 0x79)
+        if [0x41,0x73,0x79].count(self._ps2data[1]):
+            # store the previous buttons states before get the new one
+            self.last_buttons = self.buttons 
+            # byte 4 and 5 of the data is the status of all buttons
+            # store as one variable
+            self.buttons = (self._ps2data[4] << 8) + self._ps2data[3]
+            self.last_millis = datetime.now().microsecond
+        # Check if we are in config mode (0xFx), if yes, reconfig to return to normal
+        elif [0xF1,0xF3,0xF9].count(self._ps2data[1]):
+            print("Getting out of config mode...")
             self._ps2data = [0]*21 # if not valid, then reset the whole frame
             # If we got here, we are not in analog mode, try to recover...
             time.sleep(0.07)
             self.__reconfig() # try to get back into Analog mode.
-            return 
+        else: # not good data received
+            print("Not valid header received: ", self._ps2data[0:3])
+            self._ps2data = [0]*21 # if not valid, then reset the whole frame
+            time.sleep(0.07) # stablize time
         
-        # store the previous buttons states before get the new one
-        self.last_buttons = self.buttons 
-
-        # byte 4 and 5 of the data is the status of all buttons
-        # store as one variable
-        self.buttons = (self._ps2data[4] << 8) + self._ps2data[3]
-
-        self.last_millis = datetime.now().microsecond
         return
+        
+        # if (self._ps2data[1] & 0xf0) != 0x70:
+        #     print(self._ps2data[1])
+        #     print("Not valid data received. Try to recover...")
+        #     self._ps2data = [0]*21 # if not valid, then reset the whole frame
+        #     # If we got here, we are not in analog mode, try to recover...
+        #     time.sleep(0.07)
+        #     self.__reconfig() # try to get back into Analog mode.
+        #     return 
+        
+        
 
     def changed(self): # will be TRUE if any button changes state (on to off, or off to on)
         return (self.last_buttons^self.buttons)>0
@@ -407,7 +438,7 @@ class PS2X(object):
     #         if self.en_Rumble:
     #             self.__sendCommand(enable_rumble)
     #         if self.en_Pressures:
-    #             self.__sendCommand(set_bytes_large)
+    #             self.__sendCommand(enable_pressure)
     #         self.__sendCommand(exit_config)
 
     #         self.update() # read to see if new data is comming
