@@ -275,7 +275,7 @@ class PS2X(object):
         time.sleep(CTRL_BYTE_DELAY)
     
         # Send the command to get button and joystick data
-        for x in range(0,9):
+        for x in range(0,len(command)):
             self._ps2data[x] = self.__shiftinout(command[x])
 
         # if controller is in full analog return mode
