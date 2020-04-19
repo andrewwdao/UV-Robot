@@ -64,7 +64,8 @@ int main(int argc, char *argv[]) {
     }//end while
 
     PS2X ps2(options.spi_channel,
-             options.spi_speed
+             options.spi_speed,
+			 0,0,0
               //options.debug,
             );
 
