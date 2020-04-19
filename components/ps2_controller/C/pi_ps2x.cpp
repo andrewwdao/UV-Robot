@@ -225,11 +225,11 @@ PS2X::~PS2X()
 }//end destructor
 
 void PS2X::__shiftout(byte* command)
-{
+{   
     byte mes[sizeof(command)];
-    memcpy(command, mes, sizeof(command));
+    memcpy(&mes, &command, sizeof(command));
     wiringPiSPIDataRW (spi_channel, mes, sizeof(mes));
-    memcpy(message, this->message, sizeof(command));
+    memcpy(&this->message, &mes, sizeof(command));
     printf("Received: ");
     for (unsigned int i=0;i<sizeof(message);i++) {printf("%02X", *(message+i));}
     printf("\n");
