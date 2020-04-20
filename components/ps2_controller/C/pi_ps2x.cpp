@@ -48,7 +48,7 @@
 // --- Defaults, change with command-line options
 // #define SPI_CHANNEL 0
 // #define SPI_SPEED   500000 //500kHz
-#define CTRL_BYTE_DELAY  50   //us
+#define CTRL_BYTE_DELAY  20   //us
 #define CTRL_CLK         5   //us
 #define UPDATE_INTERVAL  50  //ms
 #define EXPIRED_INTERVAL 1500 //ms
@@ -150,7 +150,6 @@ PS2X::PS2X(int Dat = PS2_DAT,
     this->en_rumble = rumble_enable;
     // printf("speed: %d\n",this->spi_speed);
     // printf("channel: %d\n",this->spi_channel);
-    this->last_millis = millis();
     this->last_buttons = 0;
     this->buttons = 0;
     
@@ -254,7 +253,7 @@ PS2X::PS2X(int Dat = PS2_DAT,
     else if (controller_type == 0x0C) {printf("2.4G Wireless DualShock\n");}
     else if (controller_type == 0xFF) {printf("\nWrong package header. Please check again\n");}
     else                              {printf("Unknown type\n");}
-
+    this->last_millis = millis(); // start counting now
 }//end constructor
 
 PS2X::~PS2X()
@@ -335,13 +334,13 @@ void PS2X::update(void)
     unsigned long now = millis() - this->last_millis;
 
     if (now>EXPIRED_INTERVAL) { //waited too long
-        printf("Waited too long. Try to reset...");
+        printf("Waited too long. Try to reset...\n");
         this->last_millis = millis();
         this->reconfig();
         return;
     }//end if
 
-    if (now<UPDATE_INTERVAL) {delay(UPDATE_INTERVAL);} //wait a little bit longer
+    if (now<UPDATE_INTERVAL) {delay(UPDATE_INTERVAL-now);} //wait a little bit longer
 
     this->__getData(data_frame,9);
 
