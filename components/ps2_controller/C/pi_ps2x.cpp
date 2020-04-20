@@ -110,8 +110,8 @@ byte data_frame[] = {0x01,0x42,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 #define CHK(x,y) (x & (1<<y))
 #define TOG(x,y) (x^=(1<<y))
 
-//https://stackoverflow.com/questions/10290610/how-can-i-find-the-number-of-elements-in-an-array
-#define NUM(a) (sizeof(a) / sizeof(*a)) 
+//https://www.tutorialspoint.com/find-size-of-array-in-c-cplusplus-without-using-sizeof
+#define NUM(a) (*(&a + 1) - a) 
 // ------ Private function prototypes -------------------------
 
 // ------ Private variables -----------------------------------
@@ -290,7 +290,7 @@ int PS2X::__sendCommand(byte* command)
     digitalWrite(this->sel, LOW); // SEL_CLR - enable joystick
     delayMicroseconds(CTRL_BYTE_DELAY);
     printf("Comand sent: ");
-    for (unsigned int y=0;y<NUM(command);y++) 
+    for (unsigned int y=0;y< NUM(command);y++) 
     {printf("0x%02X ", *(command+y));this->__shiftout(*(command+y));}
     printf("\n");
     digitalWrite(this->sel, HIGH); // SEL_SET - disable joystick
