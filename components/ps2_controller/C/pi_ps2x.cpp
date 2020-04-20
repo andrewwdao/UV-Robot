@@ -352,13 +352,13 @@ void PS2X::update(void)
     } else if ((this->ps2data[1]&0xF0) == 0xF0) { //Check if we are in config mode (0xFx), if yes, reconfig to return to normal
         printf("We are in config mode. Getting out of config mode...\n");
         for (unsigned int x=0;x<21;x++) {this->ps2data[x] = 0;} //if not valid, then reset the whole frame 
-        this->__reconfig(); // try to get back into Analog mode.
+        this->reconfig(); // try to get back into Analog mode.
     } else {//not good data received
         printf("Not valid header received: 0x%02X 0x%02X 0x%02X\n", this->ps2data[0],this->ps2data[1], this->ps2data[2]);
         for (unsigned int x=0;x<21;x++) {this->ps2data[x] = 0;} //if not valid, then reset the whole frame 
         delay(UPDATE_INTERVAL);
     }// end if else
-    return
+    return;
 }//end update
 
 bool PS2X::changed(void) {return (this->last_buttons^this->buttons)>0;}
