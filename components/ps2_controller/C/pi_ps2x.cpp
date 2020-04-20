@@ -287,7 +287,7 @@ int PS2X::__sendCommand(byte* command)
 {
     digitalWrite(this->sel, LOW); // SEL_CLR - enable joystick
     delayMicroseconds(CTRL_CLK);
-    for (unsigned int y=0;y<sizeof(command);y++) {this->__shiftout(*(command+y))}
+    for (unsigned int y=0;y<sizeof(command);y++) {this->__shiftout(*(command+y));}
     digitalWrite(this->sel, HIGH); // SEL_SET - disable joystick
     delayMicroseconds(CTRL_CLK);
     return 0;
