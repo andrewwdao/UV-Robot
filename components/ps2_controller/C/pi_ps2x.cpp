@@ -237,7 +237,7 @@ PS2X::PS2X(int Dat = PS2_DAT,
                 if (this->ps2data[1] == 0x73) {printf("Controller refusing to enter Pressures mode, may not support it.\n");}
             }//end if
             break;
-        } else if (this->ps2data[1] == 0x41) {printf("0x%02X",this->ps2data[1]);("Digital Mode\n"); break;}
+        } else if (this->ps2data[1] == 0x41) {printf("0x%02X",this->ps2data[1]);printf("Digital Mode\n"); break;}
         
         if ((millis() - watchdog) > 1000) // one second to connect, if not connected then raise error
         {
