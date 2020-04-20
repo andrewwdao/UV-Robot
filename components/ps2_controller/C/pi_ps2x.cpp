@@ -231,7 +231,7 @@ PS2X::~PS2X()
 
 void PS2X::__shiftout(byte* command)
 {   
-    uint8_t starter[1] = [0x01];
+    uint8_t starter[1] = {0x01};
     if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
 	{
 	  printf ("SPI failure: %s\n", strerror (errno)) ;
