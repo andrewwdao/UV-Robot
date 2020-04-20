@@ -239,7 +239,7 @@ void PS2X::__shiftout(byte* command)
 	  exit(1);
 	}
     printf("res: 0x%02X, ",*starter);
-    starter[1] = {0x42};
+    starter[0] = 0x42;
     printf("0x%02X, ",*starter);
     if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
 	{
@@ -247,7 +247,7 @@ void PS2X::__shiftout(byte* command)
 	  exit(1);
 	}
     printf("0x%02X, ",*starter);
-    starter[1] = {0x00};
+    starter[0] = 0x00;
     printf("0x%02X, ",*starter);
     if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
 	{
@@ -255,7 +255,7 @@ void PS2X::__shiftout(byte* command)
 	  exit(1);
 	}
     printf("0x%02X, ",*starter);
-    starter[1] = {0x00};
+    starter[0] = 0x00;
     printf("0x%02X, ",*starter);
     if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
 	{
@@ -263,7 +263,7 @@ void PS2X::__shiftout(byte* command)
 	  exit(1);
 	}
     printf("0x%02X, ",*starter);
-    starter[1] = {0x00};
+    starter[0] = 0x00;
     printf("0x%02X, ",*starter);
     if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
 	{
@@ -271,7 +271,7 @@ void PS2X::__shiftout(byte* command)
 	  exit(1);
 	}
     printf("0x%02X, ",*starter);
-    starter[1] = {0x00};
+    starter[0] = 0x00;
     printf("0x%02X, ",*starter);
     if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
 	{
@@ -279,7 +279,7 @@ void PS2X::__shiftout(byte* command)
 	  exit(1);
 	}
     printf("0x%02X, ",*starter);
-    starter[1] = {0x00};
+    starter[0] = 0x00;
     printf("0x%02X,",*starter);
     if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
 	{
@@ -287,7 +287,7 @@ void PS2X::__shiftout(byte* command)
 	  exit(1);
 	}
     printf("0x%02X,",*starter);
-    starter[1] = {0x00};
+    starter[0] = 0x00;
     printf("0x%02X,",*starter);
     if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
 	{
@@ -295,7 +295,7 @@ void PS2X::__shiftout(byte* command)
 	  exit(1);
 	}
     printf("0x%02X,",*starter);
-    starter[1] = {0x00};
+    starter[0] = 0x00;
     printf("0x%02X\n",*starter);
     if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
 	{
