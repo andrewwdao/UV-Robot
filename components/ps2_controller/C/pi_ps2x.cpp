@@ -116,7 +116,7 @@ PS2X::PS2X(int channel = SPI_CHANNEL, int speed = SPI_SPEED, bool analog_enable 
         Constructor
         @param analog_enable: a boolean indicates the analog mode of the PS2
         @param en_Pressures: a boolean indicates the pressure function of the PS2
-        @param en_Rumble: aa boolean indicates the rumble function of the PS2
+        @param en_Rumble: a boolean indicates the rumble function of the PS2
     */
     this->spi_channel = channel;
     this->spi_speed = speed;
@@ -128,7 +128,7 @@ PS2X::PS2X(int channel = SPI_CHANNEL, int speed = SPI_SPEED, bool analog_enable 
     
    //---------------------- Setup wiringPi -----------------------
     wiringPiSetup();
-    int error = wiringPiSPISetup(spi_channel, spi_speed);
+    int error = wiringPiSPISetup(this->spi_channel, this->spi_speed);
     if (error == -1) // if there are errors
     {
         fprintf(stderr, "Failed on connecting SPI\n");
@@ -167,7 +167,7 @@ PS2X::PS2X(int channel = SPI_CHANNEL, int speed = SPI_SPEED, bool analog_enable 
             this->message[1] == 0xF3 || this->message[1] == 0xF9 )
         {break;}
         
-        if ((millis() - watchdog) > 1000) // one second to connect, if not connected then raise error
+        if ((millis() - watchdog) > 500) // one second to connect, if not connected then raise error
         {
             fprintf(stderr, "No controller found, please check wiring again.\n"); //# no controller found, expected 0x41, 0x42, 0x73 or 0x79
             exit(1);
@@ -233,7 +233,7 @@ void PS2X::__shiftout(byte* command)
     memcpy(mes, command, sizeof(mes));
     printf("Sent: "); for (i=0;i<sizeof(mes);i++) {printf("0x%02X,", *(mes+i));}
     printf("\n");
-    wiringPiSPIDataRW (spi_channel, mes, sizeof(mes));
+    wiringPiSPIDataRW (this->spi_channel, mes, sizeof(mes));
     memcpy(this->message, mes, sizeof(mes));
     printf("Received: "); for (i=0;i<sizeof(this->message);i++) {printf("0x%02X,", *(this->message+i));}
     printf("\n");
