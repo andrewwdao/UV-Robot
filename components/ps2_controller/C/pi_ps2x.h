@@ -18,6 +18,7 @@
 #include <stdint.h>
 #include <math.h>
 #include <string.h>
+#include <errno.h>
 #include <wiringPi.h>
 #include <wiringPiSPI.h>
 
@@ -49,6 +50,7 @@ class PS2X {
     bool en_pressure;
     bool en_rumble;
     byte message[21] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    
+    static int myspi;
+
 };
 #endif //__PI_PS2X_H

@@ -58,7 +58,8 @@
 # It will only transmits the on / off status of the buttons in the 4th and 5th byte.
 # No joystick data, pressure or vibration control capabilities.
 */
-static byte begin_request[]    = {0x01,0x42,0x00,0x00,0x00};
+// static byte begin_request[]    = {0x01,0x42,0x00,0x00,0x00};
+static byte begin_request[]    = {0x01,0x42,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 static byte enter_config[]     = {0x01,0x43,0x00,0x01,0x00};
 // Once in config / escape mode, all packets will have 9 bytes (6 bytes of command / data after the header).
 static byte type_read[]        = {0x01,0x45,0x00,0x5A,0x5A,0x5A,0x5A,0x5A,0x5A};
@@ -128,12 +129,11 @@ PS2X::PS2X(int channel = SPI_CHANNEL, int speed = SPI_SPEED, bool analog_enable 
     
    //---------------------- Setup wiringPi -----------------------
     wiringPiSetup();
-    int error = wiringPiSPISetup(this->spi_channel, this->spi_speed);
-    if (error == -1) // if there are errors
+    if ((this->myspi = wiringPiSPISetup (this->spi_channel, this->spi_speed)) < 0)
     {
-        fprintf(stderr, "Failed on connecting SPI\n");
-        exit(1);
-    }//end if
+        fprintf (stderr, "Can't open the SPI bus: %s\n", strerror (errno)) ;
+        exit (EXIT_FAILURE) ;
+    }
     
     unsigned int watchdog = millis();
     while (1) 
@@ -223,7 +223,7 @@ PS2X::PS2X(int channel = SPI_CHANNEL, int speed = SPI_SPEED, bool analog_enable 
 
 PS2X::~PS2X()
 {
-
+    close(this->myspi);
 }//end destructor
 
 void PS2X::__shiftout(byte* command)
@@ -233,7 +233,11 @@ void PS2X::__shiftout(byte* command)
     memcpy(mes, command, sizeof(mes));
     printf("Sent: "); for (i=0;i<sizeof(mes);i++) {printf("0x%02X,", *(mes+i));}
     printf("\n");
-    wiringPiSPIDataRW (this->spi_channel, mes, sizeof(mes));
+    if (wiringPiSPIDataRW (this->spi_channel, mes, sizeof(mes)) == -1)
+	{
+	  printf ("SPI failure: %s\n", strerror (errno)) ;
+	  exit(1);
+	}
     memcpy(this->message, mes, sizeof(mes));
     printf("Received: "); for (i=0;i<sizeof(this->message);i++) {printf("0x%02X,", *(this->message+i));}
     printf("\n");

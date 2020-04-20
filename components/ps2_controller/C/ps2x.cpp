@@ -25,7 +25,7 @@
 
 // --- Defaults, change with command-line options
 #define SPI_CHANNEL 0
-#define SPI_SPEED   100 //500kHz
+#define SPI_SPEED   1000000 //500kHz
 
 struct option_s {
     int spi_channel;
@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
             );
 
     while (1) {
-        pause(); //pause to wait for ISR and not consuming system memory
+        //pause(); //pause to wait for ISR and not consuming system memory
     }//end while
 }//end main
 
