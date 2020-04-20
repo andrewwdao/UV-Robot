@@ -22,7 +22,6 @@
 #include <string.h>
 #include <errno.h>
 #include <wiringPi.h>
-#include <wiringPiSPI.h>
 
 // ------ Public constants ------------------------------------
 typedef unsigned char byte;
@@ -36,7 +35,7 @@ typedef unsigned char byte;
 //--------------------------------------------------------------
 class PS2X {
   public:
-    PS2X(int, int, bool, bool, bool); // constructor
+    PS2X(int, int, int, int, bool, bool, bool); // constructor
     ~PS2X();                // destructor
     // bool reconfig(bool, bool, bool); // reconfig the controller
     // void update(void); // very important function to put in the loop
@@ -44,15 +43,22 @@ class PS2X {
 
     
   private:
-    void __shiftout(byte*); // performs a simultaneous write/read transaction over the selected SPI bus
-
-    byte spi_channel;
-    int spi_speed;
+    byte __shiftout(byte); // performs a simultaneous write/read transaction over the selected SPI bus
+    int __sendCommand(byte*);
+    int __getData(byte*);
+    // byte spi_channel;
+    // int spi_speed;
+    int dat;
+    int cmd;
+    int sel;
+    int clk;
     bool en_analog;
     bool en_pressure;
     bool en_rumble;
-    byte message[21] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    int myspi;
+    byte ps2data[21] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    unsigned long last_millis;
+    int last_buttons;
+    int buttons = 0;
 
 };
 #endif //__PI_PS2X_H

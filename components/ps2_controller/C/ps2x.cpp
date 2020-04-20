@@ -63,11 +63,11 @@ int main(int argc, char *argv[]) {
         }//end switch case
     }//end while
 
-    PS2X ps2(options.spi_channel,
-             options.spi_speed,
-			 0,0,0
-              //options.debug,
-            );
+    PS2X ps2(); //options.spi_channel,
+    //          options.spi_speed,
+	// 		 0,0,0
+    //           //options.debug,
+    //         );
 
     while (1) {
         //pause(); //pause to wait for ISR and not consuming system memory
