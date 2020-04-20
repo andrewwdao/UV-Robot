@@ -286,7 +286,7 @@ int PS2X::__sendCommand(byte* command)
 {
     digitalWrite(this->sel, LOW); // SEL_CLR - enable joystick
     delayMicroseconds(CTRL_BYTE_DELAY);
-    for (unsigned int y=0;y<=sizeof(command);y++) {this->__shiftout(*(command+y));}
+    for (unsigned int y=0;y<sizeof(command);y++) {this->__shiftout(*(command+y));}
     digitalWrite(this->sel, HIGH); // SEL_SET - disable joystick
     delayMicroseconds(CTRL_BYTE_DELAY);
     return 0;
@@ -302,7 +302,7 @@ int PS2X::__getData(byte* command)
 
     unsigned int x=0;
     // Send the command to get button and joystick data
-    for (x=0;x<=sizeof(command);x++)
+    for (x=0;x<sizeof(command);x++)
     {this->ps2data[x] = this->__shiftout(*(command+x));}
 
     //if controller is in full analog return mode
