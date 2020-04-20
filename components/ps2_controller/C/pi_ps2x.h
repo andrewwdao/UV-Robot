@@ -48,7 +48,7 @@ class PS2X {
     bool en_analog;
     bool en_pressure;
     bool en_rumble;
-    byte* message;
+    byte message[21] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     
 };
 #endif //__PI_PS2X_H

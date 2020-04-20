@@ -118,11 +118,11 @@ PS2X::PS2X(int channel = SPI_CHANNEL, int speed = SPI_SPEED, bool analog_enable 
         @param en_Pressures: a boolean indicates the pressure function of the PS2
         @param en_Rumble: aa boolean indicates the rumble function of the PS2
     */
-    spi_channel = channel;
-    spi_speed = speed;
-    en_analog = analog_enable;
-    en_pressure = pressure_enable;
-    en_rumble = rumble_enable;
+    this->spi_channel = channel;
+    this->spi_speed = speed;
+    this->en_analog = analog_enable;
+    this->en_pressure = pressure_enable;
+    this->en_rumble = rumble_enable;
     
    //---------------------- Setup wiringPi -----------------------
     wiringPiSetup();
@@ -227,11 +227,11 @@ PS2X::~PS2X()
 void PS2X::__shiftout(byte* command)
 {   
     byte mes[sizeof(command)];
-    memcpy(&mes, &command, sizeof(command));
+    memcpy(mes, command, sizeof(mes));
     wiringPiSPIDataRW (spi_channel, mes, sizeof(mes));
-    memcpy(&this->message, &mes, sizeof(command));
+    memcpy(this->message, mes, sizeof(mes));
     printf("Received: ");
-    for (unsigned int i=0;i<sizeof(message);i++) {printf("%02X", *(message+i));}
+    for (unsigned int i=0;i<sizeof(this->message);i++) {printf("%02X", *(this->message+i));}
     printf("\n");
 
     return;
