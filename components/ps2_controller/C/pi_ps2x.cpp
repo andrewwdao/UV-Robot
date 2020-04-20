@@ -232,25 +232,90 @@ PS2X::~PS2X()
 void PS2X::__shiftout(byte* command)
 {   
     uint8_t starter[1] = {0x01};
+    printf("sent: 0x%02X, ",*starter);
     if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
 	{
 	  printf ("SPI failure: %s\n", strerror (errno)) ;
 	  exit(1);
 	}
-    printf("res: 0x%02X\n",*starter);
-    byte mes[sizeof(command)+1];
-    unsigned int i=0;
-    memcpy(mes, command, sizeof(mes));
-    printf("Sent: "); for (i=0;i<sizeof(mes);i++) {printf("0x%02X,", *(mes+i));}
-    printf("\n");
-    if (wiringPiSPIDataRW (this->spi_channel, mes, sizeof(mes)) == -1)
+    printf("res: 0x%02X, ",*starter);
+    starter[1] = {0x42};
+    printf("0x%02X, ",*starter);
+    if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
 	{
 	  printf ("SPI failure: %s\n", strerror (errno)) ;
 	  exit(1);
 	}
-    memcpy(this->message, mes, sizeof(mes));
-    printf("Received: "); for (i=0;i<sizeof(this->message);i++) {printf("0x%02X,", *(this->message+i));}
-    printf("\n");
+    printf("0x%02X, ",*starter);
+    starter[1] = {0x00};
+    printf("0x%02X, ",*starter);
+    if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
+	{
+	  printf ("SPI failure: %s\n", strerror (errno)) ;
+	  exit(1);
+	}
+    printf("0x%02X, ",*starter);
+    starter[1] = {0x00};
+    printf("0x%02X, ",*starter);
+    if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
+	{
+	  printf ("SPI failure: %s\n", strerror (errno)) ;
+	  exit(1);
+	}
+    printf("0x%02X, ",*starter);
+    starter[1] = {0x00};
+    printf("0x%02X, ",*starter);
+    if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
+	{
+	  printf ("SPI failure: %s\n", strerror (errno)) ;
+	  exit(1);
+	}
+    printf("0x%02X, ",*starter);
+    starter[1] = {0x00};
+    printf("0x%02X, ",*starter);
+    if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
+	{
+	  printf ("SPI failure: %s\n", strerror (errno)) ;
+	  exit(1);
+	}
+    printf("0x%02X, ",*starter);
+    starter[1] = {0x00};
+    printf("0x%02X,",*starter);
+    if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
+	{
+	  printf ("SPI failure: %s\n", strerror (errno)) ;
+	  exit(1);
+	}
+    printf("0x%02X,",*starter);
+    starter[1] = {0x00};
+    printf("0x%02X,",*starter);
+    if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
+	{
+	  printf ("SPI failure: %s\n", strerror (errno)) ;
+	  exit(1);
+	}
+    printf("0x%02X,",*starter);
+    starter[1] = {0x00};
+    printf("0x%02X\n",*starter);
+    if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
+	{
+	  printf ("SPI failure: %s\n", strerror (errno)) ;
+	  exit(1);
+	}
+    printf("0x%02X\n",*starter);
+    // byte mes[sizeof(command)+1];
+    // unsigned int i=0;
+    // memcpy(mes, command, sizeof(mes));
+    // printf("Sent: "); for (i=0;i<sizeof(mes);i++) {printf("0x%02X,", *(mes+i));}
+    // printf("\n");
+    // if (wiringPiSPIDataRW (this->spi_channel, mes, sizeof(mes)) == -1)
+	// {
+	//   printf ("SPI failure: %s\n", strerror (errno)) ;
+	//   exit(1);
+	// }
+    // memcpy(this->message, mes, sizeof(mes));
+    // printf("Received: "); for (i=0;i<sizeof(this->message);i++) {printf("0x%02X,", *(this->message+i));}
+    // printf("\n");
 
     return;
 }//end __shiftout
