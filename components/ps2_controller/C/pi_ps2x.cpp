@@ -288,7 +288,7 @@ int PS2X::__sendCommand(byte* command)
     delayMicroseconds(CTRL_BYTE_DELAY);
     printf("Comand sent: ");
     for (unsigned int y=0;y<=sizeof(command);y++) 
-    {printf("0x%02X ");this->__shiftout(*(command+y));}
+    {printf("0x%02X ", *(command+y));this->__shiftout(*(command+y));}
     printf("\n");
     digitalWrite(this->sel, HIGH); // SEL_SET - disable joystick
     delayMicroseconds(CTRL_BYTE_DELAY);
