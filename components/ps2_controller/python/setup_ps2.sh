@@ -16,6 +16,8 @@ apt-get install python3-pip -y
 # RPi.GPIO installation
 pip3 install RPi.GPIO
 
-
+echo
+echo
+echo "Done."
 
 ## (c) 2020 Minh-An Dao. All right reserved
