@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
     while (1) {
         ps2.update();
         if (ps2.pressed(CROSS)) {printf("Cross pressed\n");}
-        if {ps2.isPressing(DOWN)} {printf("Down is being pressed\n")}
+        if {ps2.isPressing(DOWN)} {printf("Down is being pressed\n");}
         //pause(); //pause to wait for ISR and not consuming system memory
     }//end while
 }//end main
