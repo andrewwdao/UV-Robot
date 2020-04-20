@@ -48,8 +48,8 @@
 // --- Defaults, change with command-line options
 // #define SPI_CHANNEL 0
 // #define SPI_SPEED   500000 //500kHz
-#define CTRL_BYTE_DELAY  25   //us
-#define CTRL_CLK         25   //us
+#define CTRL_BYTE_DELAY  50   //us
+#define CTRL_CLK         50   //us
 #define UPDATE_INTERVAL  70  //ms
 #define EXPIRED_INTERVAL 1500 //ms
 #define PS2_DAT 13  // wiringPi
