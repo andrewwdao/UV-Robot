@@ -24,6 +24,9 @@
 #include "pi_ps2x.h"
 
 // --- Defaults, change with command-line options
+#define SPI_CHANNEL 0
+#define SPI_SPEED 500000
+
 #define PS2_DAT 13  // wiringPi
 #define PS2_CMD 12 // wiringPi
 #define PS2_SEL 10  // wiringPi
