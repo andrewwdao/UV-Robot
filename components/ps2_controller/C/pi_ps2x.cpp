@@ -59,7 +59,9 @@
 # No joystick data, pressure or vibration control capabilities.
 */
 // static byte begin_request[]    = {0x01,0x42,0x00,0x00,0x00};
-byte begin_request[]    = {0x01,0x42,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+byte begin[]    = {0x42,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+// byte begin[]    = {0x01,0x42,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+
 // static byte enter_config[]     = {0x01,0x43,0x00,0x01,0x00};
 byte enter_config[]     = {0x01,0x43,0x00,0x01,0x00,0x00,0x00,0x00,0x00};
 // Once in config / escape mode, all packets will have 9 bytes (6 bytes of command / data after the header).
@@ -141,7 +143,7 @@ PS2X::PS2X(int channel = SPI_CHANNEL, int speed = SPI_SPEED, bool analog_enable 
     {
         // begin sending request to the read gamepad
         // to see if it's responding or not
-        this->__shiftout(begin_request);
+        this->__shiftout(begin);
 
         /*All mode:
             0x41: Digital mode with ONE 16 bit words (2 bytes) follow the header.
@@ -229,8 +231,15 @@ PS2X::~PS2X()
 
 void PS2X::__shiftout(byte* command)
 {   
+    uint8_t starter[1] = [0x01];
+    if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
+	{
+	  printf ("SPI failure: %s\n", strerror (errno)) ;
+	  exit(1);
+	}
+    printf("res: 0x%02X\n",*starter);
     byte mes[sizeof(command)+1];
-    unsigned int i;
+    unsigned int i=0;
     memcpy(mes, command, sizeof(mes));
     printf("Sent: "); for (i=0;i<sizeof(mes);i++) {printf("0x%02X,", *(mes+i));}
     printf("\n");
@@ -245,5 +254,24 @@ void PS2X::__shiftout(byte* command)
 
     return;
 }//end __shiftout
+
+// void PS2X::__shiftout(byte* command)
+// {   
+//     byte mes[sizeof(command)+1];
+//     unsigned int i=0;
+//     memcpy(mes, command, sizeof(mes));
+//     printf("Sent: "); for (i=0;i<sizeof(mes);i++) {printf("0x%02X,", *(mes+i));}
+//     printf("\n");
+//     if (wiringPiSPIDataRW (this->spi_channel, mes, sizeof(mes)) == -1)
+// 	{
+// 	  printf ("SPI failure: %s\n", strerror (errno)) ;
+// 	  exit(1);
+// 	}
+//     memcpy(this->message, mes, sizeof(mes));
+//     printf("Received: "); for (i=0;i<sizeof(this->message);i++) {printf("0x%02X,", *(this->message+i));}
+//     printf("\n");
+
+//     return;
+// }//end __shiftout
 
 #endif //__PI_PS2X_CPP
