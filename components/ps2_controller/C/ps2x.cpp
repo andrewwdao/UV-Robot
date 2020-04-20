@@ -74,6 +74,8 @@ int main(int argc, char *argv[]) {
     //         );
 
     while (1) {
+        ps2.update();
+        if (ps2.pressed(CROSS)) {printf("Hello, cross pressed");}
         //pause(); //pause to wait for ISR and not consuming system memory
     }//end while
 }//end main

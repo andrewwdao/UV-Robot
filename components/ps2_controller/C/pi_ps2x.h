@@ -25,6 +25,24 @@
 
 // ------ Public constants ------------------------------------
 typedef unsigned char byte;
+
+// --- DualShock button bit
+#define SELECT     0x0001
+#define L3         0x0002
+#define R3         0x0004
+#define START      0x0008
+#define UP         0x0010
+#define RIGHT      0x0020
+#define DOWN       0x0040
+#define LEFT       0x0080
+#define L2         0x0100
+#define R2         0x0200
+#define L1         0x0400
+#define R1         0x0800
+#define TRIANGLE   0x1000
+#define CIRCLE     0x2000
+#define CROSS      0x4000
+#define SQUARE     0x8000
 // typedef uint8_t bool
 // ------ Public function prototypes --------------------------
 
@@ -39,8 +57,14 @@ class PS2X {
     ~PS2X();                // destructor
     // bool reconfig(bool, bool, bool); // reconfig the controller
     // void update(void); // very important function to put in the loop
+    void reconfig(void);
+    void update(void);
 
-
+    bool changed(void);
+    bool isPressing(int);
+    bool pressed(int);
+    bool released(int);
+    int readAnalog(int);
     
   private:
     byte __shiftout(byte); // performs a simultaneous write/read transaction over the selected SPI bus

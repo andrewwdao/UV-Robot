@@ -48,10 +48,10 @@
 // --- Defaults, change with command-line options
 // #define SPI_CHANNEL 0
 // #define SPI_SPEED   500000 //500kHz
-#define CTRL_BYTE_DELAY  15   //us
-#define CTRL_CLK         15   //us
+#define CTRL_BYTE_DELAY  25   //us
+#define CTRL_CLK         25   //us
 #define UPDATE_INTERVAL  70  //ms
-#define EXPIRED_INTERVAL 1.5 //s
+#define EXPIRED_INTERVAL 1500 //ms
 #define PS2_DAT 13  // wiringPi
 #define PS2_CMD 12 // wiringPi
 #define PS2_SEL 10  // wiringPi
@@ -213,7 +213,7 @@ PS2X::PS2X(int Dat = PS2_DAT,
 
     // --- get controller type
     byte controller_type = 0xFF;
-    this->__sendCommand(type_read);
+    this->__getData(type_read);
     // if package header is correct [0xFF,0xF1-0xF3-0xF9,0x5A]
     if ((this->ps2data[0] == 0xFF) && (this->ps2data[2] == 0x5A))
         {controller_type = this->ps2data[3];} // this is exactly what we want
@@ -235,8 +235,8 @@ PS2X::PS2X(int Dat = PS2_DAT,
             if (this->en_pressure) {
                 if (this->ps2data[1] == 0x79) {printf("Pressures mode\n");}
                 if (this->ps2data[1] == 0x73) {printf("Controller refusing to enter Pressures mode, may not support it.\n");}
-                break;
-            }
+            }//end if
+            break;
         } else if (this->ps2data[1] == 0x41) {printf("Digital Mode\n"); break;}
         
         if ((millis() - watchdog) > 1000) // one second to connect, if not connected then raise error
@@ -302,25 +302,74 @@ int PS2X::__getData(byte* command)
     delayMicroseconds(CTRL_CLK);
 
     // Send the command to get button and joystick data
-    for (unsigned int x=0;x<sizeof(command);x++)
-    {
-        this->ps2data[x] = this->__shiftout(*(command+x));
-    }//end for
+    for (unsigned int x=0;x<sizeof(command);x++) {this->ps2data[x] = this->__shiftout(*(command+x));}
 
     //if controller is in full analog return mode
     // get the rest of the data
     if (this->ps2data[1]==0x79)
     {
-        for (unsigned int x=0;x<12;x++)
-        {
-            this->ps2data[x+9] = this->__shiftout(0);
-        }//end for
+        for (unsigned int x=0;x<12;x++) {this->ps2data[x+9] = this->__shiftout(0);}
     }//end if
 
     digitalWrite(this->sel, HIGH); // SEL_SET - disable joystick
     delayMicroseconds(CTRL_CLK);
     return 0;
 }//end __getData
+
+void PS2X::reconfig(void)
+{
+    this->__sendCommand(enter_config);
+    this->__sendCommand(set_mode_analog);
+    if (this->en_rumble)   {this->__sendCommand(enable_rumble);}
+    if (this->en_pressure) {this->__sendCommand(enable_pressure);}
+    this->__sendCommand(enter_config);
+}//end reconfig
+
+void PS2X::update(void)
+{
+    unsigned long now = millis() - this->last_millis;
+
+    if (now>EXPIRED_INTERVAL) { //waited too long
+        printf("Waited too long. Try to reset...");
+        this->reconfig();
+    }//end if
+
+    if (now<UPDATE_INTERVAL) {delay(UPDATE_INTERVAL);} //wait a little bit longer
+
+    this->__getData(data_frame);
+
+    // Check to see if we received valid data or not.  
+    // We should be in digital mode (0x41) or analog mode (0x73, 0x79)
+    if ((this->ps2data[1] == 0x41)||
+        (this->ps2data[1] == 0x73)||
+        (this->ps2data[1] == 0x79)){
+        // store the previous buttons states before get the new one
+        this->last_buttons = this->buttons;
+        // byte 4 and 5 of the data is the status of all buttons
+        // store as one variable
+        this->buttons = (this->ps2data[4] << 8) + this->ps2data[3];
+        this->last_millis = millis();
+    } else if ((this->ps2data[1]&0xF0) == 0xF0) { //Check if we are in config mode (0xFx), if yes, reconfig to return to normal
+        printf("We are in config mode. Getting out of config mode...\n");
+        for (unsigned int x=0;x<21;x++) {this->ps2data[x] = 0;} //if not valid, then reset the whole frame 
+        this->__reconfig(); // try to get back into Analog mode.
+    } else {//not good data received
+        printf("Not valid header received: 0x%02X 0x%02X 0x%02X\n", this->ps2data[0],this->ps2data[1], this->ps2data[2]);
+        for (unsigned int x=0;x<21;x++) {this->ps2data[x] = 0;} //if not valid, then reset the whole frame 
+        delay(UPDATE_INTERVAL);
+    }// end if else
+    return
+}//end update
+
+bool PS2X::changed(void) {return (this->last_buttons^this->buttons)>0;}
+
+bool PS2X::isPressing(int button) {return (~this->buttons & button)>0;}
+
+bool PS2X::pressed(int button) {return this->changed()&this->isPressing(button);}
+
+bool PS2X::released(int button) {return this->changed()&((~this->last_buttons&button)>0);}
+
+int PS2X::readAnalog(int button) {return this->ps2data[button];}
 
 // void PS2X::__shiftout(byte* command)
 // {   
