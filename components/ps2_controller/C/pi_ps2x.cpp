@@ -228,6 +228,9 @@ void PS2X::__shiftout(byte* command)
 {   
     byte mes[sizeof(command)];
     memcpy(mes, command, sizeof(mes));
+    printf("Sent: ");
+    for (unsigned int i=0;i<sizeof(mes);i++) {printf("0x%02X", *(mes+i));}
+    printf("\n");
     wiringPiSPIDataRW (spi_channel, mes, sizeof(mes));
     memcpy(this->message, mes, sizeof(mes));
     printf("Received: ");
