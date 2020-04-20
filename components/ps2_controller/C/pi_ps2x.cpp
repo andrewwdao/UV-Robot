@@ -52,6 +52,11 @@
 // #define CTRL_CLK         5   //us
 // #define UPDATE_INTERVAL  70  //ms
 // #define EXPIRED_INTERVAL 1.5 //s
+// #define PS2_DAT = 9  # BCM mode
+// #define S2_CMD = 10 # BCM mode
+// #define PS2_SEL = 8 # BCM mode
+// #define PS2_CLK = 11 # BCM mode
+
 
 /* --- Modes
 # Controller defaults to digital mode (0x41)
@@ -59,8 +64,8 @@
 # No joystick data, pressure or vibration control capabilities.
 */
 // static byte begin_request[]    = {0x01,0x42,0x00,0x00,0x00};
-byte begin[]    = {0x42,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-// byte begin[]    = {0x01,0x42,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+// byte begin[]    = {0x42,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+byte begin[]    = {0x01,0x42,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 
 // static byte enter_config[]     = {0x01,0x43,0x00,0x01,0x00};
 byte enter_config[]     = {0x01,0x43,0x00,0x01,0x00,0x00,0x00,0x00,0x00};
@@ -231,78 +236,6 @@ PS2X::~PS2X()
 
 void PS2X::__shiftout(byte* command)
 {   
-    uint8_t starter[1] = {0x01};
-    printf("sent: 0x%02X, ",*starter);
-    if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
-	{
-	  printf ("SPI failure: %s\n", strerror (errno)) ;
-	  exit(1);
-	}
-    printf("res: 0x%02X, ",*starter);
-    starter[0] = 0x42;
-    printf("0x%02X, ",*starter);
-    if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
-	{
-	  printf ("SPI failure: %s\n", strerror (errno)) ;
-	  exit(1);
-	}
-    printf("0x%02X, ",*starter);
-    starter[0] = 0x00;
-    printf("0x%02X, ",*starter);
-    if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
-	{
-	  printf ("SPI failure: %s\n", strerror (errno)) ;
-	  exit(1);
-	}
-    printf("0x%02X, ",*starter);
-    starter[0] = 0x00;
-    printf("0x%02X, ",*starter);
-    if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
-	{
-	  printf ("SPI failure: %s\n", strerror (errno)) ;
-	  exit(1);
-	}
-    printf("0x%02X, ",*starter);
-    starter[0] = 0x00;
-    printf("0x%02X, ",*starter);
-    if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
-	{
-	  printf ("SPI failure: %s\n", strerror (errno)) ;
-	  exit(1);
-	}
-    printf("0x%02X, ",*starter);
-    starter[0] = 0x00;
-    printf("0x%02X, ",*starter);
-    if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
-	{
-	  printf ("SPI failure: %s\n", strerror (errno)) ;
-	  exit(1);
-	}
-    printf("0x%02X, ",*starter);
-    starter[0] = 0x00;
-    printf("0x%02X,",*starter);
-    if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
-	{
-	  printf ("SPI failure: %s\n", strerror (errno)) ;
-	  exit(1);
-	}
-    printf("0x%02X,",*starter);
-    starter[0] = 0x00;
-    printf("0x%02X,",*starter);
-    if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
-	{
-	  printf ("SPI failure: %s\n", strerror (errno)) ;
-	  exit(1);
-	}
-    printf("0x%02X,",*starter);
-    starter[0] = 0x00;
-    printf("0x%02X\n",*starter);
-    if (wiringPiSPIDataRW (this->spi_channel, starter, 1) == -1)
-	{
-	  printf ("SPI failure: %s\n", strerror (errno)) ;
-	  exit(1);
-	}
-    printf("0x%02X\n",*starter);
     // byte mes[sizeof(command)+1];
     // unsigned int i=0;
     // memcpy(mes, command, sizeof(mes));
