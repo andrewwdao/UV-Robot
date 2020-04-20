@@ -26,6 +26,10 @@
 // --- Defaults, change with command-line options
 #define SPI_CHANNEL 0
 #define SPI_SPEED   100 //500kHz
+#define PS2_DAT 13  // wiringPi
+#define PS2_CMD 12 // wiringPi
+#define PS2_SEL 10  // wiringPi
+#define PS2_CLK 14 // wiringPi
 
 struct option_s {
     int spi_channel;
@@ -63,7 +67,7 @@ int main(int argc, char *argv[]) {
         }//end switch case
     }//end while
 
-    PS2X ps2(); //options.spi_channel,
+    PS2X ps2(PS2_DAT, PS2_CMD,PS2_SEL, PS2_CLK,0,0,0); //options.spi_channel,
     //          options.spi_speed,
 	// 		 0,0,0
     //           //options.debug,
