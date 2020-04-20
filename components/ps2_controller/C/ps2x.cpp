@@ -84,6 +84,7 @@ struct option_s {
     bool ps2_pressure;
     bool ps2_rumble;
 } options;
+
 void showUsage(void) {
     printf("\n\n---------PS2 library for Raspberry Pi---------\n");
     printf("Usage: (root)\n");
@@ -103,6 +104,7 @@ void showUsage(void) {
     printf("(c) Minh-An Dao 2020  <bit.ly/DMA-HomePage> <minhan7497@gmail.com>.");
     exit(0);
 }//end showUsage
+
 int main(int argc, char *argv[]) {
     /* defaults */
     options.ps2_dat = PS2_DAT;
@@ -159,7 +161,7 @@ int main(int argc, char *argv[]) {
              options.ps2_analog,
              options.ps2_locked,
              options.ps2_pressure,
-             options.ps2_rumble,
+             options.ps2_rumble
             );
 
     /*now come the loop*/
@@ -202,7 +204,7 @@ int main(int argc, char *argv[]) {
         }//end if
         
         if (ps2.LstickChanged()) 
-        {fprintf(stdout, "LSTICK %d %d\n", readAnalog(LX), readAnalog(LY));fflush(stdout);}
+        {fprintf(stdout, "LSTICK %d %d\n", ps2.readAnalog(LX), ps2.readAnalog(LY));fflush(stdout);}
 
         //pause(); //pause to wait for ISR and not consuming system memory
 
