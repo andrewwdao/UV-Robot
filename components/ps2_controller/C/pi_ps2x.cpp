@@ -48,9 +48,9 @@
 // --- Defaults, change with command-line options
 // #define SPI_CHANNEL 0
 // #define SPI_SPEED   500000 //500kHz
-#define CTRL_BYTE_DELAY  5   //us
+#define CTRL_BYTE_DELAY  50   //us
 #define CTRL_CLK         5   //us
-#define UPDATE_INTERVAL  70  //ms
+#define UPDATE_INTERVAL  50  //ms
 #define EXPIRED_INTERVAL 1500 //ms
 #define PS2_DAT 13  // wiringPi
 #define PS2_CMD 12 // wiringPi
@@ -288,10 +288,8 @@ int PS2X::__sendCommand(byte* command, int size)
 {
     digitalWrite(this->sel, LOW); // SEL_CLR - enable joystick
     delayMicroseconds(CTRL_BYTE_DELAY);
-    printf("Comand sent: ");
     for (int y=0;y<size;y++) 
-    {printf("0x%02X ", *(command+y));this->__shiftout(*(command+y));}
-    printf("\n");
+    {this->__shiftout(*(command+y));}
     digitalWrite(this->sel, HIGH); // SEL_SET - disable joystick
     delayMicroseconds(CTRL_BYTE_DELAY);
     return 0;
