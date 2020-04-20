@@ -129,7 +129,7 @@ PS2X::PS2X(int channel = SPI_CHANNEL, int speed = SPI_SPEED, bool analog_enable 
     
    //---------------------- Setup wiringPi -----------------------
     wiringPiSetup();
-    if ((this->myspi = wiringPiSPISetup (this->spi_channel, this->spi_speed)) < 0)
+    if ((this->myspi = wiringPiSPISetup(this->spi_channel, this->spi_speed)) < 0)
     {
         fprintf (stderr, "Can't open the SPI bus: %s\n", strerror (errno)) ;
         exit (EXIT_FAILURE) ;

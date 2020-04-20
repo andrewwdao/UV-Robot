@@ -52,7 +52,7 @@ class PS2X {
     bool en_pressure;
     bool en_rumble;
     byte message[21] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    static int myspi;
+    int myspi;
 
 };
 #endif //__PI_PS2X_H
