@@ -286,7 +286,7 @@ int PS2X::__sendCommand(byte* command)
 {
     digitalWrite(this->sel, LOW); // SEL_CLR - enable joystick
     delayMicroseconds(CTRL_BYTE_DELAY);
-    for (unsigned int y=0;y<sizeof(command);y++) {this->__shiftout(*(command+y));}
+    for (unsigned int y=0;y<=sizeof(command);y++) {this->__shiftout(*(command+y));}
     digitalWrite(this->sel, HIGH); // SEL_SET - disable joystick
     delayMicroseconds(CTRL_BYTE_DELAY);
     return 0;
@@ -352,7 +352,7 @@ void PS2X::update(void)
         // byte 4 and 5 of the data is the status of all buttons
         // store as one variable
         this->buttons = (this->ps2data[4] << 8) + this->ps2data[3];
-        printf("button: %d\n", buttons);
+        // printf("button: %d\n", buttons);
         this->last_millis = millis();
     } else if ((this->ps2data[1]&0xF0) == 0xF0) { //Check if we are in config mode (0xFx), if yes, reconfig to return to normal
         printf("We are in config mode. Getting out of config mode...\n");
