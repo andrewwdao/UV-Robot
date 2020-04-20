@@ -236,19 +236,19 @@ PS2X::~PS2X()
 
 void PS2X::__shiftout(byte* command)
 {   
-    // byte mes[sizeof(command)+1];
-    // unsigned int i=0;
-    // memcpy(mes, command, sizeof(mes));
-    // printf("Sent: "); for (i=0;i<sizeof(mes);i++) {printf("0x%02X,", *(mes+i));}
-    // printf("\n");
-    // if (wiringPiSPIDataRW (this->spi_channel, mes, sizeof(mes)) == -1)
-	// {
-	//   printf ("SPI failure: %s\n", strerror (errno)) ;
-	//   exit(1);
-	// }
-    // memcpy(this->message, mes, sizeof(mes));
-    // printf("Received: "); for (i=0;i<sizeof(this->message);i++) {printf("0x%02X,", *(this->message+i));}
-    // printf("\n");
+    byte mes[sizeof(command)+1];
+    unsigned int i=0;
+    memcpy(mes, command, sizeof(mes));
+    printf("Sent: "); for (i=0;i<sizeof(mes);i++) {printf("0x%02X,", *(mes+i));}
+    printf("\n");
+    if (wiringPiSPIDataRW (this->spi_channel, mes, sizeof(mes)) == -1)
+	{
+	  printf ("SPI failure: %s\n", strerror (errno)) ;
+	  exit(1);
+	}
+    memcpy(this->message, mes, sizeof(mes));
+    printf("Received: "); for (i=0;i<sizeof(this->message);i++) {printf("0x%02X,", *(this->message+i));}
+    printf("\n");
 
     return;
 }//end __shiftout
