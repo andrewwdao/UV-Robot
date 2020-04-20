@@ -68,8 +68,8 @@ class PS2X {
     
   private:
     byte __shiftout(byte); // performs a simultaneous write/read transaction over the selected SPI bus
-    int __sendCommand(byte*);
-    int __getData(byte*);
+    int __sendCommand(byte*,int);
+    int __getData(byte*,int);
     // byte spi_channel;
     // int spi_speed;
     int dat;

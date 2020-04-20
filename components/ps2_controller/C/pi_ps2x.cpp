@@ -111,7 +111,7 @@ byte data_frame[] = {0x01,0x42,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 #define TOG(x,y) (x^=(1<<y))
 
 //https://www.tutorialspoint.com/find-size-of-array-in-c-cplusplus-without-using-sizeof
-#define NUM(a) (*(&a + 1) - a) 
+// #define NUM(a) (*(&a + 1) - a) 
 // ------ Private function prototypes -------------------------
 
 // ------ Private variables -----------------------------------
@@ -176,7 +176,7 @@ PS2X::PS2X(int Dat = PS2_DAT,
     {
         // begin sending request to the read gamepad
         // to see if it's responding or not
-        this->__getData(begin_frame);
+        this->__getData(begin_frame,5);
 
         /*All mode:
             0x41: Digital mode with ONE 16 bit words (2 bytes) follow the header.
@@ -211,26 +211,26 @@ PS2X::PS2X(int Dat = PS2_DAT,
     }//end while
 
     // ------ entering config mode
-    this->__sendCommand(enter_config);
+    this->__sendCommand(enter_config,5);
 
     // --- get controller type
     byte controller_type = 0xFF;
-    this->__getData(type_read);
+    this->__getData(type_read,9);
     // if package header is correct [0xFF,0xF1-0xF3-0xF9,0x5A]
     if ((this->ps2data[0] == 0xFF) && (this->ps2data[2] == 0x5A))
         {controller_type = this->ps2data[3];} // this is exactly what we want
 
     // --- config the controller as we want
-    this->__sendCommand(set_mode_analog);
-    if (this->en_rumble)   {this->__sendCommand(enable_rumble);}
-    if (this->en_pressure) {this->__sendCommand(enable_pressure);}
-    this->__sendCommand(exit_config);
+    this->__sendCommand(set_mode_analog,9);
+    if (this->en_rumble)   {this->__sendCommand(enable_rumble,9);}
+    if (this->en_pressure) {this->__sendCommand(enable_pressure,9);}
+    this->__sendCommand(exit_config,9);
 
     // ------- Done first config, now check response of the system
     watchdog = millis();
     while (1)
     {
-        this->__getData(data_frame); // read to see if new data is comming
+        this->__getData(data_frame,9); // read to see if new data is comming
 
         if ((this->ps2data[1] & 0xf0) == 0x70) {
             printf("Analog Mode\n");
@@ -284,13 +284,12 @@ byte PS2X::__shiftout(byte command)
     return received;
 }//end __shiftout
 
-int PS2X::__sendCommand(byte* command)
+int PS2X::__sendCommand(byte* command, int size)
 {
-    printf("command size: %d\n",NUM(command));
     digitalWrite(this->sel, LOW); // SEL_CLR - enable joystick
     delayMicroseconds(CTRL_BYTE_DELAY);
     printf("Comand sent: ");
-    for (int y=0;y<NUM(command);y++) 
+    for (int y=0;y<size;y++) 
     {printf("0x%02X ", *(command+y));this->__shiftout(*(command+y));}
     printf("\n");
     digitalWrite(this->sel, HIGH); // SEL_SET - disable joystick
@@ -298,9 +297,8 @@ int PS2X::__sendCommand(byte* command)
     return 0;
 }//end __sendCommand
 
-int PS2X::__getData(byte* command)
+int PS2X::__getData(byte* command, int size)
 {
-    printf("counter: %d", NUM(command));
     // get new data
     digitalWrite(this->cmd, HIGH); //CMD_SET
     digitalWrite(this->clk, HIGH); //CLK_SET
@@ -309,7 +307,7 @@ int PS2X::__getData(byte* command)
 
     int x=0;
     // Send the command to get button and joystick data
-    for (x=0;x<NUM(command);x++)
+    for (x=0;x<size;x++)
     {this->ps2data[x] = this->__shiftout(*(command+x));}
 
     //if controller is in full analog return mode
@@ -327,11 +325,11 @@ int PS2X::__getData(byte* command)
 
 void PS2X::reconfig(void)
 {
-    this->__sendCommand(enter_config);
-    this->__sendCommand(set_mode_analog);
-    if (this->en_rumble)   {this->__sendCommand(enable_rumble);}
-    if (this->en_pressure) {this->__sendCommand(enable_pressure);}
-    this->__sendCommand(exit_config);
+    this->__sendCommand(enter_config,5);
+    this->__sendCommand(set_mode_analog,9);
+    if (this->en_rumble)   {this->__sendCommand(enable_rumble,9);}
+    if (this->en_pressure) {this->__sendCommand(enable_pressure,9);}
+    this->__sendCommand(exit_config,9);
 }//end reconfig
 
 void PS2X::update(void)
@@ -347,7 +345,7 @@ void PS2X::update(void)
 
     if (now<UPDATE_INTERVAL) {delay(UPDATE_INTERVAL);} //wait a little bit longer
 
-    this->__getData(data_frame);
+    this->__getData(data_frame,9);
 
     // Check to see if we received valid data or not.  
     // We should be in digital mode (0x41) or analog mode (0x73, 0x79)
