@@ -46,75 +46,41 @@
 
 // ------ Private constants -----------------------------------
 // --- Defaults, change with command-line options
-// #define SPI_CHANNEL 0
-// #define SPI_SPEED   500000 //500kHz
-#define CTRL_BYTE_DELAY  20   //us
-#define CTRL_CLK         5   //us
-#define UPDATE_INTERVAL  50  //ms
+#define CTRL_BYTE        20   //us - wait time between bytes transfer
+#define CTRL_CLK         5   //us - clock source --> 200kHz
+#define UPDATE_INTERVAL  50  //ms - wait time for other task to execute
 #define EXPIRED_INTERVAL 1500 //ms
 #define PS2_DAT 13  // wiringPi
 #define PS2_CMD 12 // wiringPi
 #define PS2_SEL 10  // wiringPi
 #define PS2_CLK 14 // wiringPi
-
-
+#define PS2_ANALOG true
+#define PS2_LOCKED true
+#define PS2_PRESSURE false
+#define PS2_RUMBLE false
 /* --- Modes
 # Controller defaults to digital mode (0x41)
 # It will only transmits the on / off status of the buttons in the 4th and 5th byte.
 # No joystick data, pressure or vibration control capabilities.
 */
-// static byte begin_request[]    = {0x01,0x42,0x00,0x00,0x00};
-// byte begin[]    = {0x42,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-byte begin_frame[]    = {0x01,0x42,0x00,0x00,0x00};
-
-// static byte enter_config[]     = {0x01,0x43,0x00,0x01,0x00};
-byte enter_config[]     = {0x01,0x43,0x00,0x01,0x00};
+ byte begin_frame[]     = {0x01,0x42,0x00,0x00,0x00};
+ byte enter_config[]    = {0x01,0x43,0x00,0x01,0x00};
 // Once in config / escape mode, all packets will have 9 bytes (6 bytes of command / data after the header).
-byte type_read[]        = {0x01,0x45,0x00,0x5A,0x5A,0x5A,0x5A,0x5A,0x5A};
-byte set_mode_analog[]  = {0x01,0x44,0x00,0x01,0x03,0x00,0x00,0x00,0x00};
-byte set_mode_digital[] = {0x01,0x44,0x00,0x00,0x03,0x00,0x00,0x00,0x00};
-byte enable_pressure[]  = {0x01,0x4F,0x00,0xFF,0xFF,0x03,0x00,0x00,0x00};
-byte enable_rumble[]    = {0x01,0x4D,0x00,0x00,0x01,0xFF,0xFF,0xFF,0xFF};
-byte exit_config[]      = {0x01,0x43,0x00,0x00,0x5A,0x5A,0x5A,0x5A,0x5A};
+ byte type_read[]       = {0x01,0x45,0x00,0x5A,0x5A,0x5A,0x5A,0x5A,0x5A};
+ byte enable_pressure[] = {0x01,0x4F,0x00,0xFF,0xFF,0x03,0x00,0x00,0x00};
+ byte enable_rumble[]   = {0x01,0x4D,0x00,0x00,0x01,0xFF,0xFF,0xFF,0xFF};
+ byte exit_config[]     = {0x01,0x43,0x00,0x00,0x5A,0x5A,0x5A,0x5A,0x5A};
 
-// -----------data frame  {0x01,0x42,0x00,Motor1,Motor2,0x00,0x00,0x00,0x00}
-byte data_frame[] = {0x01,0x42,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 
-// --- DualShock button bit
-#define SELECT     0x0001
-#define L3         0x0002
-#define R3         0x0004
-#define START      0x0008
-#define UP         0x0010
-#define RIGHT      0x0020
-#define DOWN       0x0040
-#define LEFT       0x0080
-#define L2         0x0100
-#define R2         0x0200
-#define L1         0x0400
-#define R1         0x0800
-#define TRIANGLE   0x1000
-#define CIRCLE     0x2000
-#define CROSS      0x4000
-#define SQUARE     0x8000
-
-// --- stick adc address
-#define R_STICK_X 5
-#define R_STICK_Y 6
-#define L_STICK_X 7
-#define L_STICK_Y 8
-
-// --- simple logic functions
-#define SET(x,y) (x|=(1<<y))
-#define CLR(x,y) (x&=(~(1<<y)))
-#define CHK(x,y) (x & (1<<y))
-#define TOG(x,y) (x^=(1<<y))
-
-//https://www.tutorialspoint.com/find-size-of-array-in-c-cplusplus-without-using-sizeof
-// #define NUM(a) (*(&a + 1) - a) 
 // ------ Private function prototypes -------------------------
-
+#define CHK(x,y) (x & (1<<y))
 // ------ Private variables -----------------------------------
+//default at analog, locked
+//set_mode[3]=0x00 will change to digital mode
+//set_mode[4]=0x00 will change to unlock mode (press the MODE button on the controller to change between analog and digital)
+byte set_mode[]   = {0x01,0x44,0x00,0x01,0x03,0x00,0x00,0x00,0x00}; 
+// --- data frame  {0x01,0x42,0x00,Motor1,Motor2,0x00,0x00,0x00,0x00}
+byte data_frame[] = {0x01,0x42,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 
 // ------ PUBLIC variable definitions -------------------------
 
@@ -125,10 +91,10 @@ PS2X::PS2X(int Dat = PS2_DAT,
            int Cmd = PS2_CMD,
            int Sel = PS2_SEL,
            int Clk = PS2_CLK,
-           bool analog_enable = true,
-           bool pressure_enable = false,
-           bool rumble_enable = false)
-{
+           bool analog_enable = PS2_ANALOG,
+           bool locked = PS2_LOCKED,
+           bool pressure_enable = PS2_PRESSURE,
+           bool rumble_enable = PS2_RUMBLE) {
     /*
         Constructor
         @param dat: an integer indicates the data pin of the PS2
@@ -143,25 +109,19 @@ PS2X::PS2X(int Dat = PS2_DAT,
     this->cmd = Cmd;
     this->sel = Sel;
     this->clk = Clk;
-    // this->spi_channel = channel;
-    // this->spi_speed = speed;
     this->en_analog = analog_enable;
+    this->en_locked = locked;
     this->en_pressure = pressure_enable;
     this->en_rumble = rumble_enable;
-    // printf("speed: %d\n",this->spi_speed);
-    // printf("channel: %d\n",this->spi_channel);
     this->last_buttons = 0;
     this->buttons = 0;
-    
+
+    this->changeMode(this->en_analog, this->en_locked);
+
    //---------------------- Setup wiringPi -----------------------
     wiringPiSetup();
-    // if ((this->myspi = wiringPiSPISetup(this->spi_channel, this->spi_speed)) < 0)
-    // {
-    //     fprintf (stderr, "Can't open the SPI bus: %s\n", strerror (errno)) ;
-    //     exit (EXIT_FAILURE) ;
-    // }
     pinMode(this->dat, INPUT);
-    pullUpDnControl(this->dat, PUD_UP) ;
+    pullUpDnControl(this->dat, PUD_UP);
     pinMode(this->cmd, OUTPUT);
     pinMode(this->sel, OUTPUT);
     pinMode(this->clk, OUTPUT);
@@ -171,31 +131,10 @@ PS2X::PS2X(int Dat = PS2_DAT,
     digitalWrite(this->sel, HIGH); // SEL_SET - disable joystick
     
     unsigned int watchdog = millis();
-    while (1) 
-    {
-        // begin sending request to the read gamepad
-        // to see if it's responding or not
+    while (1) {
+        // begin sending request to the read gamepad to see if it's responding or not
         this->__getData(begin_frame,5);
 
-        /*All mode:
-            0x41: Digital mode with ONE 16 bit words (2 bytes) follow the header.
-                  Contains only digital states of the buttons (byte 4 and byte 5)
-            
-            0x73: Analog mode with THREE 16 bit words (6 bytes) follow the header.
-                  Contain digital states of the buttons (byte 4 + byte 5)
-                  Contain 02 joystick ADC values:
-                   - Right Joystick (byte 6 + byte 7)
-                   - Left Joystick (byte 8 + byte 9)
-            0x79: Analog mode with NINE 16 bit words (18 bytes) follow the header.
-                  Contain digital states of the buttons (byte 4 + byte 5)
-                  Contain 02 joystick ADC values:
-                   - Right Joystick (byte 6 + byte 7)
-                   - Left Joystick (byte 8 + byte 9)
-                  Contain adc value of 12 Button (pressures) (from byte 10 to byte 21) 
-            
-            0xFx: Config mode
-        */
-            
         //check if valid mode came back.
         if (this->ps2data[1] == 0x41 || this->ps2data[1] == 0x73 ||
             this->ps2data[1] == 0x79 || this->ps2data[1] == 0xF1 ||
@@ -205,7 +144,7 @@ PS2X::PS2X(int Dat = PS2_DAT,
         if ((millis() - watchdog) > 1000) // one second to connect, if not connected then raise error
         {
             fprintf(stderr, "No controller found, please check wiring again.\n"); //# no controller found, expected 0x41, 0x42, 0x73 or 0x79
-            exit(1);
+            exit(EXIT_FAILURE);
         }//end if
     }//end while
 
@@ -217,28 +156,27 @@ PS2X::PS2X(int Dat = PS2_DAT,
     this->__getData(type_read,9);
     // if package header is correct [0xFF,0xF1-0xF3-0xF9,0x5A]
     if ((this->ps2data[0] == 0xFF) && (this->ps2data[2] == 0x5A))
-        {controller_type = this->ps2data[3];} // this is exactly what we want
+        {controller_type = this->ps2data[3];} // save type of the controller
 
     // --- config the controller as we want
-    this->__sendCommand(set_mode_analog,9);
+    this->__sendCommand(set_mode,9);
     if (this->en_rumble)   {this->__sendCommand(enable_rumble,9);}
     if (this->en_pressure) {this->__sendCommand(enable_pressure,9);}
     this->__sendCommand(exit_config,9);
 
     // ------- Done first config, now check response of the system
     watchdog = millis();
-    while (1)
-    {
+    while (1) {
         this->__getData(data_frame,9); // read to see if new data is comming
 
         if ((this->ps2data[1] & 0xf0) == 0x70) {
             printf("Analog Mode\n");
             if (this->en_pressure) {
-                if (this->ps2data[1] == 0x79) {printf("Pressures mode\n");}
-                if (this->ps2data[1] == 0x73) {printf("Controller refusing to enter Pressures mode, may not support it.\n");}
+                if (this->ps2data[1] == 0x79) {printf("Pressures mode ON.\n");}
+                if (this->ps2data[1] == 0x73) {fprintf(stderr, "Controller refusing to enter Pressures mode, may not support it.\n");}
             }//end if
             break;
-        } else if (this->ps2data[1] == 0x41) {printf("0x%02X",this->ps2data[1]);printf("Digital Mode\n"); break;}
+        } else if (this->ps2data[1] == 0x41) {printf("Digital Mode\n"); break;}
         
         if ((millis() - watchdog) > 1000) // one second to connect, if not connected then raise error
         {
@@ -247,7 +185,7 @@ PS2X::PS2X(int Dat = PS2_DAT,
         }//end if
     }//end while
 
-    printf("Configured successful. Controller:");
+    printf("Configure successful.\nController:");
     if      (controller_type == 0x03) {printf("DualShock\n");}
     else if (controller_type == 0x01) {printf("GuitarHero (Not supported yet)\n");}
     else if (controller_type == 0x0C) {printf("2.4G Wireless DualShock\n");}
@@ -258,8 +196,24 @@ PS2X::PS2X(int Dat = PS2_DAT,
 
 PS2X::~PS2X()
 {
-    // close(this->myspi);
 }//end destructor
+
+//CAUTION: must call reconfig to update the changes
+void PS2X::changeMode(bool analog_mode, bool locked_mode)
+{
+    if (!analog_mode)  {set_mode[3]=0x00;} //change to digital mode
+    if (!locked_mode)  {set_mode[4]=0x00;} //change to unlock mode (press the MODE button on the controller to change between analog and digital)
+}//end changeMode
+
+//CAUTION: must call reconfig to update the changes
+void PS2X::changeMode(bool analog_mode, bool locked_mode, bool pressure_mode, bool rumble_mode)
+{
+    this->changeMode(analog_mode,locked_mode);
+    if (pressure_mode) {this->en_pressure=true;}  //turn on pressure mode
+    else               {this->en_pressure=false;} //turn off pressure mode
+    if (rumble_mode)   {this->en_rumble=true;}    //turn on rumble mode
+    else               {this->en_rumble=false;}   //turn off rumble mode
+}//end changeMode
 
 byte PS2X::__shiftout(byte command)
 {   
@@ -279,18 +233,18 @@ byte PS2X::__shiftout(byte command)
     }//end for
         
     digitalWrite(this->cmd, HIGH); // CMD_SET
-    delayMicroseconds(CTRL_BYTE_DELAY);
+    delayMicroseconds(CTRL_BYTE);
     return received;
 }//end __shiftout
 
 int PS2X::__sendCommand(byte* command, int size)
 {
     digitalWrite(this->sel, LOW); // SEL_CLR - enable joystick
-    delayMicroseconds(CTRL_BYTE_DELAY);
+    delayMicroseconds(CTRL_BYTE);
     for (int y=0;y<size;y++) 
     {this->__shiftout(*(command+y));}
     digitalWrite(this->sel, HIGH); // SEL_SET - disable joystick
-    delayMicroseconds(CTRL_BYTE_DELAY);
+    delayMicroseconds(CTRL_BYTE);
     return 0;
 }//end __sendCommand
 
@@ -300,7 +254,7 @@ int PS2X::__getData(byte* command, int size)
     digitalWrite(this->cmd, HIGH); //CMD_SET
     digitalWrite(this->clk, HIGH); //CLK_SET
     digitalWrite(this->sel, LOW);  //SEL_CLR - enable joystick
-    delayMicroseconds(CTRL_BYTE_DELAY);
+    delayMicroseconds(CTRL_BYTE);
 
     int x=0;
     // Send the command to get button and joystick data
@@ -309,21 +263,20 @@ int PS2X::__getData(byte* command, int size)
 
     //if controller is in full analog return mode
     // get the rest of the data
-    if (this->ps2data[1]==0x79)
-    {
+    if (this->ps2data[1]==0x79) {
         for (x=0;x<12;x++)
         {this->ps2data[x+9] = this->__shiftout(0);}
     }//end if
 
     digitalWrite(this->sel, HIGH); // SEL_SET - disable joystick
-    delayMicroseconds(CTRL_BYTE_DELAY);
+    delayMicroseconds(CTRL_BYTE);
     return 0;
 }//end __getData
 
 void PS2X::reconfig(void)
 {
     this->__sendCommand(enter_config,5);
-    this->__sendCommand(set_mode_analog,9);
+    this->__sendCommand(set_mode,9);
     if (this->en_rumble)   {this->__sendCommand(enable_rumble,9);}
     if (this->en_pressure) {this->__sendCommand(enable_pressure,9);}
     this->__sendCommand(exit_config,9);
@@ -334,7 +287,7 @@ void PS2X::update(void)
     unsigned long now = millis() - this->last_millis;
 
     if (now>EXPIRED_INTERVAL) { //waited too long
-        printf("Waited too long. Try to reset...\n");
+        fprintf(stderr, "Waited too long. Try to reset...\n");
         this->last_millis = millis();
         this->reconfig();
         return;
@@ -357,11 +310,11 @@ void PS2X::update(void)
         // printf("button: %d\n", buttons);
         this->last_millis = millis();
     } else if ((this->ps2data[1]&0xF0) == 0xF0) { //Check if we are in config mode (0xFx), if yes, reconfig to return to normal
-        printf("We are in config mode. Getting out of config mode...\n");
-        for (unsigned int x=0;x<21;x++) {this->ps2data[x] = 0;} //if not valid, then reset the whole frame 
-        this->reconfig(); // try to get back into Analog mode.
+        fprintf(stderr, "Currently in config mode. Getting out...\n");
+        for (int x=0;x<21;x++) {this->ps2data[x] = 0;} //if not valid, then reset the whole frame 
+        this->reconfig(); // try to get back to normal mode.
     } else {//not good data received
-        printf("Not valid header received: 0x%02X 0x%02X 0x%02X\n", this->ps2data[0],this->ps2data[1], this->ps2data[2]);
+        fprintf(stderr, "Not valid header received: 0x%02X 0x%02X 0x%02X\n", this->ps2data[0],this->ps2data[1], this->ps2data[2]);
         for (unsigned int x=0;x<21;x++) {this->ps2data[x] = 0;} //if not valid, then reset the whole frame 
         delay(UPDATE_INTERVAL);
     }// end if else

@@ -43,7 +43,6 @@ typedef unsigned char byte;
 #define CIRCLE     0x2000
 #define CROSS      0x4000
 #define SQUARE     0x8000
-// typedef uint8_t bool
 // ------ Public function prototypes --------------------------
 
 // ------ Public variable -------------------------------------
@@ -53,36 +52,36 @@ typedef unsigned char byte;
 //--------------------------------------------------------------
 class PS2X {
   public:
-    PS2X(int, int, int, int, bool, bool, bool); // constructor
-    ~PS2X();                // destructor
-    // bool reconfig(bool, bool, bool); // reconfig the controller
-    // void update(void); // very important function to put in the loop
-    void reconfig(void);
-    void update(void);
+    PS2X(int,int,int,int,bool,bool,bool,bool); // constructor
+    ~PS2X();                                   // destructor
+    void changeMode(bool, bool); //change analog-digital, lock-unlock. CAUTION: must call reconfig to update the changes
+    void changeMode(bool, bool,bool,bool); //change analog-digital, lock-unlock, pressure and rumble mode. CAUTION: must call reconfig to update the changes
+    void reconfig(void); // reconfig the controller
+    void update(void); // very important function to put in the loop
 
-    bool changed(void);
-    bool isPressing(int);
-    bool pressed(int);
-    bool released(int);
-    int readAnalog(int);
+    bool changed(void); //will be TRUE if any button was changed
+    bool isPressing(int); //will be TRUE as long as a selected button was being pressed
+    bool pressed(int); //will be TRUE once after a selected button was pressed
+    bool released(int); //will be TRUE once after a selected button was released
+    int readAnalog(int); //return analog value (byte) of the selected button (or stick)
     
   private:
-    byte __shiftout(byte); // performs a simultaneous write/read transaction over the selected SPI bus
-    int __sendCommand(byte*,int);
-    int __getData(byte*,int);
-    // byte spi_channel;
-    // int spi_speed;
+    byte __shiftout(byte); // performs a simultaneous write/read transaction over the selected bus
+    int __sendCommand(byte*,int); // only send command and return the status of the sending, not receive anything
+    int __getData(byte*,int); // send command and get the corresponding response from controller (save in this->ps2data)
+
     int dat;
     int cmd;
     int sel;
     int clk;
     bool en_analog;
+    bool en_locked;
     bool en_pressure;
     bool en_rumble;
-    byte ps2data[21] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     unsigned long last_millis;
     int last_buttons;
-    int buttons = 0;
+    int buttons;
+    byte ps2data[21] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 };
 #endif //__PI_PS2X_H

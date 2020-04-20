@@ -24,12 +24,14 @@
 #include "pi_ps2x.h"
 
 // --- Defaults, change with command-line options
-#define SPI_CHANNEL 0
-#define SPI_SPEED   100 //500kHz
 #define PS2_DAT 13  // wiringPi
 #define PS2_CMD 12 // wiringPi
 #define PS2_SEL 10  // wiringPi
 #define PS2_CLK 14 // wiringPi
+#define PS2_ANALOG true
+#define PS2_LOCKED true
+#define PS2_PRESSURE false
+#define PS2_RUMBLE false
 
 struct option_s {
     int spi_channel;
@@ -67,7 +69,7 @@ int main(int argc, char *argv[]) {
         }//end switch case
     }//end while
 
-    PS2X ps2(PS2_DAT, PS2_CMD,PS2_SEL, PS2_CLK,0,0,0); //options.spi_channel,
+    PS2X ps2(PS2_DAT, PS2_CMD,PS2_SEL, PS2_CLK,PS2_ANALOG,PS2_LOCKED,PS2_PRESSURE,PS2_RUMBLE); //options.spi_channel,
     //          options.spi_speed,
 	// 		 0,0,0
     //           //options.debug,
@@ -75,7 +77,8 @@ int main(int argc, char *argv[]) {
 
     while (1) {
         ps2.update();
-        if (ps2.pressed(CROSS)) {printf("Hello, cross pressed\n");}
+        if (ps2.pressed(CROSS)) {printf("Cross pressed\n");}
+        if {ps2.isPressing(DOWN)} {printf("Down is being pressed\n")}
         //pause(); //pause to wait for ISR and not consuming system memory
     }//end while
 }//end main
