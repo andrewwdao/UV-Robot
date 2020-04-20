@@ -135,7 +135,7 @@ class PS2X {
     unsigned long last_millis;
     int last_buttons;
     int buttons;
-    int Llast_sticks;
+    int last_Lsticks;
     int Lsticks;
     byte ps2data[21] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // maximum dataframe
 
