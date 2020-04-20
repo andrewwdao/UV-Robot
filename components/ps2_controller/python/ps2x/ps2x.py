@@ -297,7 +297,9 @@ class PS2X(object):
 
         if temp > EXPIRED_INTERVAL: # us --> waited too long
             print("Waited too long. Try to reset...")
+            self.last_millis = datetime.now().microsecond
             self.__reconfig()
+            return
 
         if temp < UPDATE_INTERVAL: # us --> wait a little bit longer before read
             time.sleep(UPDATE_INTERVAL/1000000) # transfer to second, becareful, UPDATE_INTERVAL has to be float

@@ -237,7 +237,7 @@ PS2X::PS2X(int Dat = PS2_DAT,
                 if (this->ps2data[1] == 0x73) {printf("Controller refusing to enter Pressures mode, may not support it.\n");}
             }//end if
             break;
-        } else if (this->ps2data[1] == 0x41) {printf("Digital Mode\n"); break;}
+        } else if (this->ps2data[1] == 0x41) {printf("0x%02X",this->ps2data[1]);("Digital Mode\n"); break;}
         
         if ((millis() - watchdog) > 1000) // one second to connect, if not connected then raise error
         {
@@ -271,7 +271,7 @@ byte PS2X::__shiftout(byte command)
         digitalWrite(this->clk, LOW); // CLK_CLR
         delayMicroseconds(CTRL_CLK);
 
-        if (digitalRead(this->dat)==HIGH) {received|=1<<i;}
+        if (digitalRead(this->dat)) {received|=1<<i;}
             
         digitalWrite(this->clk, HIGH); // CLK_SET
         delayMicroseconds(CTRL_CLK);
@@ -286,7 +286,10 @@ int PS2X::__sendCommand(byte* command)
 {
     digitalWrite(this->sel, LOW); // SEL_CLR - enable joystick
     delayMicroseconds(CTRL_BYTE_DELAY);
-    for (unsigned int y=0;y<=sizeof(command);y++) {this->__shiftout(*(command+y));}
+    printf("Comand sent: ");
+    for (unsigned int y=0;y<=sizeof(command);y++) 
+    {printf("0x%02X ");this->__shiftout(*(command+y));}
+    printf("\n");
     digitalWrite(this->sel, HIGH); // SEL_SET - disable joystick
     delayMicroseconds(CTRL_BYTE_DELAY);
     return 0;
