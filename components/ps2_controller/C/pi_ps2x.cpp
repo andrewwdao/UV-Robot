@@ -284,6 +284,7 @@ byte PS2X::__shiftout(byte command)
 
 int PS2X::__sendCommand(byte* command)
 {
+    printf("command size: %d", sizeof(command));
     digitalWrite(this->sel, LOW); // SEL_CLR - enable joystick
     delayMicroseconds(CTRL_BYTE_DELAY);
     printf("Comand sent: ");
