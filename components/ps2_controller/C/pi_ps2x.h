@@ -15,6 +15,8 @@
 #ifndef __PI_PS2X_H
 #define __PI_PS2X_H
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <stdint.h>
 #include <math.h>
 #include <string.h>
