@@ -25,7 +25,7 @@
 
 // --- Defaults, change with command-line options
 #define SPI_CHANNEL 0
-#define SPI_SPEED   400000 //500kHz
+#define SPI_SPEED   50000 //500kHz
 
 struct option_s {
     int spi_channel;
