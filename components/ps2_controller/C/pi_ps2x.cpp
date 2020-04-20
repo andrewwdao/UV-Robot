@@ -123,12 +123,12 @@ PS2X::PS2X(int channel = SPI_CHANNEL, int speed = SPI_SPEED, bool analog_enable 
     this->en_analog = analog_enable;
     this->en_pressure = pressure_enable;
     this->en_rumble = rumble_enable;
-    printf("speed: %d",this->spi_speed);
-    printf("channel: %d",this->spi_channel);
+    printf("speed: %d\n",this->spi_speed);
+    printf("channel: %d\n",this->spi_channel);
     
    //---------------------- Setup wiringPi -----------------------
     wiringPiSetup();
-    int error = wiringPiSPISetup (spi_channel, spi_speed);
+    int error = wiringPiSPISetup(spi_channel, spi_speed);
     if (error == -1) // if there are errors
     {
         fprintf(stderr, "Failed on connecting SPI\n");
