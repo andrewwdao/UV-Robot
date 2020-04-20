@@ -241,7 +241,7 @@ PS2X::PS2X(int Dat = PS2_DAT,
         
         if ((millis() - watchdog) > 1000) // one second to connect, if not connected then raise error
         {
-            fprintf(stderr, "Controller found but not in an recognizable mode: %02X\n",message[1]);
+            fprintf(stderr, "Controller found but not in an recognizable mode: %02X\n",this->ps2data[1]);
             exit(1);
         }//end if
     }//end while
@@ -263,7 +263,7 @@ PS2X::~PS2X()
 byte PS2X::__shiftout(byte command)
 {   
     byte received = 0; // received data default to be 0
-    for (int i=0;i<8;i++)
+    for (unsigned int i=0;i<8;i++)
     {
         if (CHK(command, i)) {digitalWrite(this->cmd, HIGH);} // CMD_SET
         else                 {digitalWrite(this->cmd, LOW);}  // CMD_CLR
@@ -271,7 +271,7 @@ byte PS2X::__shiftout(byte command)
         digitalWrite(this->clk, LOW); // CLK_CLR
         delayMicroseconds(CTRL_CLK);
 
-        if (digitalRead(self.dat)) {received = SET(received, i);}
+        if (digitalRead(this->dat)) {SET(received, i);}
             
         digitalWrite(this->clk, HIGH); // CLK_SET
         delayMicroseconds(CTRL_CLK);
@@ -287,9 +287,10 @@ int PS2X::__sendCommand(byte* command)
 {
     digitalWrite(this->sel, LOW); // SEL_CLR - enable joystick
     delayMicroseconds(CTRL_CLK);
-    for (int y=0;y<sizeof(command);y++) {this->__shiftout(*(command+y))}
+    for (unsigned int y=0;y<sizeof(command);y++) {this->__shiftout(*(command+y))}
     digitalWrite(this->sel, HIGH); // SEL_SET - disable joystick
     delayMicroseconds(CTRL_CLK);
+    return 0;
 }//end __sendCommand
 
 int PS2X::__getData(byte* command)
@@ -301,7 +302,7 @@ int PS2X::__getData(byte* command)
     delayMicroseconds(CTRL_CLK);
 
     // Send the command to get button and joystick data
-    for (int x=0;x<sizeof(command);x++)
+    for (unsigned int x=0;x<sizeof(command);x++)
     {
         this->ps2data[x] = this->__shiftout(*(command+x));
     }//end for
@@ -310,7 +311,7 @@ int PS2X::__getData(byte* command)
     // get the rest of the data
     if (this->ps2data[1]==0x79)
     {
-        for (int x=0;x<12;x++)
+        for (unsigned int x=0;x<12;x++)
         {
             this->ps2data[x+9] = this->__shiftout(0);
         }//end for
@@ -318,6 +319,7 @@ int PS2X::__getData(byte* command)
 
     digitalWrite(this->sel, HIGH); // SEL_SET - disable joystick
     delayMicroseconds(CTRL_CLK);
+    return 0;
 }//end __getData
 
 // void PS2X::__shiftout(byte* command)
