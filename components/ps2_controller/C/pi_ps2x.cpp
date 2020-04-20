@@ -110,8 +110,8 @@ byte data_frame[] = {0x01,0x42,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 #define CHK(x,y) (x & (1<<y))
 #define TOG(x,y) (x^=(1<<y))
 
-#define NUM(a) (sizeof(a) / sizeof(*a)) //https://stackoverflow.com/questions/10290610/how-can-i-find-the-number-of-elements-in-an-array
-
+//https://stackoverflow.com/questions/10290610/how-can-i-find-the-number-of-elements-in-an-array
+#define NUM(a) (sizeof(a) / sizeof(*a)) 
 // ------ Private function prototypes -------------------------
 
 // ------ Private variables -----------------------------------
