@@ -11,10 +11,10 @@
  --------------------------------------------------------------"""
 from ps2x.ps2x import PS2X
 
-PS2_DAT = 4  # BCM mode
-PS2_CMD = 17 # BCM mode
-PS2_SEL = 27 # BCM mode
-PS2_CLK = 22 # BCM mode
+PS2_DAT = 9  # BCM mode
+PS2_CMD = 10 # BCM mode
+PS2_SEL = 8 # BCM mode
+PS2_CLK = 11 # BCM mode
 PS2_ANALOG = True
 PS2_PRESSURE = False
 PS2_RUMBLE = False

@@ -13,10 +13,10 @@ import RPi.GPIO as GPIO
 from datetime import datetime
 import time
 
-PS2_DAT = 4  # BCM mode
-PS2_CMD = 17 # BCM mode
-PS2_SEL = 27 # BCM mode
-PS2_CLK = 22 # BCM mode
+PS2_DAT = 9  # BCM mode
+PS2_CMD = 10 # BCM mode
+PS2_SEL = 8 # BCM mode
+PS2_CLK = 11 # BCM mode
 
 CTRL_BYTE_DELAY = 0.000005 # 18us
 CTRL_CLK = 0.000005 # 5us
