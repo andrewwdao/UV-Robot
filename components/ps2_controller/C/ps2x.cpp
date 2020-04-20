@@ -51,8 +51,9 @@
  *  -p PRESS      : turn on or off pressure mode (1 to turn on, 0 to turn off)
  *  -r RUMBLE     : turn on or off rumble mode (1 to turn on, 0 to turn off)
  * 
- * Example: sudo ./ps2x -d 9 -c 10 -s 8 -k 11
- *          sudo ./ps2x -a 1 -l 1 -p 0 -r 1
+ * Example: * Run as default:  sudo ./ps2x
+ *          * Change pins:     sudo ./ps2x -d 9 -c 10 -s 8 -k 11
+ *          * Change modes:    sudo ./ps2x -a 1 -l 1 -p 0 -r 1
  *
  * 
  * Licensed under the MIT license. All right reserved.
@@ -86,8 +87,8 @@ struct option_s {
 } options;
 
 void showUsage(void) {
-    printf("\n\n---------PS2 library for Raspberry Pi---------\n");
-    printf("Usage: (root)\n");
+    printf("\n\n---------PS2 library for Raspberry Pi---------\n\n");
+    printf("Usage: (run as root)\n");
     printf("./ps2x [-h] [-d DATA-pin] [-c CMD-pin] [-s SELECT-pin] [-k CLOCK-pin] [-a ANALOG] [-l LOCK] [-p PRESS] [-r RUMBLE]\n");
     printf("With:\n");
     printf("\t-h            : show help\n");
@@ -99,9 +100,10 @@ void showUsage(void) {
     printf("\t-l LOCK       : turn on or off lock mode (1 to turn on, 0 to turn off)\n");
     printf("\t-p PRESS      : turn on or off pressure mode (1 to turn on, 0 to turn off)\n");
     printf("\t-r RUMBLE     : turn on or off rumble mode (1 to turn on, 0 to turn off)\n\n");
-    printf("Example: sudo ./ps2x -d 9 -c 10 -s 8 -k 11\n");
-    printf("         sudo ./ps2x -a 1 -l 1 -p 0 -r 1\n\n");
-    printf("(c) Minh-An Dao 2020  <bit.ly/DMA-HomePage> <minhan7497@gmail.com>.");
+    printf("Example: * Run as default:  sudo ./ps2x\n");
+    printf("         * Change pins:     sudo ./ps2x -d 9 -c 10 -s 8 -k 11\n");
+    printf("         * Change modes:    sudo ./ps2x -a 1 -l 1 -p 0 -r 1\n\n");
+    printf("(c) Minh-An Dao 2020  <bit.ly/DMA-HomePage> <minhan7497@gmail.com>.\n");
     exit(0);
 }//end showUsage
 

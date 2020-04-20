@@ -51,8 +51,9 @@
  *  -p PRESS      : turn on or off pressure mode (1 to turn on, 0 to turn off)
  *  -r RUMBLE     : turn on or off rumble mode (1 to turn on, 0 to turn off)
  * 
- * Example: sudo ./ps2x -d 9 -c 10 -s 8 -k 11
- *          sudo ./ps2x -a 1 -l 1 -p 0 -r 1
+ * Example: * Run as default:  sudo ./ps2x
+ *          * Change pins:     sudo ./ps2x -d 9 -c 10 -s 8 -k 11
+ *          * Change modes:    sudo ./ps2x -a 1 -l 1 -p 0 -r 1
  *
  * 
  * Licensed under the MIT license. All right reserved.

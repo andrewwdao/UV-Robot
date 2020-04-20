@@ -51,8 +51,9 @@
  *  -p PRESS      : turn on or off pressure mode (1 to turn on, 0 to turn off)
  *  -r RUMBLE     : turn on or off rumble mode (1 to turn on, 0 to turn off)
  * 
- * Example: sudo ./ps2x -d 9 -c 10 -s 8 -k 11
- *          sudo ./ps2x -a 1 -l 1 -p 0 -r 1
+ * Example: * Run as default:  sudo ./ps2x
+ *          * Change pins:     sudo ./ps2x -d 9 -c 10 -s 8 -k 11
+ *          * Change modes:    sudo ./ps2x -a 1 -l 1 -p 0 -r 1
  *
  * 
  * Licensed under the MIT license. All right reserved.
@@ -184,10 +185,11 @@ PS2X::PS2X(int Dat = PS2_DAT,
     this->__sendCommand(exit_config,9);
 
     // ------- Done first config, now check response of the system
+    this->last_millis = millis(); // start system monitoring now
     watchdog = millis();
     printf("PS2 controller: ");
     while (1) {
-        this->__getData(data_frame,9); // read to see if new data is comming
+        this->update(); // update to see if new data is comming
 
         if ((this->ps2data[1] & 0xf0) == 0x70) {
             printf("Analog Mode\n");
@@ -211,7 +213,6 @@ PS2X::PS2X(int Dat = PS2_DAT,
     else if (controller_type == 0x0C) {printf("2.4G Wireless DualShock\n");}
     else if (controller_type == 0xFF) {printf("\nWrong package header. Please check again\n");}
     else                              {printf("Unknown type\n");}
-    this->last_millis = millis(); // start counting now
 }//end constructor
 
 PS2X::~PS2X() {}//end destructor
