@@ -271,25 +271,24 @@ byte PS2X::__shiftout(byte command)
         digitalWrite(this->clk, LOW); // CLK_CLR
         delayMicroseconds(CTRL_CLK);
 
-        if (digitalRead(this->dat)) {SET(received, i);}
+        if (digitalRead(this->dat)==HIGH) {received|=1<<i;}
             
         digitalWrite(this->clk, HIGH); // CLK_SET
         delayMicroseconds(CTRL_CLK);
     }//end for
         
-    
     digitalWrite(this->cmd, HIGH); // CMD_SET
-    delayMicroseconds(CTRL_CLK);
+    delayMicroseconds(CTRL_BYTE_DELAY);
     return received;
 }//end __shiftout
 
 int PS2X::__sendCommand(byte* command)
 {
     digitalWrite(this->sel, LOW); // SEL_CLR - enable joystick
-    delayMicroseconds(CTRL_CLK);
-    for (unsigned int y=0;y<sizeof(command);y++) {this->__shiftout(*(command+y));}
+    delayMicroseconds(CTRL_BYTE_DELAY);
+    for (unsigned int y=0;y<=sizeof(command);y++) {this->__shiftout(*(command+y));}
     digitalWrite(this->sel, HIGH); // SEL_SET - disable joystick
-    delayMicroseconds(CTRL_CLK);
+    delayMicroseconds(CTRL_BYTE_DELAY);
     return 0;
 }//end __sendCommand
 
@@ -299,20 +298,23 @@ int PS2X::__getData(byte* command)
     digitalWrite(this->cmd, HIGH); //CMD_SET
     digitalWrite(this->clk, HIGH); //CLK_SET
     digitalWrite(this->sel, LOW);  //SEL_CLR - enable joystick
-    delayMicroseconds(CTRL_CLK);
+    delayMicroseconds(CTRL_BYTE_DELAY);
 
+    unsigned int x=0;
     // Send the command to get button and joystick data
-    for (unsigned int x=0;x<sizeof(command);x++) {this->ps2data[x] = this->__shiftout(*(command+x));}
+    for (x=0;x<=sizeof(command);x++)
+    {this->ps2data[x] = this->__shiftout(*(command+x));}
 
     //if controller is in full analog return mode
     // get the rest of the data
     if (this->ps2data[1]==0x79)
     {
-        for (unsigned int x=0;x<12;x++) {this->ps2data[x+9] = this->__shiftout(0);}
+        for (x=0;x<12;x++)
+        {this->ps2data[x+9] = this->__shiftout(0);}
     }//end if
 
     digitalWrite(this->sel, HIGH); // SEL_SET - disable joystick
-    delayMicroseconds(CTRL_CLK);
+    delayMicroseconds(CTRL_BYTE_DELAY);
     return 0;
 }//end __getData
 
@@ -322,7 +324,7 @@ void PS2X::reconfig(void)
     this->__sendCommand(set_mode_analog);
     if (this->en_rumble)   {this->__sendCommand(enable_rumble);}
     if (this->en_pressure) {this->__sendCommand(enable_pressure);}
-    this->__sendCommand(enter_config);
+    this->__sendCommand(exit_config);
 }//end reconfig
 
 void PS2X::update(void)
@@ -331,7 +333,9 @@ void PS2X::update(void)
 
     if (now>EXPIRED_INTERVAL) { //waited too long
         printf("Waited too long. Try to reset...");
+        this->last_millis = millis();
         this->reconfig();
+        return;
     }//end if
 
     if (now<UPDATE_INTERVAL) {delay(UPDATE_INTERVAL);} //wait a little bit longer
