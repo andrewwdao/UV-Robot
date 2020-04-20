@@ -123,6 +123,8 @@ PS2X::PS2X(int channel = SPI_CHANNEL, int speed = SPI_SPEED, bool analog_enable 
     this->en_analog = analog_enable;
     this->en_pressure = pressure_enable;
     this->en_rumble = rumble_enable;
+    printf("speed: %d",this->spi_speed);
+    printf("channel: %d",this->spi_channel);
     
    //---------------------- Setup wiringPi -----------------------
     wiringPiSetup();
@@ -226,13 +228,14 @@ PS2X::~PS2X()
 
 void PS2X::__shiftout(byte* command)
 {   
-    byte mes[sizeof(command)];
+    byte mes[sizeof(command)+1];
     unsigned int i;
     memcpy(mes, command, sizeof(mes));
-    printf("Sent: "); for (i=0;i<sizeof(mes)+1;i++) {printf("0x%02X,", *(mes+i));} printf("\n");
+    printf("Sent: "); for (i=0;i<sizeof(mes);i++) {printf("0x%02X,", *(mes+i));}
+    printf("\n");
     wiringPiSPIDataRW (spi_channel, mes, sizeof(mes));
     memcpy(this->message, mes, sizeof(mes));
-    printf("Received: "); for (i=0;i<sizeof(this->message)+1;i++) {printf("0x%02X,", *(this->message+i));}
+    printf("Received: "); for (i=0;i<sizeof(this->message);i++) {printf("0x%02X,", *(this->message+i));}
     printf("\n");
 
     return;
