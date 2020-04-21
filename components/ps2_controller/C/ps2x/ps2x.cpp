@@ -172,37 +172,37 @@ int main(int argc, char *argv[]) {
         if (ps2.changed()) 
         {
             if (ps2.pressed(UP))       {fprintf(stdout, "UP\n");fflush(stdout);}
-            else if (ps2.released(UP)) {fprintf(stdout, "UPR\n");fflush(stdout);}
+            else if (ps2.released(UP)) {fprintf(stdout, "UP R\n");fflush(stdout);}
             if (ps2.pressed(DOWN))       {fprintf(stdout, "DOWN\n");fflush(stdout);}
-            else if (ps2.released(DOWN)) {fprintf(stdout, "DOWNR\n");fflush(stdout);}
+            else if (ps2.released(DOWN)) {fprintf(stdout, "DOWN R\n");fflush(stdout);}
             if (ps2.pressed(LEFT))       {fprintf(stdout, "LEFT\n");fflush(stdout);}
-            else if (ps2.released(LEFT)) {fprintf(stdout, "LEFTR\n");fflush(stdout);}
+            else if (ps2.released(LEFT)) {fprintf(stdout, "LEFT R\n");fflush(stdout);}
             if (ps2.pressed(RIGHT))       {fprintf(stdout, "RIGHT\n");fflush(stdout);}
-            else if (ps2.released(RIGHT)) {fprintf(stdout, "RIGHTR\n");fflush(stdout);}
+            else if (ps2.released(RIGHT)) {fprintf(stdout, "RIGHT R\n");fflush(stdout);}
             if (ps2.pressed(TRIANGLE))       {fprintf(stdout, "TRIANGLE\n");fflush(stdout);}
-            else if (ps2.released(TRIANGLE)) {fprintf(stdout, "TRIANGLER\n");fflush(stdout);}
+            else if (ps2.released(TRIANGLE)) {fprintf(stdout, "TRIANGLE R\n");fflush(stdout);}
             if (ps2.pressed(CIRCLE))       {fprintf(stdout, "CIRCLE\n");fflush(stdout);}
-            else if (ps2.released(CIRCLE)) {fprintf(stdout, "CIRCLER\n");fflush(stdout);}
+            else if (ps2.released(CIRCLE)) {fprintf(stdout, "CIRCLE R\n");fflush(stdout);}
             if (ps2.pressed(CROSS))       {fprintf(stdout, "CROSS\n");fflush(stdout);}
-            else if (ps2.released(CROSS)) {fprintf(stdout, "CROSSR\n");fflush(stdout);}
+            else if (ps2.released(CROSS)) {fprintf(stdout, "CROSS R\n");fflush(stdout);}
             if (ps2.pressed(SQUARE))       {fprintf(stdout, "SQUARE\n");fflush(stdout);}
-            else if (ps2.released(SQUARE)) {fprintf(stdout, "SQUARER\n");fflush(stdout);}
+            else if (ps2.released(SQUARE)) {fprintf(stdout, "SQUARE R\n");fflush(stdout);}
             if (ps2.pressed(L1))       {fprintf(stdout, "L1\n");fflush(stdout);}
-            else if (ps2.released(L1)) {fprintf(stdout, "L1R\n");fflush(stdout);}
+            else if (ps2.released(L1)) {fprintf(stdout, "L1 R\n");fflush(stdout);}
             if (ps2.pressed(L2))       {fprintf(stdout, "L2\n");fflush(stdout);}
-            else if (ps2.released(L2)) {fprintf(stdout, "L2R\n");fflush(stdout);}
+            else if (ps2.released(L2)) {fprintf(stdout, "L2 R\n");fflush(stdout);}
             if (ps2.pressed(L3))       {fprintf(stdout, "L3\n");fflush(stdout);}
-            else if (ps2.released(L3)) {fprintf(stdout, "L3R\n");fflush(stdout);}
+            else if (ps2.released(L3)) {fprintf(stdout, "L3 R\n");fflush(stdout);}
             if (ps2.pressed(R1))       {fprintf(stdout, "R1\n");fflush(stdout);}
-            else if (ps2.released(R1)) {fprintf(stdout, "R1R\n");fflush(stdout);}
+            else if (ps2.released(R1)) {fprintf(stdout, "R1 R\n");fflush(stdout);}
             if (ps2.pressed(R2))       {fprintf(stdout, "R2\n");fflush(stdout);}
-            else if (ps2.released(R2)) {fprintf(stdout, "R2R\n");fflush(stdout);}
+            else if (ps2.released(R2)) {fprintf(stdout, "R2 R\n");fflush(stdout);}
             if (ps2.pressed(R3))       {fprintf(stdout, "R3\n");fflush(stdout);}
-            else if (ps2.released(R3)) {fprintf(stdout, "R3R\n");fflush(stdout);}
+            else if (ps2.released(R3)) {fprintf(stdout, "R3 R\n");fflush(stdout);}
             if (ps2.pressed(START))       {fprintf(stdout, "START\n");fflush(stdout);}
-            else if (ps2.released(START)) {fprintf(stdout, "STARTR\n");fflush(stdout);}
+            else if (ps2.released(START)) {fprintf(stdout, "START R\n");fflush(stdout);}
             if (ps2.pressed(SELECT))       {fprintf(stdout, "SELECT\n");fflush(stdout);}
-            else if (ps2.released(SELECT)) {fprintf(stdout, "SELECTR\n");fflush(stdout);}
+            else if (ps2.released(SELECT)) {fprintf(stdout, "SELECT R\n");fflush(stdout);}
         }//end if
         
         if (ps2.LstickChanged()) 

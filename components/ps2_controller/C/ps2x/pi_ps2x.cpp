@@ -194,7 +194,7 @@ PS2X::PS2X(int Dat = PS2_DAT,
         if ((this->ps2data[1] & 0xf0) == 0x70) {
             printf("Analog Mode\n");
             if (this->en_pressure) {
-                if (this->ps2data[1] == 0x79) {printf("Pressures mode ON.\n");}
+                if (this->ps2data[1] == 0x79) {printf("Pressures mode is ON.\n");}
                 if (this->ps2data[1] == 0x73) {fprintf(stderr, "Controller refusing to enter Pressures mode, may not support it.\n");}
             }//end if
             break;
@@ -207,7 +207,7 @@ PS2X::PS2X(int Dat = PS2_DAT,
         }//end if
     }//end while
 
-    printf("Configure successful.\nType:");
+    printf("Configure successful. Type:");
     if      (controller_type == 0x03) {printf("DualShock\n");}
     else if (controller_type == 0x01) {printf("GuitarHero (Not supported yet)\n");}
     else if (controller_type == 0x0C) {printf("2.4G Wireless DualShock\n");}
@@ -247,7 +247,7 @@ void PS2X::update(void)
     unsigned long now = millis() - this->last_millis;
 
     if (now>EXPIRED_INTERVAL) { //waited too long
-        fprintf(stderr, "Waited too long. Try to reset...\n");
+        fprintf(stdout, "Waited too long. Try to reset...\n");
         this->last_millis = millis();
         this->reconfig();
         return;
@@ -277,11 +277,11 @@ void PS2X::update(void)
 
         this->last_millis = millis();
     } else if ((this->ps2data[1]&0xF0) == 0xF0) { //Check if we are in config mode (0xFx), if yes, reconfig to return to normal
-        fprintf(stderr, "Currently in config mode. Getting out...\n");
+        fprintf(stdout, "Currently in config mode. Getting out...\n");
         for (int x=0;x<21;x++) {this->ps2data[x] = 0;} //if not valid, then reset the whole frame 
         this->reconfig(); // try to get back to normal mode.
     } else {//not good data received
-        fprintf(stderr, "Not valid header received: 0x%02X 0x%02X 0x%02X\n", this->ps2data[0],this->ps2data[1], this->ps2data[2]);
+        fprintf(stdout, "Not valid header received: 0x%02X 0x%02X 0x%02X\n", this->ps2data[0],this->ps2data[1], this->ps2data[2]);
         for (int x=0;x<21;x++) {this->ps2data[x] = 0;} //if not valid, then reset the whole frame 
         delay(UPDATE_INTERVAL); //stablize time
     }// end if else
