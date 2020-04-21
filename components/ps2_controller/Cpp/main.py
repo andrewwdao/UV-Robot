@@ -2,7 +2,7 @@
   Example of receiving signal from PS2 controller for MIS-CTU UV robot
   Tested on: Raspberry Pi 3 B+
   (c) Minh-An Dao 2020
-  version 1.00 - 17/04/2020
+  version 1.10 - 21/04/2020
  --------------------------------------------------------------
  *
  *

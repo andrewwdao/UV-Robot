@@ -38,24 +38,6 @@
         0xFx: Config mode
  *
  * 
- * Usage: (root)
- * ./ps2x [-h] [-d DATA-pin] [-c CMD-pin] [-s SELECT-pin] [-k CLOCK-pin] [-a ANALOG] [-l LOCK] [-p PRESS] [-r RUMBLE] 
- *  With:
- *  -h            : show help
- *  -d DATA-pin   : GPIO pin for data pin (wiringPi pin)
- *  -c CMD-pin    : GPIO pin for command pin (wiringPi pin)
- *  -s SELECT-pin : GPIO pin for select pin (wiringPi pin)
- *  -k CLOCK-pin  : GPIO pin for data pin (wiringPi pin)
- *  -a ANALOG     : turn on or off analog mode (1 to turn on, 0 to turn off)
- *  -l LOCK       : turn on or off lock mode (1 to turn on, 0 to turn off)
- *  -p PRESS      : turn on or off pressure mode (1 to turn on, 0 to turn off)
- *  -r RUMBLE     : turn on or off rumble mode (1 to turn on, 0 to turn off)
- * 
- * Example: * Run as default:  sudo ./ps2x
- *          * Change pins:     sudo ./ps2x -d 9 -c 10 -s 8 -k 11
- *          * Change modes:    sudo ./ps2x -a 1 -l 1 -p 0 -r 1
- *
- * 
  * Licensed under the MIT license. All right reserved.
  --------------------------------------------------------------"""
 import subprocess as sp
@@ -146,7 +128,6 @@ class PS2X(object):
                                        stderr=sp.PIPE)
         self.output  = StreamReader(self.ps2obj.stdout)
         self.error   = StreamReader(self.ps2obj.stderr) 
-        self.update() # first update for information
 
     def __del__(self):
         """

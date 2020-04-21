@@ -38,7 +38,6 @@
         0xFx: Config mode
  *
  * 
- * 
  * Licensed under the MIT license. All right reserved.
  --------------------------------------------------------------"""
 from ps2x.ps2x import PS2X
