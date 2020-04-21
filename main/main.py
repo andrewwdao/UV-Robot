@@ -28,21 +28,20 @@ def main():  # Main program block
     DANGER_FLAG = False
     ACCEL = 100 #ms
     SAFETY_TIME = 1000 #ms --> 1s
-    last_millisU = STOP_millis = UP_interval = ()
+
     # start to count time
     last_millisU = millis()
     STOP_millis = millis() # time flag to trigger auto stop
-    print(last_millisU)
-    print(STOP_millis)
+    
     # forever loop start...
     while True:
         ps2.update()
 
         # --- motor speed digital control
-        if ps2.buttonPressing() & (UP_interval > ACCEL):
+        if ps2.buttonPressing():
             UP_interval = millis() - last_millisU # calculate interval
 
-            if ps2.isPressing(ps2.UP):
+            if ps2.isPressing(ps2.UP) & (UP_interval > ACCEL):
                 print('UP pressed')
                 Motor.move_fw(PWM_STEP) # increasing algorithm integrated
                 last_millisU = millis() # for recalculating interval
