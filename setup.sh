@@ -38,10 +38,9 @@ cd /home/$(who am i | awk '{print $1}')/ # return to home folder -- cannot use $
 if [ -d "./system" ] ; then  # check if the directory exist or not
 	rm -rf ./system
 fi
-mkdir ./system
-cd ./system
-git init
 git clone https://github.com/minhan74/UV-Robot.git
+# change name
+mv UV-Robot/ system/
 
 # ---------------- setup all the prequisites
 cd /home/$(who am i | awk '{print $1}')/system/main
