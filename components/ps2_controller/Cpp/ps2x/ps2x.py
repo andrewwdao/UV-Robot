@@ -187,7 +187,7 @@ class PS2X(object):
     
     def LstickRead(self): # release adc value of the Left analog stick
         LX = self.Lsticks >> 8
-        LY = self.Lsticks & 0x0F
+        LY = self.Lsticks & 0x00FF
         return [LX,LY]
         
     def flush(self):
