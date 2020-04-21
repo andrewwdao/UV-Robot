@@ -144,6 +144,8 @@ class PS2X(object):
         self.Lsticks = 0
         self.last_Lsticks = 0
 
+        print('PS2 Controller Ready!')
+
 
     def __del__(self):
         """
@@ -163,8 +165,8 @@ class PS2X(object):
             if (len(data) is 3) and (data[0] == "Data:"): # correct frame
                     self.last_buttons = self.buttons
                     self.last_Lsticks = self.Lsticks
-                    self.buttons = data[1]
-                    self.Lsticks = data[2]
+                    self.buttons = int(data[1])
+                    self.Lsticks = int(data[2])
             else: # if this is information, then dump it to output
                 print(raw_data)
 
