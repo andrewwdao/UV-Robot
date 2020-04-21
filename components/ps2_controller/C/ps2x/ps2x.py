@@ -106,7 +106,7 @@ class PS2X(object):
         self.en_rumble = rumble
         self.TARGET = './ps2x'
 
-        self.ps2obj = sp.Popen(['sudo',self.TARGET,
+        self.ps2obj = sp.Popen([self.TARGET,
                                        '-d', str(self.dat_pin),
                                        '-c', str(self.cmd_pin),
                                        '-s', str(self.sel_pin),
