@@ -84,6 +84,8 @@ class Motor_UART(object):
         """
         Destructor
         """
+        ## stop the motor if still running
+        self.release()
         ## Close connection if still established
         if (self.__serial is not None and self.__serial.isOpen() == True):
             self.__serial.close()

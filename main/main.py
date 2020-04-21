@@ -37,11 +37,12 @@ def main():  # Main program block
     while True:
         ps2.update()
 
-        if ps2.buttonChanged():
-            UP_interval = datetime.now().microsecond - last_millisU # calculate interval
-            DOWN_interval = LEFT_interval = RIGHT_interval = UP_interval #multiple them for other button
+        UP_interval = datetime.now().microsecond - last_millisU # calculate interval
+        DOWN_interval = LEFT_interval = RIGHT_interval = UP_interval #multiple them for other button
 
-            if (ps2.pressed(ps2.UP)|UP_FLAG)&(UP_interval>ACCEL):
+        if ps2.buttonChanged():
+            
+            if (ps2.pressed(ps2.UP) | UP_FLAG) & (UP_interval > ACCEL):
                 print('UP pressed')
                 Motor.move_fw(PWM_STEP) # increasing algorithm integrated
                 UP_FLAG = True
@@ -67,7 +68,7 @@ def main():  # Main program block
             elif ps2.released(ps2.RIGHT):
                 print('RIGHT released')
 
-        if (DANGER_FLAG)&(datetime.now().microsecond - STOP_millis) > SAFETY_TIME: # if time flag isn't gotten reset, then stop
+        if (DANGER_FLAG) & ((datetime.now().microsecond - STOP_millis) > SAFETY_TIME): # if time flag isn't gotten reset, then stop
             print('Motor stop')
             Motor.release()
             DANGER_FLAG = False
