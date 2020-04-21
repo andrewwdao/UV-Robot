@@ -145,7 +145,6 @@ class PS2X(object):
         self.last_Lsticks = int()
 
         self.update() # first update to co
-        print('PS2 Controller Ready!')
 
 
     def __del__(self):
@@ -164,21 +163,18 @@ class PS2X(object):
             raw_data = output.strip().decode("utf-8")
             data = list(raw_data.split(" "))
             if (len(data) is 3) and (data[0] == "Data:"): # correct frame
-                    print(data)
                     self.last_buttons = self.buttons
                     self.last_Lsticks = self.Lsticks
                     self.buttons = int(data[1])
                     self.Lsticks = int(data[2])
-                    print(self.buttons)
-                    print(self.Lsticks)
             else: # if this is information, then dump it to output
                 print(raw_data)
 
     def buttonChanged(self): # will be TRUE if any button changes state (on to off, or off to on)
-        return (self.last_buttons^self.buttons)>0
+        return self.last_buttons != self.buttons
     
     def LstickChanged(self): # will be TRUE if Left stick changed
-        return (self.last_Lsticks^self.Lsticks)>0
+        return self.last_Lsticks != self.Lsticks
     
     def changed(self): # will be TRUE if any button changes state (on to off, or off to on) or Left stick changed
         return self.buttonChanged()|self.LstickChanged()

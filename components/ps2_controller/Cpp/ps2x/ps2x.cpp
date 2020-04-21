@@ -174,6 +174,11 @@ int main(int argc, char *argv[]) {
             fprintf(stdout, "Data: %d %d\n", ps2.rawButton(),
                                              ps2.rawLStick());
             fflush(stdout);
+            delay(10);
+            // need to send double time like this to make the algorithm
+            // in python code works
+            fprintf(stdout, "Data: %d %d\n", ps2.rawButton(),
+                                             ps2.rawLStick());
         }//end if
         
         // if (ps2.LstickChanged()) 
