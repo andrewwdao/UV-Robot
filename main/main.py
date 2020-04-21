@@ -10,10 +10,10 @@
 import server
 from motor import Motor
 from ps2x import ps2
-from datetime import datetime, timezone
+import time
 
 # ---------------------------- Configurable parameters -------------------------
-
+millis = lambda: int(time.time() * 1000)
 # --------------------------- Set Up ----------------------------------------
 
 
@@ -26,12 +26,12 @@ def main():  # Main program block
     LEFT_FLAG = False
     RIGHT_FLAG = False
     DANGER_FLAG = False
-    ACCEL = 100000 #ms
-    SAFETY_TIME = 1000000 #s
-
+    ACCEL = 100 #ms
+    SAFETY_TIME = 1000 #ms --> 1s
+    last_millisU = STOP_millis = UP_interval = ()
     # start to count time
-    last_millisU = datetime.now(timezone.utc).microsecond
-    STOP_millis = datetime.now(timezone.utc).microsecond # time flag to trigger auto stop
+    last_millisU = millis()
+    STOP_millis = millis() # time flag to trigger auto stop
     print(last_millisU)
     print(STOP_millis)
     # forever loop start...
@@ -40,15 +40,15 @@ def main():  # Main program block
 
         
         if ps2.buttonChanged():
-            UP_interval = datetime.now(timezone.utc).microsecond - last_millisU # calculate interval
+            UP_interval = millis() - last_millisU # calculate interval
             print(UP_interval)
             if (ps2.pressed(ps2.UP) | UP_FLAG) & (UP_interval > ACCEL):
                 print('UP pressed')
                 Motor.move_fw(PWM_STEP) # increasing algorithm integrated
                 UP_FLAG = True
-                last_millisU = datetime.now(timezone.utc).microsecond # for recalculating interval
+                last_millisU = millis() # for recalculating interval
                 DANGER_FLAG = True
-                STOP_millis = datetime.now(timezone.utc).microsecond # reset the flag so the motor won't stop
+                STOP_millis = millis() # reset the flag so the motor won't stop
             elif ps2.released(ps2.UP):
                 print('UP released')
                 UP_FLAG = False
@@ -68,7 +68,7 @@ def main():  # Main program block
             elif ps2.released(ps2.RIGHT):
                 print('RIGHT released')
 
-        if (DANGER_FLAG) & ((datetime.now(timezone.utc).microsecond - STOP_millis) > SAFETY_TIME): # if time flag isn't gotten reset, then stop
+        if (DANGER_FLAG) & ((millis() - STOP_millis) > SAFETY_TIME): # if time flag isn't gotten reset, then stop
             print('Motor stop')
             Motor.release()
             DANGER_FLAG = False
