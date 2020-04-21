@@ -179,7 +179,7 @@ PS2X::PS2X(int Dat = PS2_DAT,
         {controller_type = this->ps2data[3];} // save type of the controller
 
     // --- config the controller as we want
-    this->__sendCommand(set_mode,9);
+    //this->__sendCommand(set_mode,9);
     if (this->en_rumble)   {this->__sendCommand(enable_rumble,9);}
     if (this->en_pressure) {this->__sendCommand(enable_pressure,9);}
     this->__sendCommand(exit_config,9);
