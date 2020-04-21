@@ -26,8 +26,6 @@ if [ 0 -eq $( grep -c 'enable_uart=1' /boot/config.txt ) ]; then
 	echo "enable_uart=1" | tee -a /boot/config.txt
 fi
 
-# show all usb plugged in
-ls /dev/serial/by-*
 
 echo
 echo
