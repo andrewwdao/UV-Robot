@@ -59,7 +59,7 @@
  * Licensed under the MIT license. All right reserved.
  --------------------------------------------------------------"""
 import subprocess as sp
-from streamReader import StreamReader
+from ps2x.streamReader import StreamReader
 import sys
 import time
 
