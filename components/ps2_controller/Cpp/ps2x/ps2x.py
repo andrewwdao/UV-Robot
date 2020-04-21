@@ -125,16 +125,16 @@ class PS2X(object):
 
         # self.TARGET = './ps2x'
         self.TARGET = '/home/pi/system/components/ps2_controller/Cpp/ps2x/ps2x'
-        print(str(self.en_analog))
+        
         self.ps2obj = sp.Popen(['sudo',self.TARGET,
                                        '-d', str(self.dat_pin),
                                        '-c', str(self.cmd_pin),
                                        '-s', str(self.sel_pin),
                                        '-k', str(self.clk_pin),
-                                       '-a', str(self.en_analog),
-                                       '-l', str(self.en_locked),
-                                       '-p', str(self.en_pressures),
-                                       '-r', str(self.en_rumble)],
+                                       '-a', str(int(self.en_analog)),
+                                       '-l', str(int(self.en_locked)),
+                                       '-p', str(int(self.en_pressures)),
+                                       '-r', str(int(self.en_rumble))],
                                        shell=False,
                                        stdout=sp.PIPE,
                                        stderr=sp.PIPE)
