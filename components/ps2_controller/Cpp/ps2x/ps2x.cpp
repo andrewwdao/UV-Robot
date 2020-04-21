@@ -70,7 +70,7 @@
 #define PS2_CMD 12 // wiringPi
 #define PS2_SEL 10  // wiringPi
 #define PS2_CLK 14 // wiringPi
-#define PS2_ANALOG true
+#define PS2_ANALOG false
 #define PS2_LOCKED false
 #define PS2_PRESSURE false
 #define PS2_RUMBLE false
