@@ -118,8 +118,9 @@ class PS2X {
     bool pressed(int);                         // will be TRUE once after a selected button was pressed
     bool released(int);                        // will be TRUE once after a selected button was released
     int rawButton(void);                       // return raw button value for python module
-    int rawLastButton(void);                   // return raw last button value for python module
+    int rawLastButton(void);                   // return last raw button value for python module
     int rawLStick(void);                       // return raw Lstick adc value for python module
+    int rawLastLStick(void);                       // return last raw Lstick adc value for python module
     int readAnalog(int);                       /* return analog value (byte) of the selected button (or stick)
                                                // WARNING: there are no analog value for SELECT, START, L3, R3 buttons.
                                                            Please don't try put them in this function, otherwise result may not be what you're looking for*/

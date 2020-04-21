@@ -170,15 +170,14 @@ int main(int argc, char *argv[]) {
     while (1) {
         ps2.update();
         if (ps2.changed()) 
-        {
-            fprintf(stdout, "Data: %d %d\n", ps2.rawButton(),
-                                             ps2.rawLStick());
+        {   
+            //must have last state of button and stick
+            //because the algorithm need to supervise last state too
+            fprintf(stdout, "Data: %d %d %d %d\n", ps2.rawButton(),
+                                                   ps2.rawLastButton(),
+                                                   ps2.rawLStick()
+                                                   ps2.rawLastLSick());
             fflush(stdout);
-            delay(10);
-            // need to send double time like this to make the algorithm
-            // in python code works
-            fprintf(stdout, "Data: %d %d\n", ps2.rawButton(),
-                                             ps2.rawLStick());
         }//end if
         
         // if (ps2.LstickChanged()) 

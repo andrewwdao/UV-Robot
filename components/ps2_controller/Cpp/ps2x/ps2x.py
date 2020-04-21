@@ -144,9 +144,6 @@ class PS2X(object):
         self.Lsticks = int()
         self.last_Lsticks = int()
 
-        self.update() # first update to co
-
-
     def __del__(self):
         """
         Destructor
@@ -162,11 +159,11 @@ class PS2X(object):
         if output is not None:  # turn it into string if it is not a null
             raw_data = output.strip().decode("utf-8")
             data = list(raw_data.split(" "))
-            if (len(data) is 3) and (data[0] == "Data:"): # correct frame
-                    self.last_buttons = self.buttons
-                    self.last_Lsticks = self.Lsticks
+            if (len(data) is 5) and (data[0] == "Data:"): # correct frame
                     self.buttons = int(data[1])
-                    self.Lsticks = int(data[2])
+                    self.last_buttons = int(data[2]) # must have
+                    self.Lsticks = int(data[3])
+                    self.last_Lsticks = int(data[4]) # must have
             else: # if this is information, then dump it to output
                 print(raw_data)
 

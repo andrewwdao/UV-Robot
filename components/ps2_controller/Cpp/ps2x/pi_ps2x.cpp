@@ -305,6 +305,8 @@ int PS2X::rawLastButton(void) {return this->last_buttons;}
 
 int PS2X::rawLStick(void) {return this->Lsticks;}
 
+int PS2X::rawlastLStick(void) {return this->last_Lsticks;}
+
 /* WARNING: there are no analog value for SELECT, START, L3, R3.
             Please don't try put it in this function, otherwise result may not be what you're looking for
     5  - RX    9  - RIGHT    17 - L1                  16 - SQUARE - PINK
