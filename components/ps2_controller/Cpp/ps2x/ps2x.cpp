@@ -107,6 +107,12 @@ void showUsage(void) {
     exit(0);
 }//end showUsage
 
+void sendData(int dat1, int dat2)
+{
+    fprintf(stdout, "Data: %d %d\n", dat1, dat2);
+    fflush(stdout);
+}
+
 int main(int argc, char *argv[]) {
     /* defaults */
     options.ps2_dat = PS2_DAT;
@@ -165,6 +171,11 @@ int main(int argc, char *argv[]) {
              options.ps2_pressure,
              options.ps2_rumble
             );
+    
+    // remove dumping garbage from the main thread
+    sendData(ps2.rawButton(), ps2.rawLStick());
+    delay(27);
+    sendData(ps2.rawButton(), ps2.rawLStick());
 
     /*now come the loop*/
     bool changed_flag = false;
@@ -173,17 +184,13 @@ int main(int argc, char *argv[]) {
         if (ps2.changed()) 
         {   
             changed_flag = true;
-            fprintf(stdout, "Data: %d %d\n", ps2.rawButton(),
-                                             ps2.rawLStick());
-            fflush(stdout);
+            sendData(ps2.rawButton(), ps2.rawLStick());
         }
         else if (changed_flag) //need to have this to main system to compare
         {
             changed_flag = false;
-            fprintf(stdout, "Data: %d %d\n", ps2.rawButton(),
-                                             ps2.rawLStick());
-            fflush(stdout);
-        }//end if else
+            sendData(ps2.rawButton(), ps2.rawLStick());
+        }
 
         //pause(); //pause to wait for ISR and not consuming system memory
 
