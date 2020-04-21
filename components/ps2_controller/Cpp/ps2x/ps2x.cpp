@@ -71,7 +71,7 @@
 #define PS2_SEL 10  // wiringPi
 #define PS2_CLK 14 // wiringPi
 #define PS2_ANALOG true
-#define PS2_LOCKED true
+#define PS2_LOCKED false
 #define PS2_PRESSURE false
 #define PS2_RUMBLE false
 
@@ -171,11 +171,6 @@ int main(int argc, char *argv[]) {
              options.ps2_pressure,
              options.ps2_rumble
             );
-    
-    // remove dumping garbage from the main thread
-    sendData(ps2.rawButton(), ps2.rawLStick());
-    delay(27);
-    sendData(ps2.rawButton(), ps2.rawLStick());
 
     /*now come the loop*/
     bool changed_flag = false;

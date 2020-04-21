@@ -139,10 +139,10 @@ class PS2X(object):
                                        stderr=sp.PIPE)
         self.output  = StreamReader(self.ps2obj.stdout)
         self.error   = StreamReader(self.ps2obj.stderr) 
-        self.buttons = int()
-        self.last_buttons = int()
-        self.Lsticks = int()
-        self.last_Lsticks = int()
+        self.buttons = 0xFFFF # all button released
+        self.last_buttons = 0xFFFF # all button released
+        self.Lsticks = 0x807F # 128 << 8 + 127 --> stable state of the analog stick
+        self.last_Lsticks = 0x807F # 128 << 8 + 127 --> stable state of the analog stick
 
     def __del__(self):
         """
