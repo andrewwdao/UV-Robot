@@ -46,34 +46,30 @@ def main():  # Main program block
                 print('UP pressed')
                 Motor.move_fw(PWM_STEP) # increasing algorithm integrated
                 last_millisU = millis() # for recalculating interval
-                DANGER_FLAG = True
-                STOP_millis = millis() # reset the flag so the motor won't stop
-            
+                
             # --- DOWN
             if ps2.isPressing(ps2.DOWN) & (DOWN_interval > ACCEL):
                 print('DOWN pressed')
                 Motor.move_bw(PWM_STEP) # increasing algorithm integrated
                 last_millisD = millis() # for recalculating interval
-                DANGER_FLAG = True
-                STOP_millis = millis() # reset the flag so the motor won't stop
-            
+                
             # --- LEFT
             if ps2.isPressing(ps2.LEFT) & (LEFT_interval > ACCEL):
                 print('LEFT pressed')
                 Motor.turn_left(Motor.FORWARD,PWM_STEP) # increasing algorithm integrated
                 last_millisL = millis() # for recalculating interval
-                DANGER_FLAG = True
-                STOP_millis = millis() # reset the flag so the motor won't stop
-            
+                
             # --- RIGHT
             if ps2.isPressing(ps2.RIGHT) & (RIGHT_interval > ACCEL):
                 print('RIGHT pressed')
                 Motor.turn_right(Motor.FORWARD,PWM_STEP) # increasing algorithm integrated
                 last_millisR = millis() # for recalculating interval
-                DANGER_FLAG = True
-                STOP_millis = millis() # reset the flag so the motor won't stop
             
-
+            # whether what arrow buttons are pressed, they created movement
+            # so turn on dangerous flag for release motor mechanism 
+            DANGER_FLAG = True
+            STOP_millis = millis() # reset the flag so the motor won't stop
+            
         if (DANGER_FLAG) & ((millis() - STOP_millis) > SAFETY_TIME): # if time flag isn't gotten reset, then stop
             print('Motor stop')
             Motor.release()
