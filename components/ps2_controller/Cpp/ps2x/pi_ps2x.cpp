@@ -221,7 +221,7 @@ PS2X::~PS2X() {}//end destructor
 void PS2X::changeMode(bool analog_mode, bool locked_mode)
 {
     set_mode[3] = (analog_mode)?0x01:0x00; //change between analog and digital mode
-    set_mode[4] = (locked_mode)?0x03:0x01; //change between lock and unlock mode (press the MODE button on the controller to change between analog and digital)
+    set_mode[4] = (locked_mode)?0x03:0xFF; //change between lock and unlock mode (press the MODE button on the controller to change between analog and digital)
     printf("0x%02X\n",set_mode[4]);
 }//end changeMode
 
