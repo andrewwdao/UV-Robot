@@ -107,6 +107,12 @@ void showUsage(void) {
     exit(0);
 }//end showUsage
 
+void sendData(void) {
+    fprintf(stdout, "Data: %d %d\n", ps2.rawButton(),
+                                     ps2.rawLStick());
+    fflush(stdout);
+}//end sendData
+
 int main(int argc, char *argv[]) {
     /* defaults */
     options.ps2_dat = PS2_DAT;
@@ -167,21 +173,19 @@ int main(int argc, char *argv[]) {
             );
 
     /*now come the loop*/
+    bool changed_flag = false;
     while (1) {
         ps2.update();
         if (ps2.changed()) 
         {   
-            //must have last state of button and stick
-            //because the algorithm need to supervise last state too
-            fprintf(stdout, "Data: %d %d %d %d\n", ps2.rawButton(),
-                                                   ps2.rawLastButton(),
-                                                   ps2.rawLStick(),
-                                                   ps2.rawLastLStick());
-            fflush(stdout);
-        }//end if
-        
-        // if (ps2.LstickChanged()) 
-        // {fprintf(stdout, "LSTICK %d %d\n", ps2.readAnalog(LX), ps2.readAnalog(LY));fflush(stdout);}
+            changed_flag = true;
+            sendData();
+        }
+        else if (changed_flag)
+        {
+            changed_flag = false;
+            sendData();
+        }//end if else
 
         //pause(); //pause to wait for ISR and not consuming system memory
 
