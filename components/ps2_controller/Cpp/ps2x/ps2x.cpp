@@ -175,7 +175,7 @@ int main(int argc, char *argv[]) {
             //because the algorithm need to supervise last state too
             fprintf(stdout, "Data: %d %d %d %d\n", ps2.rawButton(),
                                                    ps2.rawLastButton(),
-                                                   ps2.rawLStick()
+                                                   ps2.rawLStick(),
                                                    ps2.rawLastLSick());
             fflush(stdout);
         }//end if
