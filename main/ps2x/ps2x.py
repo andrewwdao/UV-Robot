@@ -154,7 +154,7 @@ class PS2X(object):
 
     def buttonChanged(self): # will be TRUE if any button changes state (on to off, or off to on)
         return self.last_buttons != self.buttons
-
+    
     def buttonPressing(self): #  # will be TRUE as long as ANY button is pressed
         return ~self.buttons
     
@@ -165,13 +165,13 @@ class PS2X(object):
         return self.buttonChanged()|self.LstickChanged()
 
     def isPressing(self, button): # will be TRUE as long as a specific button is pressed
-        return ~self.buttons & button
+        return (~self.buttons & button)>0
 
     def pressed(self, button): # will be true only once when button is pressed
         return self.buttonChanged() & self.isPressing(button)
     
     def released(self, button): # will be true only once when button is released
-        return self.buttonChanged() & (~self.last_buttons & button)
+        return self.buttonChanged() & ((~self.last_buttons & button) > 0)
     
     def LstickRead(self): # release adc value of the Left analog stick
         LX = self.Lsticks >> 8
