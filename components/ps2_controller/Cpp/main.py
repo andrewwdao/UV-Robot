@@ -94,7 +94,7 @@ try:
       elif ps2.released(ps2.START):
         print('START released')
     
-    if ps2.Lstickchanged():
+    if ps2.LstickChanged():
       print(ps2.LstickRead())
         
 except KeyboardInterrupt:
