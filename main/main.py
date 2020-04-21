@@ -30,17 +30,16 @@ def main():  # Main program block
     SAFETY_TIME = 1000000 #s
 
     # start to count time
-    last_millisU = last_millisD = last_millisL = last_millisR = datetime.now().microsecond
+    last_millisU = datetime.now().microsecond
     STOP_millis = datetime.now().microsecond # time flag to trigger auto stop
 
     # forever loop start...
     while True:
         ps2.update()
 
-        UP_interval = datetime.now().microsecond - last_millisU # calculate interval
-        DOWN_interval = LEFT_interval = RIGHT_interval = UP_interval #multiple them for other button
-
+        
         if ps2.buttonChanged():
+            UP_interval = datetime.now().microsecond - last_millisU # calculate interval
             
             if (ps2.pressed(ps2.UP) | UP_FLAG) & (UP_interval > ACCEL):
                 print('UP pressed')
