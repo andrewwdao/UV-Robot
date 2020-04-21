@@ -176,7 +176,7 @@ int main(int argc, char *argv[]) {
             fprintf(stdout, "Data: %d %d %d %d\n", ps2.rawButton(),
                                                    ps2.rawLastButton(),
                                                    ps2.rawLStick(),
-                                                   ps2.rawLastLSick());
+                                                   ps2.rawLastLStick());
             fflush(stdout);
         }//end if
         
