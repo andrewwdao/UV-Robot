@@ -104,9 +104,9 @@ class PS2X(object):
         self.en_locked = locked
         self.en_pressures = press
         self.en_rumble = rumble
-        self.TARGET = './ps2x'
-
-        self.ps2obj = sp.Popen([self.TARGET,
+        # self.TARGET = './ps2x'
+        self.TARGET = '/home/pi/system/components/ps2_controller/C/ps2x/ps2x'
+        self.ps2obj = sp.Popen(['sudo',self.TARGET,
                                        '-d', str(self.dat_pin),
                                        '-c', str(self.cmd_pin),
                                        '-s', str(self.sel_pin),
