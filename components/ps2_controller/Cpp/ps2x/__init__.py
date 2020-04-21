@@ -48,7 +48,7 @@ PS2_CMD = 12  # wiringPi pin (not BCM). ref: http://wiringpi.com/pins/
 PS2_SEL = 10  # wiringPi pin (not BCM). ref: http://wiringpi.com/pins/
 PS2_CLK = 14  # wiringPi pin (not BCM). ref: http://wiringpi.com/pins/
 PS2_ANALOG   = True
-PS2_LOCKED   = False
+PS2_LOCKED   = True
 PS2_PRESSURE = False
 PS2_RUMBLE   = False
 

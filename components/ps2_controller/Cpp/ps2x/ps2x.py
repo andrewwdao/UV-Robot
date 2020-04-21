@@ -68,7 +68,7 @@ PS2_CMD = 12  # wiringPi pin (not BCM). ref: http://wiringpi.com/pins/
 PS2_SEL = 10  # wiringPi pin (not BCM). ref: http://wiringpi.com/pins/
 PS2_CLK = 14  # wiringPi pin (not BCM). ref: http://wiringpi.com/pins/
 PS2_ANALOG   = True
-PS2_LOCKED   = False
+PS2_LOCKED   = True
 PS2_PRESSURE = False
 PS2_RUMBLE   = False
 
@@ -123,6 +123,12 @@ class PS2X(object):
         self.CROSS      = 0x4000
         self.SQUARE     = 0x8000
 
+        # value for the buttons and sticks
+        self.buttons = 0xFFFF # all button released
+        self.last_buttons = 0xFFFF # all button released
+        self.Lsticks = 0x807F # 128 << 8 + 127 --> stable state of the analog stick
+        self.last_Lsticks = 0x807F # 128 << 8 + 127 --> stable state of the analog stick
+
         # self.TARGET = './ps2x'
         self.TARGET = '/home/pi/system/components/ps2_controller/Cpp/ps2x/ps2x'
         
@@ -140,10 +146,7 @@ class PS2X(object):
                                        stderr=sp.PIPE)
         self.output  = StreamReader(self.ps2obj.stdout)
         self.error   = StreamReader(self.ps2obj.stderr) 
-        self.buttons = 0xFFFF # all button released
-        self.last_buttons = 0xFFFF # all button released
-        self.Lsticks = 0x807F # 128 << 8 + 127 --> stable state of the analog stick
-        self.last_Lsticks = 0x807F # 128 << 8 + 127 --> stable state of the analog stick
+        self.update() # first update for information
 
     def __del__(self):
         """
