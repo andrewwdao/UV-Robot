@@ -32,7 +32,8 @@ def main():  # Main program block
     # start to count time
     last_millisU = datetime.now(timezone.utc).microsecond
     STOP_millis = datetime.now(timezone.utc).microsecond # time flag to trigger auto stop
-
+    print(last_millisU)
+    print(STOP_millis)
     # forever loop start...
     while True:
         ps2.update()
@@ -40,7 +41,7 @@ def main():  # Main program block
         
         if ps2.buttonChanged():
             UP_interval = datetime.now(timezone.utc).microsecond - last_millisU # calculate interval
-            
+            print(UP_interval)
             if (ps2.pressed(ps2.UP) | UP_FLAG) & (UP_interval > ACCEL):
                 print('UP pressed')
                 Motor.move_fw(PWM_STEP) # increasing algorithm integrated
