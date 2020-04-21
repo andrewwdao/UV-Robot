@@ -41,6 +41,6 @@ python3 ../admin_init.py
 
 echo
 echo
-echo "Done."
+echo "Database Done."
 
 ## (c) 2020 Minh-An Dao. All right reserved

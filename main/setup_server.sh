@@ -37,6 +37,6 @@ pip3 install gevent
 
 echo
 echo
-echo "Done."
+echo "Server Done."
 
 ## (c) 2020 Minh-An Dao. All right reserved

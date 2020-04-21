@@ -9,7 +9,7 @@
  --------------------------------------------------------------"""
 from motor import Motor
 
-PWM_STEP = 20 # must be multiple of 10
+PWM_STEP = 10 # accel must be multiple of PWM_STEP = 10
 
 try:
   while True:

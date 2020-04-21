@@ -29,6 +29,6 @@ fi
 
 echo
 echo
-echo "Done."
+echo "Motor Done."
 
 ## (c) 2020 Minh-An Dao. All right reserved

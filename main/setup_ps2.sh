@@ -30,6 +30,6 @@ make
 
 echo
 echo
-echo "Done."
+echo "PS2 Done."
 
 ## (c) 2020 Minh-An Dao. All right reserved
