@@ -124,7 +124,7 @@ class PS2X(object):
         self.SQUARE     = 0x8000
 
         # self.TARGET = './ps2x'
-        self.TARGET = '/home/pi/system/components/ps2_controller/C/ps2x/ps2x'
+        self.TARGET = '/home/pi/system/components/ps2_controller/Cpp/ps2x/ps2x'
         self.ps2obj = sp.Popen(['sudo',self.TARGET,
                                        '-d', str(self.dat_pin),
                                        '-c', str(self.cmd_pin),
