@@ -68,7 +68,7 @@ PS2_CMD = 12  # wiringPi pin (not BCM). ref: http://wiringpi.com/pins/
 PS2_SEL = 10  # wiringPi pin (not BCM). ref: http://wiringpi.com/pins/
 PS2_CLK = 14  # wiringPi pin (not BCM). ref: http://wiringpi.com/pins/
 PS2_ANALOG   = True
-PS2_LOCKED   = True
+PS2_LOCKED   = False
 PS2_PRESSURE = False
 PS2_RUMBLE   = False
 
@@ -139,11 +139,12 @@ class PS2X(object):
                                        stderr=sp.PIPE)
         self.output  = StreamReader(self.ps2obj.stdout)
         self.error   = StreamReader(self.ps2obj.stderr) 
-        self.buttons = 0
-        self.last_buttons = 0
-        self.Lsticks = 0
-        self.last_Lsticks = 0
+        self.buttons = int()
+        self.last_buttons = int()
+        self.Lsticks = int()
+        self.last_Lsticks = int()
 
+        self.update() # first update to co
         print('PS2 Controller Ready!')
 
 
@@ -163,10 +164,13 @@ class PS2X(object):
             raw_data = output.strip().decode("utf-8")
             data = list(raw_data.split(" "))
             if (len(data) is 3) and (data[0] == "Data:"): # correct frame
+                    print(data)
                     self.last_buttons = self.buttons
                     self.last_Lsticks = self.Lsticks
                     self.buttons = int(data[1])
                     self.Lsticks = int(data[2])
+                    print(self.buttons)
+                    print(self.Lsticks)
             else: # if this is information, then dump it to output
                 print(raw_data)
 
