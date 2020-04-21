@@ -21,16 +21,13 @@ millis = lambda: int(time.time() * 1000)
 def main():  # Main program block
     # ---------------------------- Configurable parameters -------------------------
     PWM_STEP = 10 # accel must be multiple of PWM_STEP = 10
-    UP_FLAG = False
-    DOWN_FLAG = False
-    LEFT_FLAG = False
-    RIGHT_FLAG = False
     DANGER_FLAG = False
-    ACCEL = 100 #ms
-    SAFETY_TIME = 1000 #ms --> 1s
+    ACCEL = 150 #ms
+    SAFETY_TIME = 500 #ms --> 1s
 
     # start to count time
-    last_millisU = millis()
+    last_millisU = millis() # monitoring interval
+    last_millisD = last_millisL = last_millisR = last_millisU # multiple for arrow buttons
     STOP_millis = millis() # time flag to trigger auto stop
     
     # forever loop start...
@@ -38,9 +35,13 @@ def main():  # Main program block
         ps2.update()
 
         # --- motor speed digital control
-        if ps2.buttonPressing():
-            UP_interval = millis() - last_millisU # calculate interval
+        if ps2.arrowPressing():
+            UP_interval    = millis() - last_millisU # calculate interval
+            DOWN_interval  = millis() - last_millisD # calculate interval
+            LEFT_interval  = millis() - last_millisL # calculate interval
+            RIGHT_interval = millis() - last_millisR # calculate interval
 
+            # --- UP
             if ps2.isPressing(ps2.UP) & (UP_interval > ACCEL):
                 print('UP pressed')
                 Motor.move_fw(PWM_STEP) # increasing algorithm integrated
@@ -48,22 +49,30 @@ def main():  # Main program block
                 DANGER_FLAG = True
                 STOP_millis = millis() # reset the flag so the motor won't stop
             
-            if ps2.pressed(ps2.DOWN):
+            # --- DOWN
+            if ps2.isPressing(ps2.DOWN) & (DOWN_interval > ACCEL):
                 print('DOWN pressed')
-            elif ps2.isPressing(ps2.DOWN):
-                print('DOWN is pressing')
-            elif ps2.released(ps2.DOWN):
-                print('DOWN released')
+                Motor.move_bw(PWM_STEP) # increasing algorithm integrated
+                last_millisD = millis() # for recalculating interval
+                DANGER_FLAG = True
+                STOP_millis = millis() # reset the flag so the motor won't stop
             
-            if ps2.pressed(ps2.LEFT):
+            # --- LEFT
+            if ps2.isPressing(ps2.LEFT) & (LEFT_interval > ACCEL):
                 print('LEFT pressed')
-            elif ps2.released(ps2.LEFT):
-                print('LEFT released')
-
-            if ps2.pressed(ps2.RIGHT):
+                Motor.turn_left(Motor.FORWARD,PWM_STEP) # increasing algorithm integrated
+                last_millisL = millis() # for recalculating interval
+                DANGER_FLAG = True
+                STOP_millis = millis() # reset the flag so the motor won't stop
+            
+            # --- RIGHT
+            if ps2.isPressing(ps2.RIGHT) & (RIGHT_interval > ACCEL):
                 print('RIGHT pressed')
-            elif ps2.released(ps2.RIGHT):
-                print('RIGHT released')
+                Motor.turn_right(Motor.FORWARD,PWM_STEP) # increasing algorithm integrated
+                last_millisR = millis() # for recalculating interval
+                DANGER_FLAG = True
+                STOP_millis = millis() # reset the flag so the motor won't stop
+            
 
         if (DANGER_FLAG) & ((millis() - STOP_millis) > SAFETY_TIME): # if time flag isn't gotten reset, then stop
             print('Motor stop')

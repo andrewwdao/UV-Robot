@@ -166,10 +166,13 @@ class PS2X(object):
       
     def released(self, button): # will be true only once when button is released
         return self.buttonChanged() & ((~self.last_buttons & button) > 0)
-      
-    def buttonPressing(self): #  # will be TRUE as long as ANY button is pressed
+    
+    def buttonPressing(self): # will be TRUE as long as ANY button is pressed
         return ~self.buttons
     
+    def arrowPressing(self): # will be TRUE as long as arrow buttons (UP, DOWN, RIGHT, LEFT) are pressed
+        return (~self.buttons & 0x00F0)>0  # 0x00F0 = 0b0000000011110000 --> location of the arrow bits
+
     def isPressing(self, button): # will be TRUE as long as a specific button is pressed
         return (~self.buttons & button)>0
 
