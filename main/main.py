@@ -39,22 +39,24 @@ def main():  # Main program block
         ps2.update()
 
         
-        if ps2.buttonChanged():
+        if ps2.buttonChanged()|ps2.buttonPressing():
             UP_interval = millis() - last_millisU # calculate interval
-            print(UP_interval)
-            if (ps2.pressed(ps2.UP) | UP_FLAG) & (UP_interval > ACCEL):
+
+            if ps2.released(ps2.UP):
+                print('UP released')
+                UP_FLAG = False
+            elif (ps2.pressed(ps2.UP) | UP_FLAG) & (UP_interval > ACCEL):
                 print('UP pressed')
                 Motor.move_fw(PWM_STEP) # increasing algorithm integrated
                 UP_FLAG = True
                 last_millisU = millis() # for recalculating interval
                 DANGER_FLAG = True
                 STOP_millis = millis() # reset the flag so the motor won't stop
-            elif ps2.released(ps2.UP):
-                print('UP released')
-                UP_FLAG = False
             
             if ps2.pressed(ps2.DOWN):
                 print('DOWN pressed')
+            elif ps2.isPressing(ps2.DOWN):
+                print('DOWN is pressing')
             elif ps2.released(ps2.DOWN):
                 print('DOWN released')
             
