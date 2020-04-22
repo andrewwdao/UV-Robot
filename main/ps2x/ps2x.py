@@ -153,7 +153,7 @@ class PS2X(object):
                 print(raw_data)
 
     def buttonChanged(self): # will be TRUE if any button changes state (on to off, or off to on)
-        return (self.last_buttons^self.buttons)>0
+        return self.last_buttons != self.buttons
     
     def LstickChanged(self): # will be TRUE if Left stick changed
         return self.last_Lsticks != self.Lsticks
@@ -163,7 +163,8 @@ class PS2X(object):
     
     def pressed(self, button): # will be true only once when button is pressed
         return self.buttonChanged() & self.isPressing(button)
-      
+
+    # released must be place independently, not hybrid under a pressing method!  
     def released(self, button): # will be true only once when button is released
         return self.buttonChanged() & ((~self.last_buttons & button) > 0)
     

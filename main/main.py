@@ -99,20 +99,20 @@ def relay_controller():
     global L1_watchdog, L2_watchdog, R1_watchdog, R2_watchdog, L1_FLAG, L2_FLAG, R1_FLAG, R2_FLAG
     
     if ps2.released(ps2.L1):
-            print('L1 released')
+        print('L1 released')
+        L1_FLAG = True
 
     if ps2.LRpressing():
         # --- L1
         if ps2.pressed(ps2.L1):
             print('L1 pressed')
             L1_watchdog = millis() # for recalculating interval
-        elif ps2.released(ps2.L1):
-            print('L1 released')
-            GPIO.output(RELAY_L1, GPIO.HIGH) # turn off the relay
-            L1_FLAG = True
         elif ps2.isPressing(ps2.L1) & ((millis() - L1_watchdog) > SAFETY_TIME*2) & L1_FLAG:
             print('L1 pressing')
-            GPIO.output(RELAY_L1, GPIO.LOW) # turn on the relay
+            if GPIO.input(RELAY_L1):
+                GPIO.output(RELAY_L1, GPIO.LOW) # turn on the relay
+            else:
+                GPIO.output(RELAY_L1, GPIO.HIGH) # turn off the relay
             L1_FLAG = False
 
 
