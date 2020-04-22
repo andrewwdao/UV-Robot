@@ -98,6 +98,9 @@ def relay_init():
 def relay_controller():
     global L1_watchdog, L2_watchdog, R1_watchdog, R2_watchdog, L1_FLAG, L2_FLAG, R1_FLAG, R2_FLAG
     
+    if ps2.released(ps2.L1):
+            print('L1 released')
+
     if ps2.LRpressing():
         # --- L1
         if ps2.pressed(ps2.L1):
