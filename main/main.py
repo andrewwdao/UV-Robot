@@ -101,7 +101,7 @@ def relay_controller():
         if ps2.pressed(ps2.L1):
             print('L1 pressed')
             L1_watchdog = millis() # for recalculating interval
-        elif ps2.released(ps2.L1):
+        if ps2.released(ps2.L1):
             print('L1 released')
             GPIO.output(RELAY_L1, GPIO.HIGH) # turn off the relay
             L1_FLAG = True
