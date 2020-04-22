@@ -56,6 +56,9 @@ chmod +x setup_motor.sh
 # setup ps2
 chmod +x setup_ps2.sh
 ./setup_ps2.sh ignore
+# setup relay
+chmod +x setup_relay.sh
+./setup_relay.sh ignore
 
 # provide priveledge for setup itself
 chmod +x ../setup.sh

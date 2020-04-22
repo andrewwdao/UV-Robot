@@ -173,6 +173,12 @@ class PS2X(object):
     def arrowPressing(self): # will be TRUE as long as arrow buttons (UP, DOWN, RIGHT, LEFT) are pressed
         return (~self.buttons & 0x00F0)>0  # 0x00F0 = 0b0000000011110000 --> location of the arrow bits
 
+    def LRpressing(self): # will be TRUE as long as LR buttons (L1, L2, L3, R1, R2, R3) are pressed
+        return (~self.buttons & 0x0F06)>0  # 0x0F06 = 0b0000111100000110 --> location of the LR bits
+    
+    def cmdPressing(self): # will be TRUE as long as Command buttons (Cross, square, circle, triangle, select, start) are pressed
+        return (~self.buttons & 0xF009)>0  # 0xF009 = 0b1111000000001001 --> location of the command bits
+
     def isPressing(self, button): # will be TRUE as long as a specific button is pressed
         return (~self.buttons & button)>0
 

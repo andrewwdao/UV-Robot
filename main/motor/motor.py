@@ -31,11 +31,11 @@ import serial
 import struct
 import time
 
-MAX_PWM = 400
 WAIT_TIME = 0.05
 PWM_STEP = 10 # accel must be multiple of PWM_STEP = 10
 DEPART_PWM = 130
 STOP_PWM = 100 # value in which the motors almost don't move, so we can set them to zero immediately
+# MAX_PWM declared inside the class
 
 class Motor_UART(object):
     """
@@ -71,6 +71,7 @@ class Motor_UART(object):
         self.pwm_2 = 0  # set initial pwm value for motor 2 -- left or right direction
         self.FORWARD = True # for outer use, not here
         self.BACKWARD = False # for outer use, not here
+        self.MAX_PWM = 400
 
         cmd_0 = "{N0 M6}" # Set all motors to PWM mode
         cmd_1 = "{N0 P0}" # Set all motors to stand still
@@ -150,7 +151,7 @@ class Motor_UART(object):
                 self.pwm_1 = DEPART_PWM
                 cmd = "{N0 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
                 self.__send(cmd) # format and send to the driver
-            elif self.pwm_1 < MAX_PWM:
+            elif self.pwm_1 < self.MAX_PWM:
                 # self.pwm += accel # faster a little bit
                 self.pwm_1 += accel # faster a little bit
                 cmd = "{N0 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
@@ -180,7 +181,7 @@ class Motor_UART(object):
                 self.pwm_1 = -DEPART_PWM
                 cmd = "{N0 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
                 self.__send(cmd) # format and send to the driver
-            elif self.pwm_1 > -MAX_PWM:
+            elif self.pwm_1 > -self.MAX_PWM:
                 # self.pwm += accel # faster a little bit
                 self.pwm_1 -= accel # faster a little bit
                 cmd = "{N0 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
@@ -206,17 +207,17 @@ class Motor_UART(object):
 
     def __turnright_fw(self, direction, accel):
         if direction: # if turn right in forward direction
-            if self.pwm_1 < MAX_PWM:
+            if self.pwm_1 < self.MAX_PWM:
                 self.pwm_1 += accel # faster a little bit
                 cmd = "{N1 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
                 self.__send(cmd) # format and send to the driver
                 return
-            elif self.pwm_1 > MAX_PWM:
-                self.pwm_1 = MAX_PWM # protection if real speed is higher than limit
+            elif self.pwm_1 > self.MAX_PWM:
+                self.pwm_1 = self.MAX_PWM # protection if real speed is higher than limit
                 cmd = "{N1 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
                 self.__send(cmd) # format and send to the driver
                 return
-            else: # self.pwm_1 == MAX_PWM
+            else: # self.pwm_1 == self.MAX_PWM
                 if self.pwm_2 == 0 or abs(self.pwm_2) == DEPART_PWM: # reached max turning limit
                     return
                 elif abs(self.pwm_2) < DEPART_PWM: # -DEPART_PWM < self.pwm_2 < DEPART_PWM, with no self.pwm_2 = 0
@@ -241,17 +242,17 @@ class Motor_UART(object):
             self.release()
             return
         else: # if turn right in backward direction
-            if self.pwm_1 > -MAX_PWM:
+            if self.pwm_1 > -self.MAX_PWM:
                 self.pwm_1 -= accel # faster a little bit
                 cmd = "{N1 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
                 self.__send(cmd) # format and send to the driver
                 return
-            elif self.pwm_1 < -MAX_PWM:
-                self.pwm_1 = -MAX_PWM # protection if real speed is higher than limit
+            elif self.pwm_1 < -self.MAX_PWM:
+                self.pwm_1 = -self.MAX_PWM # protection if real speed is higher than limit
                 cmd = "{N1 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
                 self.__send(cmd) # format and send to the driver
                 return
-            else: # self.pwm_1 == -MAX_PWM
+            else: # self.pwm_1 == -self.MAX_PWM
                 if self.pwm_2 == 0 or abs(self.pwm_2) == DEPART_PWM: # reached max turning limit
                     return
                 elif abs(self.pwm_2) < DEPART_PWM: # -DEPART_PWM < self.pwm_2 < DEPART_PWM, with no self.pwm_2 = 0
@@ -310,17 +311,17 @@ class Motor_UART(object):
 
     def __turnleft_fw(self, direction, accel):
         if direction: # if turn right in forward direction
-            if self.pwm_2 < MAX_PWM:
+            if self.pwm_2 < self.MAX_PWM:
                 self.pwm_2 += accel # faster a little bit
                 cmd = "{N2 P" + str(self.pwm_2) + "}" # {N1 P500} - set speed for pwm
                 self.__send(cmd) # format and send to the driver
                 return
-            elif self.pwm_2 > MAX_PWM:
-                self.pwm_2 = MAX_PWM # protection if real speed is higher than limit
+            elif self.pwm_2 > self.MAX_PWM:
+                self.pwm_2 = self.MAX_PWM # protection if real speed is higher than limit
                 cmd = "{N2 P" + str(self.pwm_2) + "}" # {N1 P500} - set speed for pwm
                 self.__send(cmd) # format and send to the driver
                 return
-            else: # self.pwm_2 == MAX_PWM
+            else: # self.pwm_2 == self.MAX_PWM
                 if self.pwm_1 == 0 or abs(self.pwm_1) == DEPART_PWM: # reached max turning limit
                     return
                 elif abs(self.pwm_1) < DEPART_PWM: # -DEPART_PWM < self.pwm_1 < DEPART_PWM, with no self.pwm_1 = 0
@@ -345,17 +346,17 @@ class Motor_UART(object):
             self.release()
             return
         else: # if turn right in backward direction
-            if self.pwm_2 > -MAX_PWM:
+            if self.pwm_2 > -self.MAX_PWM:
                 self.pwm_2 -= accel # faster a little bit
                 cmd = "{N2 P" + str(self.pwm_2) + "}" # {N1 P500} - set speed for pwm
                 self.__send(cmd) # format and send to the driver
                 return
-            elif self.pwm_2 < -MAX_PWM:
-                self.pwm_2 = -MAX_PWM # protection if real speed is higher than limit
+            elif self.pwm_2 < -self.MAX_PWM:
+                self.pwm_2 = -self.MAX_PWM # protection if real speed is higher than limit
                 cmd = "{N2 P" + str(self.pwm_2) + "}" # {N1 P500} - set speed for pwm
                 self.__send(cmd) # format and send to the driver
                 return
-            else: # self.pwm_2 == -MAX_PWM
+            else: # self.pwm_2 == -self.MAX_PWM
                 if self.pwm_1 == 0 or abs(self.pwm_1) == DEPART_PWM: # reached max turning limit
                     return
                 elif abs(self.pwm_1) < DEPART_PWM: # -DEPART_PWM < self.pwm_1 < DEPART_PWM, with no self.pwm_1 = 0
