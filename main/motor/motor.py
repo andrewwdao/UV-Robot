@@ -167,7 +167,7 @@ class Motor_UART(object):
 
     def move_fw(self, accel): # move forward, so both motor rotate at the same time
         if self.pwm_1 == self.pwm_2: # system not turning
-            if self.pwm_1 is 0 : # pwm_1 is equal pwm_2, so choose one to do math
+            if -DEPART_PWM/1.5 < self.pwm_1 < DEPART_PWM/1.5: # pwm_1 is equal pwm_2, so choose one to do math
                 # self.pwm = DEPART_PWM # main object
                 self.pwm_1 = DEPART_PWM
                 cmd = "{N0 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
@@ -196,9 +196,40 @@ class Motor_UART(object):
            # negative value will be released below
         self.release() # release for negative value since we are moving forward
 
+    # def move_fw(self, accel): # move forward, so both motor rotate at the same time
+    #     if self.pwm_1 == self.pwm_2: # system not turning
+    #         if self.pwm_1 is 0 : # pwm_1 is equal pwm_2, so choose one to do math
+    #             # self.pwm = DEPART_PWM # main object
+    #             self.pwm_1 = DEPART_PWM
+    #             cmd = "{N0 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
+    #             self.__send(cmd) # format and send to the driver
+    #         elif self.pwm_1 < MAX_PWM:
+    #             # self.pwm += accel # faster a little bit
+    #             self.pwm_1 += accel # faster a little bit
+    #             cmd = "{N0 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
+    #             self.__send(cmd) # format and send to the driver
+    #         self.pwm_2 = self.pwm_1 # if pwm_1 changed, then change pwm_2
+    #         # return nothing if systeam reached max speed
+    #         return
+    #     elif abs(self.pwm_1) > abs(self.pwm_2): # system is turning in some direction
+    #         if self.pwm_1 > self.pwm_2: # positive value
+    #             self.pwm_1 -= PWM_STEP # slower a little bit
+    #             cmd = "{N1 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
+    #             self.__send(cmd) # format and send to the driver
+    #             return
+    #         # negative value will be released below
+    #     else: # system is turning in the other direction: abs(self.pwm_1) < abs(self.pwm_2)
+    #         if self.pwm_1 < self.pwm_2: # positive value
+    #             self.pwm_2 -= PWM_STEP # slower a little bit
+    #             cmd = "{N2 P" + str(self.pwm_2) + "}" # {N1 P500} - set speed for pwm
+    #             self.__send(cmd) # format and send to the driver
+    #             return
+    #        # negative value will be released below
+    #     self.release() # release for negative value since we are moving forward
+
     def move_bw(self, accel): # move backward, so both motor rotate at the same time
         if self.pwm_1 == self.pwm_2: # system not turning
-            if self.pwm_1 is 0 : # pwm_1 is equal pwm_2, so choose one to do math
+            if -DEPART_PWM/1.5 < self.pwm_1 < DEPART_PWM/1.5: # pwm_1 is equal pwm_2, so choose one to do math
                 # self.pwm = DEPART_PWM # main object
                 self.pwm_1 = -DEPART_PWM
                 cmd = "{N0 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
