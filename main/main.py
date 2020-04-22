@@ -76,12 +76,17 @@ def motor_controller():
 
 def speedMode_update():
     if ps2.cmdPressing():
+         # --- START - turn off all relays
+        if ps2.pressed(ps2.START):
+            print('START pressed')
+            GPIO.output(RELAY_L1, GPIO.HIGH) # turn off the relay
+            GPIO.output(RELAY_L2, GPIO.HIGH) # turn off the relay
+            GPIO.output(RELAY_R1, GPIO.HIGH) # turn off the relay
+            GPIO.output(RELAY_R2, GPIO.HIGH) # turn off the relay
         # --- TRIANGLE - high speed
         if ps2.pressed(ps2.TRIANGLE):
             print('TRIANGLE pressed')
             Motor.MAX_PWM = 400
-        if ps2.released(ps2.TRIANGLE):
-            print('TRIANGLE released')
         # --- CROSS - low speed
         if ps2.pressed(ps2.CROSS):
             print('CROSS pressed')
@@ -95,25 +100,87 @@ def relay_init():
     GPIO.setup(RELAY_R1, GPIO.OUT, initial=GPIO.HIGH)
     GPIO.setup(RELAY_R2, GPIO.OUT, initial=GPIO.HIGH)
 
+def __relay_toggle(FLAG, watchdog, button, RELAY):
+    if ps2.pressed(button):
+        print('pressed')
+        watchdog = millis() # for recalculating interval
+    elif ps2.isPressing(button) & ((millis() - watchdog) > SAFETY_TIME*2) & FLAG:
+        print('toggled')
+        if GPIO.input(RELAY):
+            GPIO.output(RELAY, GPIO.LOW) # turn on the relay
+        else:
+            GPIO.output(RELAY, GPIO.HIGH) # turn off the relay
+        FLAG = False
+    return [FLAG, watchdog]
+
 def relay_controller():
     global L1_watchdog, L2_watchdog, R1_watchdog, R2_watchdog, L1_FLAG, L2_FLAG, R1_FLAG, R2_FLAG
     
     if ps2.released(ps2.L1):
         print('L1 released')
-        L1_FLAG = True
+        L1_FLAG = True # reset flag for next use
+    if ps2.released(ps2.L2):
+        print('L2 released')
+        L2_FLAG = True # reset flag for next use
+    if ps2.released(ps2.R1):
+        print('R1 released')
+        R1_FLAG = True # reset flag for next use
+    if ps2.released(ps2.R2):
+        print('R2 released')
+        R2_FLAG = True # reset flag for next use
 
     if ps2.LRpressing():
         # --- L1
-        if ps2.pressed(ps2.L1):
-            print('L1 pressed')
-            L1_watchdog = millis() # for recalculating interval
-        elif ps2.isPressing(ps2.L1) & ((millis() - L1_watchdog) > SAFETY_TIME*2) & L1_FLAG:
-            print('L1 pressing')
-            if GPIO.input(RELAY_L1):
-                GPIO.output(RELAY_L1, GPIO.LOW) # turn on the relay
-            else:
-                GPIO.output(RELAY_L1, GPIO.HIGH) # turn off the relay
-            L1_FLAG = False
+        [L1_FLAG, L1_watchdog] = __relay_toggle(L1_FLAG, L1_watchdog, ps2.L1, RELAY_L1)
+        # if ps2.pressed(ps2.L1):
+        #     print('L1 pressed')
+        #     L1_watchdog = millis() # for recalculating interval
+        # elif ps2.isPressing(ps2.L1) & ((millis() - L1_watchdog) > SAFETY_TIME*2) & L1_FLAG:
+        #     print('L1 pressing')
+        #     if GPIO.input(RELAY_L1):
+        #         GPIO.output(RELAY_L1, GPIO.LOW) # turn on the relay
+        #     else:
+        #         GPIO.output(RELAY_L1, GPIO.HIGH) # turn off the relay
+        #     L1_FLAG = False
+
+        # --- L2
+        [L2_FLAG, L2_watchdog] = __relay_toggle(L2_FLAG, L2_watchdog, ps2.L2, RELAY_L2)
+        # if ps2.pressed(ps2.L2):
+        #     print('L2 pressed')
+        #     L2_watchdog = millis() # for recalculating interval
+        # elif ps2.isPressing(ps2.L2) & ((millis() - L2_watchdog) > SAFETY_TIME*2) & L2_FLAG:
+        #     print('L2 pressing')
+        #     if GPIO.input(RELAY_L2):
+        #         GPIO.output(RELAY_L2, GPIO.LOW) # turn on the relay
+        #     else:
+        #         GPIO.output(RELAY_L2, GPIO.HIGH) # turn off the relay
+        #     L2_FLAG = False
+
+        # --- R1
+        [R1_FLAG, R1_watchdog] = __relay_toggle(R1_FLAG, R1_watchdog, ps2.R1, RELAY_R1)
+        # if ps2.pressed(ps2.R1):
+        #     print('R1 pressed')
+        #     R1_watchdog = millis() # for recalculating interval
+        # elif ps2.isPressing(ps2.R1) & ((millis() - R1_watchdog) > SAFETY_TIME*2) & R1_FLAG:
+        #     print('R1 pressing')
+        #     if GPIO.input(RELAY_R1):
+        #         GPIO.output(RELAY_R1, GPIO.LOW) # turn on the relay
+        #     else:
+        #         GPIO.output(RELAY_R1, GPIO.HIGH) # turn off the relay
+        #     R1_FLAG = False
+
+        # --- R2
+        [R2_FLAG, R2_watchdog] = __relay_toggle(R2_FLAG, R2_watchdog, ps2.R2, RELAY_R2)
+        # if ps2.pressed(ps2.R2):
+        #     print('R2 pressed')
+        #     R2_watchdog = millis() # for recalculating interval
+        # elif ps2.isPressing(ps2.R2) & ((millis() - R2_watchdog) > SAFETY_TIME*2) & R2_FLAG:
+        #     print('R2 pressing')
+        #     if GPIO.input(RELAY_R2):
+        #         GPIO.output(RELAY_R2, GPIO.LOW) # turn on the relay
+        #     else:
+        #         GPIO.output(RELAY_R2, GPIO.HIGH) # turn off the relay
+        #     R2_FLAG = False
 
 
 def main():  # Main program block
