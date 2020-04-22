@@ -80,6 +80,8 @@ def speedMode_update():
         if ps2.pressed(ps2.TRIANGLE):
             print('TRIANGLE pressed')
             Motor.MAX_PWM = 400
+        if ps2.released(ps2.TRIANGLE):
+            print('TRIANGLE released')
         # --- CROSS - low speed
         if ps2.pressed(ps2.CROSS):
             print('CROSS pressed')
@@ -101,7 +103,7 @@ def relay_controller():
         if ps2.pressed(ps2.L1):
             print('L1 pressed')
             L1_watchdog = millis() # for recalculating interval
-        if ps2.released(ps2.L1):
+        elif ps2.released(ps2.L1):
             print('L1 released')
             GPIO.output(RELAY_L1, GPIO.HIGH) # turn off the relay
             L1_FLAG = True
@@ -124,13 +126,14 @@ def main():  # Main program block
 
 
 
-        
-
 if __name__ == '__main__':
     try:
         main()
     except (KeyboardInterrupt, SystemExit) as e:
         print(e)
+        GPIO.cleanup()
+        ps2.clean()
+        Motor.clean()
         # turn on ro
         # sp.call(['sudo','mount','-o','remount,ro','/'], shell=False)
         # sp.call(['sudo','mount','-o','remount,ro','/boot'], shell=False)
@@ -139,6 +142,9 @@ if __name__ == '__main__':
         
     except (OSError, Exception) as e: # I/O error or exception
         print(e)
+        GPIO.cleanup()
+        ps2.clean()
+        Motor.clean()
         # turn on ro
         # sp.call(['sudo','mount','-o','remount,ro','/'], shell=False)
         # sp.call(['sudo','mount','-o','remount,ro','/boot'], shell=False)

@@ -87,11 +87,15 @@ class Motor_UART(object):
         Destructor
         """
         ## stop the motor if still running
+        self.clean()
+
+    def clean(self):
+        ## stop the motor if still running
         self.release()
         ## Close connection if still established
         if (self.__serial is not None and self.__serial.isOpen() == True):
             self.__serial.close()
-    
+            
     def __send(self, cmd): # format and send to the driver
         cmd = cmd.encode('utf-8')
         self.__serial.write(cmd) # send to the driver
