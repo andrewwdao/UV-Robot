@@ -17,10 +17,10 @@ import os
 import time
 
 # ---------------------------- Configurable parameters -------------------------
-RELAY_L1 = 9  # BCM mode
-RELAY_L2 = 10 # BCM mode
-RELAY_R1 = 8 # BCM mode
-RELAY_R2 = 11 # BCM mode
+RELAY_L1 = 4  # BCM mode
+RELAY_L2 = 17 # BCM mode
+RELAY_R1 = 27 # BCM mode
+RELAY_R2 = 22 # BCM mode
 
 PWM_STEP = 10 # accel must be multiple of PWM_STEP = 10
 ACCEL = 150 #ms
