@@ -44,28 +44,34 @@ mv UV-Robot/ system/
 
 # ---------------- setup all the prequisites
 cd /home/$(who am i | awk '{print $1}')/system/main
-# setup streaming server
-chmod +x setup_server.sh
-./setup_server.sh ignore
-# setup database
-chmod +x setup_db.sh
-./setup_db.sh ignore
-# setup motor
-chmod +x setup_motor.sh
-./setup_motor.sh ignore
-# setup ps2
-chmod +x setup_ps2.sh
-./setup_ps2.sh ignore
-# setup relay
-chmod +x setup_relay.sh
-./setup_relay.sh ignore
-
 # provide priveledge for setup itself
 chmod +x ../setup.sh
 
+# setup streaming server
+chmod +x server_setup.sh
+./server_setup.sh ignore
+# setup motor
+chmod +x motor_setup.sh
+./motor_setup.sh ignore
+# setup ps2
+chmod +x ps2_setup.sh
+./ps2_setup.sh ignore
+# setup relay
+chmod +x relay_setup.sh
+./relay_setup.sh ignore
+
+# disable bluetooth
+chmod +x bluetooth_disable.sh
+./bluetooth_disable.sh
+
+# make system read-only
+chmod +x ./readonly/setup.sh
+./readonly/setup.sh yes
+
+
 echo
 echo
-echo "Done."
+echo "Done. Please reboot."
 echo
 echo "(c) 2020 Minh-An Dao <bit.ly/DMA-HomePage> <minhan7497@gmail.com>. All right reserved ."
 

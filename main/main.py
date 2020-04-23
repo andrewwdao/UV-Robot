@@ -170,10 +170,8 @@ if __name__ == '__main__':
         Motor.clean()
         server.shutdown()
         # turn on ro
-        # sp.call(['sudo','mount','-o','remount,ro','/'], shell=False)
-        # sp.call(['sudo','mount','-o','remount,ro','/boot'], shell=False)
-        
-        # sp.Popen(['python3','syshalt.py'], shell=False) # closing procedure, included close off peripherals
+        sp.call(['sudo','mount','-o','remount,ro','/'], shell=False)
+        sp.call(['sudo','mount','-o','remount,ro','/boot'], shell=False)
         
     except (OSError, Exception) as e: # I/O error or exception
         print(e)
@@ -182,8 +180,8 @@ if __name__ == '__main__':
         Motor.clean()
         server.shutdown()
         # turn on ro
-        # sp.call(['sudo','mount','-o','remount,ro','/'], shell=False)
-        # sp.call(['sudo','mount','-o','remount,ro','/boot'], shell=False)
+        sp.call(['sudo','mount','-o','remount,ro','/'], shell=False)
+        sp.call(['sudo','mount','-o','remount,ro','/boot'], shell=False)
         
 
 

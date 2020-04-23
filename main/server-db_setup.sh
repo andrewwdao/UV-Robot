@@ -37,7 +37,7 @@ flask db upgrade
 
 
 
-python3 ../admin_init.py
+python3 ../server_admin-init.py
 
 echo
 echo

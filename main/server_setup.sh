@@ -35,6 +35,10 @@ pip3 install flask-login
 # Gevent networking platform to deploy production server - https://pypi.org/project/gevent/#downloads
 pip3 install gevent
 
+# setup server database for admin login
+chmod +x server-db_setup.sh
+./server-db_setup.sh
+
 echo
 echo
 echo "Server Done."

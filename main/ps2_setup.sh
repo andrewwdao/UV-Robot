@@ -21,12 +21,8 @@ fi
 apt-get install wiringpi -y
 
 # ----------- renew binary files --------------------
-# go to cpp code section, clean the c binary files and re-create them
-cd ./ps2x
-make clean   # cd /home/$(who am i | awk '{print $1}')/system/main/ps2x
-rm -rf ./obj
-mkdir ./obj
-make
+chmod +x ps2_bin_reset.sh
+./ps2_bin_reset.sh
 
 echo
 echo

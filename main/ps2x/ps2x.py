@@ -112,20 +112,24 @@ class PS2X(object):
         self.last_Lsticks = 0x807F # 128 << 8 + 127 --> stable state of the analog stick
 
         # self.TARGET = './ps2x'
-        self.TARGET = '/home/pi/system/main/ps2x/ps2x'
+        self.TARGET = '/ps2x/ps2x' # absolute directory, must run ps2_bin_reset.sh before run this
+        try:
+            self.ps2obj = sp.Popen(['sudo',self.TARGET,
+                                        '-d', str(self.dat_pin),
+                                        '-c', str(self.cmd_pin),
+                                        '-s', str(self.sel_pin),
+                                        '-k', str(self.clk_pin),
+                                        '-a', str(int(self.en_analog)),
+                                        '-l', str(int(self.en_locked)),
+                                        '-p', str(int(self.en_pressures)),
+                                        '-r', str(int(self.en_rumble))],
+                                        shell=False,
+                                        stdout=sp.PIPE,
+                                        stderr=sp.PIPE)
+        except Exception as e:
+            print(e)
+            raise ValueError("This may happened because you forgot to run ps2_bin_reset.sh. Please make sure to do that!")
         
-        self.ps2obj = sp.Popen(['sudo',self.TARGET,
-                                       '-d', str(self.dat_pin),
-                                       '-c', str(self.cmd_pin),
-                                       '-s', str(self.sel_pin),
-                                       '-k', str(self.clk_pin),
-                                       '-a', str(int(self.en_analog)),
-                                       '-l', str(int(self.en_locked)),
-                                       '-p', str(int(self.en_pressures)),
-                                       '-r', str(int(self.en_rumble))],
-                                       shell=False,
-                                       stdout=sp.PIPE,
-                                       stderr=sp.PIPE)
         self.output  = StreamReader(self.ps2obj.stdout)
         self.error   = StreamReader(self.ps2obj.stderr) 
 
