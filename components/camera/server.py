@@ -1,34 +1,34 @@
-# from gevent.pywsgi import WSGIServer
-# import gevent
+from gevent.pywsgi import WSGIServer
+import gevent
 from app import streaming_app
-import subprocess as sp
-# import threading
-# import signal
-# import os
+import threading
+import signal
+import os
 
-def run():
-    streaming_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app
+# def run():
+#     streaming_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app
 
-# class WebServer(threading.Thread):
-#     def __init__(self):
-#         super().__init__()
-#         self.pid = os.getpid()
+class WebServer(threading.Thread):
+    def __init__(self):
+        super().__init__()
+        self.pid = os.getpid()
         
-#     def run(self):
-#         self.server = WSGIServer(('0.0.0.0', 80), saveInfo_app)
-#         self.gevent_signal = gevent.hub.signal(signal.SIGTERM, self.shutdown)
-#         self.server.serve_forever()
+    def run(self):
+        self.server = WSGIServer(('0.0.0.0', 80), streaming_app)
+        self.gevent_signal = gevent.hub.signal(signal.SIGTERM, self.shutdown)
+        self.server.serve_forever()
 
-#     # ======================== for development only =====================
-#     # def run(self):
-#     #     saveInfo_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app
-#     # ===================================================================
+    # ======================== for development only =====================
+    # def run(self):
+    #     streaming_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app
+    # ===================================================================
 
-#     def shutdown(self): # SIGINT or SIGTERM doesn't really matter since what shutdown server stays here
-#         print(f'Shutting down server...\n')
-#         self.server.stop()
-#         self.server.close()
-#         self.gevent_signal.cancel()
+    # call this is enough to kill the server, if you need to have a shutdown button on the web, then you need to open routes.py
+    def shutdown(self): # SIGINT or SIGTERM doesn't really matter since what shutdown server stays here
+        print(f'Shutting down server...\n')
+        self.server.stop()
+        self.server.close()
+        self.gevent_signal.cancel()
         
 
     # def start(self): --> existed already from parent 

@@ -7,6 +7,12 @@
  *
  *
  --------------------------------------------------------------"""
-import server
+# import server
 
-server.run()
+# server.run()
+
+from server import WebServer
+server = WebServer()
+server.start()
+# use this if you want to wait for the server - server.join() # Wait until the server thread terminates -- this is a function from the parent class Thread
+
