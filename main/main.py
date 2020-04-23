@@ -36,6 +36,9 @@ STOP_millis = millis() # time flag to trigger auto stop
 L1_watchdog = L2_watchdog = R1_watchdog = R2_watchdog = millis() # monitoring interval for L, R buttons
 L1_FLAG = L2_FLAG = R1_FLAG = R2_FLAG = True
 
+# server initialize
+server = WebServer()
+
 # =================================== motor control =============================================
 def motor_controller():
     global DANGER_FLAG, STOP_millis, U_watchdog, D_watchdog, L_watchdog, R_watchdog
@@ -145,7 +148,6 @@ def relay_controller():
 
 def main():  # Main program block
     relay_init()
-    server = WebServer()
     server.start()
 
     # forever loop start...
