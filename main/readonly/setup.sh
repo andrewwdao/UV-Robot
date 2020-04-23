@@ -43,7 +43,9 @@ systemctl disable x11-common
 
 # update all the kept-back if existed  # # https://askubuntu.com/questions/601/the-following-packages-have-been-kept-back-why-and-how-do-i-solve-it
 apt-get --with-new-pkgs upgrade -y
-	
+
+cd /home/$(who am i | awk '{print $1}')/system/main/readonly
+
 echo "* Changing boot up parameters..."
 # systemd-hostnamed uses a private temp folder on the root fs by default
 # let's rather use /tmp
