@@ -14,7 +14,7 @@ from app import streaming_app, db
 from app.streaming.forms import LoginForm
 from app.models import User
 from app.camera_pi import Camera # Raspberry Pi camera module (requires picamera package)
-import os
+# import os
 # import signal
 # import subprocess as subpro
 from datetime import timedelta
@@ -28,12 +28,12 @@ from datetime import timedelta
     
 
 # ======================== for development only =====================
-def shutdownServer():
-    # Start shutting down server
-    func = request.environ.get('werkzeug.server.shutdown')
-    if func is None:
-        raise RuntimeError('Not running with the Werkzeug Server')
-    func()
+# def shutdownServer():
+#     # Start shutting down server
+#     func = request.environ.get('werkzeug.server.shutdown')
+#     if func is None:
+#         raise RuntimeError('Not running with the Werkzeug Server')
+#     func()
 # ===================================================================
 
 

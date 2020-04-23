@@ -7,7 +7,7 @@
  *
  *
  --------------------------------------------------------------"""
-import server
+from server import WebServer
 from motor import Motor
 from ps2x import ps2
 import RPi.GPIO as GPIO
@@ -145,6 +145,8 @@ def relay_controller():
 
 def main():  # Main program block
     relay_init()
+    server = WebServer()
+    server.start()
 
     # forever loop start...
     while True:
@@ -164,6 +166,7 @@ if __name__ == '__main__':
         GPIO.cleanup()
         ps2.clean()
         Motor.clean()
+        server.shutdown()
         # turn on ro
         # sp.call(['sudo','mount','-o','remount,ro','/'], shell=False)
         # sp.call(['sudo','mount','-o','remount,ro','/boot'], shell=False)
@@ -175,6 +178,7 @@ if __name__ == '__main__':
         GPIO.cleanup()
         ps2.clean()
         Motor.clean()
+        server.shutdown()
         # turn on ro
         # sp.call(['sudo','mount','-o','remount,ro','/'], shell=False)
         # sp.call(['sudo','mount','-o','remount,ro','/boot'], shell=False)

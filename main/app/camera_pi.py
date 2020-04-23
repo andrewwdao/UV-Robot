@@ -9,7 +9,7 @@ class Camera(BaseCamera):
     def frames():
         with picamera.PiCamera() as camera:
             camera.resolution = (640, 480) # default at 720x480
-            camera.framerate = 15 # default at 30
+            camera.framerate = 20 # default at 30
             # Start a preview and let the camera warm up for 2 seconds
             camera.start_preview()
             time.sleep(2)
