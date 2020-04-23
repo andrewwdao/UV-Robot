@@ -8,6 +8,11 @@
  * Server created for the purpose of streaming video
  * Make the server a fully functional package
  *
+ * ref:
+ * - https://blog.miguelgrinberg.com/post/video-streaming-with-flask
+ * - https://blog.miguelgrinberg.com/post/flask-video-streaming-revisited
+ * - https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iv-database
+ 
  --------------------------------------------------------------"""
 from flask import Flask, url_for, session, g
 from app.config import Config

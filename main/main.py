@@ -35,6 +35,8 @@ STOP_millis = millis() # time flag to trigger auto stop
 
 L1_watchdog = L2_watchdog = R1_watchdog = R2_watchdog = millis() # monitoring interval for L, R buttons
 L1_FLAG = L2_FLAG = R1_FLAG = R2_FLAG = True
+
+# =================================== motor control =============================================
 def motor_controller():
     global DANGER_FLAG, STOP_millis, U_watchdog, D_watchdog, L_watchdog, R_watchdog
     
@@ -73,8 +75,8 @@ def motor_controller():
         Motor.release()
         DANGER_FLAG = False
 
-
-def speedMode_update():
+# =================================== admin command =============================================
+def cmd_update():
     if ps2.cmdPressing():
          # --- START - turn off all relays
         if ps2.pressed(ps2.START):
@@ -92,7 +94,7 @@ def speedMode_update():
             print('CROSS pressed')
             Motor.MAX_PWM = 200
 
-
+# =================================== relay module =============================================
 def relay_init():
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(RELAY_L1, GPIO.OUT, initial=GPIO.HIGH)
@@ -132,55 +134,13 @@ def relay_controller():
     if ps2.LRpressing():
         # --- L1
         [L1_FLAG, L1_watchdog] = __relay_toggle(L1_FLAG, L1_watchdog, ps2.L1, RELAY_L1)
-        # if ps2.pressed(ps2.L1):
-        #     print('L1 pressed')
-        #     L1_watchdog = millis() # for recalculating interval
-        # elif ps2.isPressing(ps2.L1) & ((millis() - L1_watchdog) > SAFETY_TIME*2) & L1_FLAG:
-        #     print('L1 pressing')
-        #     if GPIO.input(RELAY_L1):
-        #         GPIO.output(RELAY_L1, GPIO.LOW) # turn on the relay
-        #     else:
-        #         GPIO.output(RELAY_L1, GPIO.HIGH) # turn off the relay
-        #     L1_FLAG = False
-
         # --- L2
         [L2_FLAG, L2_watchdog] = __relay_toggle(L2_FLAG, L2_watchdog, ps2.L2, RELAY_L2)
-        # if ps2.pressed(ps2.L2):
-        #     print('L2 pressed')
-        #     L2_watchdog = millis() # for recalculating interval
-        # elif ps2.isPressing(ps2.L2) & ((millis() - L2_watchdog) > SAFETY_TIME*2) & L2_FLAG:
-        #     print('L2 pressing')
-        #     if GPIO.input(RELAY_L2):
-        #         GPIO.output(RELAY_L2, GPIO.LOW) # turn on the relay
-        #     else:
-        #         GPIO.output(RELAY_L2, GPIO.HIGH) # turn off the relay
-        #     L2_FLAG = False
-
         # --- R1
         [R1_FLAG, R1_watchdog] = __relay_toggle(R1_FLAG, R1_watchdog, ps2.R1, RELAY_R1)
-        # if ps2.pressed(ps2.R1):
-        #     print('R1 pressed')
-        #     R1_watchdog = millis() # for recalculating interval
-        # elif ps2.isPressing(ps2.R1) & ((millis() - R1_watchdog) > SAFETY_TIME*2) & R1_FLAG:
-        #     print('R1 pressing')
-        #     if GPIO.input(RELAY_R1):
-        #         GPIO.output(RELAY_R1, GPIO.LOW) # turn on the relay
-        #     else:
-        #         GPIO.output(RELAY_R1, GPIO.HIGH) # turn off the relay
-        #     R1_FLAG = False
-
         # --- R2
         [R2_FLAG, R2_watchdog] = __relay_toggle(R2_FLAG, R2_watchdog, ps2.R2, RELAY_R2)
-        # if ps2.pressed(ps2.R2):
-        #     print('R2 pressed')
-        #     R2_watchdog = millis() # for recalculating interval
-        # elif ps2.isPressing(ps2.R2) & ((millis() - R2_watchdog) > SAFETY_TIME*2) & R2_FLAG:
-        #     print('R2 pressing')
-        #     if GPIO.input(RELAY_R2):
-        #         GPIO.output(RELAY_R2, GPIO.LOW) # turn on the relay
-        #     else:
-        #         GPIO.output(RELAY_R2, GPIO.HIGH) # turn off the relay
-        #     R2_FLAG = False
+# =================================================================================================
 
 
 def main():  # Main program block
@@ -190,7 +150,7 @@ def main():  # Main program block
     while True:
         ps2.update()
 
-        speedMode_update()
+        cmd_update()
         motor_controller()
         relay_controller()
 
@@ -219,3 +179,50 @@ if __name__ == '__main__':
         # sp.call(['sudo','mount','-o','remount,ro','/'], shell=False)
         # sp.call(['sudo','mount','-o','remount,ro','/boot'], shell=False)
         
+
+
+
+        # if ps2.pressed(ps2.L1):
+        #     print('L1 pressed')
+        #     L1_watchdog = millis() # for recalculating interval
+        # elif ps2.isPressing(ps2.L1) & ((millis() - L1_watchdog) > SAFETY_TIME*2) & L1_FLAG:
+        #     print('L1 pressing')
+        #     if GPIO.input(RELAY_L1):
+        #         GPIO.output(RELAY_L1, GPIO.LOW) # turn on the relay
+        #     else:
+        #         GPIO.output(RELAY_L1, GPIO.HIGH) # turn off the relay
+        #     L1_FLAG = False
+
+        
+        # if ps2.pressed(ps2.L2):
+        #     print('L2 pressed')
+        #     L2_watchdog = millis() # for recalculating interval
+        # elif ps2.isPressing(ps2.L2) & ((millis() - L2_watchdog) > SAFETY_TIME*2) & L2_FLAG:
+        #     print('L2 pressing')
+        #     if GPIO.input(RELAY_L2):
+        #         GPIO.output(RELAY_L2, GPIO.LOW) # turn on the relay
+        #     else:
+        #         GPIO.output(RELAY_L2, GPIO.HIGH) # turn off the relay
+        #     L2_FLAG = False
+
+        # if ps2.pressed(ps2.R1):
+        #     print('R1 pressed')
+        #     R1_watchdog = millis() # for recalculating interval
+        # elif ps2.isPressing(ps2.R1) & ((millis() - R1_watchdog) > SAFETY_TIME*2) & R1_FLAG:
+        #     print('R1 pressing')
+        #     if GPIO.input(RELAY_R1):
+        #         GPIO.output(RELAY_R1, GPIO.LOW) # turn on the relay
+        #     else:
+        #         GPIO.output(RELAY_R1, GPIO.HIGH) # turn off the relay
+        #     R1_FLAG = False
+
+        # if ps2.pressed(ps2.R2):
+        #     print('R2 pressed')
+        #     R2_watchdog = millis() # for recalculating interval
+        # elif ps2.isPressing(ps2.R2) & ((millis() - R2_watchdog) > SAFETY_TIME*2) & R2_FLAG:
+        #     print('R2 pressing')
+        #     if GPIO.input(RELAY_R2):
+        #         GPIO.output(RELAY_R2, GPIO.LOW) # turn on the relay
+        #     else:
+        #         GPIO.output(RELAY_R2, GPIO.HIGH) # turn off the relay
+        #     R2_FLAG = False
