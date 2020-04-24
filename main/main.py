@@ -17,7 +17,8 @@ import os
 import time
 
 # ---------------------------- Configurable parameters -------------------------
-RELAY_L1 = 4  # BCM mode
+# RELAY_L1 = 4  # BCM mode
+RELAY_L1 = 14  # BCM mode
 RELAY_L2 = 17 # BCM mode
 RELAY_R1 = 27 # BCM mode
 RELAY_R2 = 22 # BCM mode
