@@ -25,13 +25,14 @@
 
  * In this specific version, PWM mode will be used.
  --------------------------------------------------------------"""
-from motor.motor import Motor_UART
+from motor.motor import MotorUART_PID
 
 
 PORT = '/dev/ttyUSB0'
-BAUDRATE = 115200
+BAUDRATE = 250000
+MAX_SPEED = 200
 
-
-Motor = Motor_UART(PORT, BAUDRATE)
+Motor = MotorUART_PID(PORT, BAUDRATE, MAX_SPEED)
+# Motor = MotorUART_PWM(PORT, BAUDRATE)
 
 
