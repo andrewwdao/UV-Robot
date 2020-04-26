@@ -51,6 +51,12 @@ pos = 0
 speed = 0
 # pos_2 = 0
 # speed_2 = 0
+starter_cmd = "{N0 P1000 V300}" # Set all motors to PID mode, with Acceleration = 2000, reset position --> will also make all motors stop
+starter_cmd = starter_cmd.encode('utf-8')
+__serial.write(starter_cmd)
+starter_cmd = "{N0 R}" # Set all motors to PID mode, with Acceleration = 2000, reset position --> will also make all motors stop
+starter_cmd = starter_cmd.encode('utf-8')
+__serial.write(starter_cmd)
 
 print('running...')
 for x in range(0, 30000):
