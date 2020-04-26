@@ -64,12 +64,12 @@ __serial.write(starter_cmd)
 ACCEL_TIME = 3
 DUTY_CYCLE = 0.001 # 1kHz
 rad = 0
-MAX_SPEED = 300
+MAX_SPEED = 100
 RAD_STEP = (pi/2)/(1/DUTY_CYCLE)/ACCEL_TIME
 
 print('running...')
 for x in range(0, 7000):
-    pos += 0.2
+    pos += 0.1
     if rad < pi/2:
         rad += RAD_STEP
     speed = MAX_SPEED*sin(rad)
