@@ -48,7 +48,7 @@ starter_cmd = "{N0 M2 A2000 R}" # Set all motors to PID mode, with Acceleration 
 starter_cmd = starter_cmd.encode('utf-8')
 __serial.write(starter_cmd)
 pos = 0
-speed = 300
+speed = 150
 # pos_2 = 0
 # speed_2 = 0
 time.sleep(1)
