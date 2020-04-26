@@ -57,6 +57,6 @@ for x in range(0, 30000):
     pos += 0.01
     speed += 0.01
     cmd = "{N0 P" + str(pos) + " V" + str(speed) + "}" # {N1 P500 V100} - set position and speed for PID
-    cmd = cmd_1.encode('utf-8')
+    cmd = cmd.encode('utf-8')
     __serial.write(cmd) # send to the driver
     time.sleep(0.000004)  # sleep for 4us --> 250kHz
