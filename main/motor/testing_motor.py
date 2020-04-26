@@ -35,7 +35,7 @@ from math import pi, sin
 
 
 __serial = serial.Serial(port='/dev/ttyUSB0',
-                         baudrate=250000,
+                         baudrate=1000000,
                          bytesize=serial.EIGHTBITS, 
                          timeout=2
                           )
@@ -62,7 +62,7 @@ starter_cmd = starter_cmd.encode('utf-8')
 __serial.write(starter_cmd)
 
 ACCEL_TIME = 3
-DUTY_CYCLE = 0.001 # 1kHz
+DUTY_CYCLE = 0.00025 # 1kHz
 rad = 0
 MAX_SPEED = 300
 RAD_STEP = (pi/2)/(1/DUTY_CYCLE)/ACCEL_TIME
