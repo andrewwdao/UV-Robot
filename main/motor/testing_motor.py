@@ -90,8 +90,8 @@ for x in range(0, 7000):
     if rad < pi/2:
         rad += RAD_STEP
     pos += 1*sin(rad)
-    cmd = "{N0 P" + str(pos) + " V" + str(MAX_SPEED) + "}" # {N1 P500 V100} - set position and speed for PID
+    cmd = "{N0 P" + str(round(pos,2)) + " V" + str(MAX_SPEED) + "}" # {N1 P500 V100} - set position and speed for PID
     cmd = cmd.encode('utf-8')
     __serial.write(cmd) # send to the driver
     time.sleep(DUTY_CYCLE)  # sleep for 4us --> 250kHz
-    print(str(round(speed, 2)))
+    print(str(round(pos, 2)))
