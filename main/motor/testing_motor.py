@@ -71,7 +71,7 @@ print('running...')
 for x in range(0, 100000):
     if alpha < pi/2:
         alpha += RAD_STEP
-    pos = 2*pi*sin(alpha)
+    pos = 54*pi*sin(alpha)
     # speed = MAX_SPEED*sin(alpha)
     speed = 200
     cmd = "{N0 P" + str(round(pos,3)) + " V" + str(round(speed, 3)) + "}" # {N1 P500 V100} - set position and speed for PID
