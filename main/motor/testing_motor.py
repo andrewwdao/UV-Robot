@@ -61,24 +61,6 @@ starter_cmd = "{N0 R}" # Set all motors to PID mode, with Acceleration = 2000, r
 starter_cmd = starter_cmd.encode('utf-8')
 __serial.write(starter_cmd)
 
-# ACCEL_TIME = 3
-# DUTY_CYCLE = 0.001 # 1kHz
-# rad = 0
-# MAX_SPEED = 100
-# RAD_STEP = (pi/2)/(1/DUTY_CYCLE)/ACCEL_TIME
-
-# print('running...')
-# for x in range(0, 7000):
-#     pos += 0.1
-#     if rad < pi/2:
-#         rad += RAD_STEP
-#     speed = MAX_SPEED*sin(rad)
-#     cmd = "{N0 P" + str(pos) + " V" + str(round(speed, 2)) + "}" # {N1 P500 V100} - set position and speed for PID
-#     cmd = cmd.encode('utf-8')
-#     __serial.write(cmd) # send to the driver
-#     time.sleep(DUTY_CYCLE)  # sleep for 4us --> 250kHz
-#     print(str(round(speed, 2)))
-
 ACCEL_TIME = 3
 DUTY_CYCLE = 0.001 # 1kHz
 rad = 0
@@ -87,11 +69,29 @@ RAD_STEP = (pi/2)/(1/DUTY_CYCLE)/ACCEL_TIME
 
 print('running...')
 for x in range(0, 7000):
+    pos += 0.001
     if rad < pi/2:
         rad += RAD_STEP
-    pos += 1*sin(rad)
-    cmd = "{N0 P" + str(round(pos,2)) + " V" + str(MAX_SPEED) + "}" # {N1 P500 V100} - set position and speed for PID
+    speed = MAX_SPEED*sin(rad)
+    cmd = "{N0 P" + str(pos) + " V" + str(round(speed, 2)) + "}" # {N1 P500 V100} - set position and speed for PID
     cmd = cmd.encode('utf-8')
     __serial.write(cmd) # send to the driver
     time.sleep(DUTY_CYCLE)  # sleep for 4us --> 250kHz
-    print(str(round(pos, 2)))
+    print(str(round(speed, 2)))
+
+# ACCEL_TIME = 3
+# DUTY_CYCLE = 0.001 # 1kHz
+# rad = 0
+# MAX_SPEED = 300
+# RAD_STEP = (pi/2)/(1/DUTY_CYCLE)/ACCEL_TIME
+
+# print('running...')
+# for x in range(0, 7000):
+#     if rad < pi/2:
+#         rad += RAD_STEP
+#     pos += 1*sin(rad)
+#     cmd = "{N0 P" + str(round(pos,2)) + " V" + str(MAX_SPEED) + "}" # {N1 P500 V100} - set position and speed for PID
+#     cmd = cmd.encode('utf-8')
+#     __serial.write(cmd) # send to the driver
+#     time.sleep(DUTY_CYCLE)  # sleep for 4us --> 250kHz
+#     print(str(round(pos, 2)))
