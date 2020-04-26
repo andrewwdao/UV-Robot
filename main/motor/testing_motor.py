@@ -65,11 +65,11 @@ ACCEL_TIME = 3
 DUTY_CYCLE = 0.001 # 1kHz
 rad = 0
 MAX_SPEED = 300
-RAD_STEP = pi/(2*(ACCEL_TIME/DUTY_CYCLE))
+RAD_STEP = pi/(2*(ACCEL_TIME*(1/DUTY_CYCLE)))
 
 print('running...')
 for x in range(0, 7000):
-    pos += 1
+    pos += 0.05
     if rad < pi/2:
         rad += RAD_STEP
     speed = MAX_SPEED*sin(rad)
