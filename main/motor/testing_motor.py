@@ -61,15 +61,15 @@ starter_cmd = "{N0 R}" # Set all motors to PID mode, with Acceleration = 2000, r
 starter_cmd = starter_cmd.encode('utf-8')
 __serial.write(starter_cmd)
 
-ACCEL_TIME = 3
-DUTY_CYCLE = 0.00025 # 1kHz
+ACCEL_TIME = 5
+DUTY_CYCLE = 0.00025 # 4kHz
 rad = 0
 MAX_SPEED = 300
-RAD_STEP = (pi/2)/(1/DUTY_CYCLE)/ACCEL_TIME
+RAD_STEP = pi/2*DUTY_CYCLE*ACCEL_TIME
 time.sleep(1)
 print('running...')
 for x in range(0, 100000):
-    pos += 0.05
+    pos += 0.01
     if rad < pi/2:
         rad += RAD_STEP
     speed = MAX_SPEED*sin(rad)
