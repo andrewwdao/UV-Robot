@@ -61,10 +61,10 @@ starter_cmd = starter_cmd.encode('utf-8')
 __serial.write(starter_cmd)
 
 print('running...')
-for x in range(0, 3000):
+for x in range(0, 6000):
     pos += 1
     if speed < 300:
-        speed += 0.01
+        speed += 0.05
     cmd = "{N0 P" + str(pos) + " V" + str(round(speed, 2)) + "}" # {N1 P500 V100} - set position and speed for PID
     cmd = cmd.encode('utf-8')
     __serial.write(cmd) # send to the driver
