@@ -69,11 +69,11 @@ RAD_STEP = (pi/2)/(1/DUTY_CYCLE)/ACCEL_TIME
 time.sleep(1)
 print('running...')
 for x in range(0, 100000):
-    pos += 0.0005
+    pos += 0.05
     if rad < pi/2:
         rad += RAD_STEP
     speed = MAX_SPEED*sin(rad)
-    cmd = "{N0 P" + str(pos) + " V" + str(round(speed, 2)) + "}" # {N1 P500 V100} - set position and speed for PID
+    cmd = "{N0 P" + str(round(pos,2)) + " V" + str(round(speed, 2)) + "}" # {N1 P500 V100} - set position and speed for PID
     cmd = cmd.encode('utf-8')
     __serial.write(cmd) # send to the driver
     time.sleep(DUTY_CYCLE)  # sleep for 4us --> 250kHz
