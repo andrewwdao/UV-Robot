@@ -65,7 +65,7 @@ ACCEL_TIME = 5
 DUTY_CYCLE = 0.00025 # 4kHz
 rad = 0
 MAX_SPEED = 300
-RAD_STEP = pi/2/DUTY_CYCLE/ACCEL_TIME
+RAD_STEP = pi/2*DUTY_CYCLE/ACCEL_TIME
 time.sleep(1)
 print('running...')
 for x in range(0, 100000):
