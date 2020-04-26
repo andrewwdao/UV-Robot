@@ -62,7 +62,7 @@ starter_cmd = starter_cmd.encode('utf-8')
 __serial.write(starter_cmd)
 
 ACCEL_TIME = 3
-DUTY_CYCLE = 0.0005 # 1kHz
+DUTY_CYCLE = 0.001 # 1kHz
 rad = 0
 MAX_SPEED = 300
 RAD_STEP = (pi/2)/(1/DUTY_CYCLE)/ACCEL_TIME
