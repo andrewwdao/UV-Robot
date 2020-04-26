@@ -62,17 +62,18 @@ starter_cmd = starter_cmd.encode('utf-8')
 __serial.write(starter_cmd)
 
 ACCEL_TIME = 5
-DUTY_CYCLE = 0.00025 # 4kHz
-rad = 0
+DUTY_CYCLE = 0.005 # 4kHz
+alpha = 0
 MAX_SPEED = 300
 RAD_STEP = pi/2*DUTY_CYCLE/ACCEL_TIME
 time.sleep(1)
 print('running...')
 for x in range(0, 100000):
-    pos += 0.1
-    if rad < pi/2:
-        rad += RAD_STEP
-    speed = MAX_SPEED*sin(rad)
+    if alpha < pi/2:
+        alpha += RAD_STEP
+    pos = 2*pi*sin(alpha)
+    # speed = MAX_SPEED*sin(alpha)
+    speed = 200
     cmd = "{N0 P" + str(round(pos,3)) + " V" + str(round(speed, 3)) + "}" # {N1 P500 V100} - set position and speed for PID
     cmd = cmd.encode('utf-8')
     __serial.write(cmd) # send to the driver
