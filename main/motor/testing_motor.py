@@ -48,7 +48,7 @@ starter_cmd = "{N0 M2 A2000 R}" # Set all motors to PID mode, with Acceleration 
 starter_cmd = starter_cmd.encode('utf-8')
 __serial.write(starter_cmd)
 pos = 0
-speed = 00
+speed = 0
 # pos_2 = 0
 # speed_2 = 0
 time.sleep(1)
@@ -64,8 +64,8 @@ print('running...')
 for x in range(0, 3000):
     pos += 1
     if speed < 300:
-        speed += 0.5
-    cmd = "{N0 P" + str(pos) + " V" + str(round(speed, 1)) + "}" # {N1 P500 V100} - set position and speed for PID
+        speed += 0.01
+    cmd = "{N0 P" + str(pos) + " V" + str(round(speed, 2)) + "}" # {N1 P500 V100} - set position and speed for PID
     cmd = cmd.encode('utf-8')
     __serial.write(cmd) # send to the driver
     time.sleep(0.001)  # sleep for 4us --> 250kHz
