@@ -69,7 +69,7 @@ RAD_STEP = (pi/2)/(1/DUTY_CYCLE)/ACCEL_TIME
 time.sleep(1)
 print('running...')
 for x in range(0, 100000):
-    pos += 0.005
+    pos += 0.01
     if rad < pi/2:
         rad += RAD_STEP
     speed = MAX_SPEED*sin(rad)
