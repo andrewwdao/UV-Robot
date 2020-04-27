@@ -76,7 +76,7 @@ def motor_controller():
         DANGER_FLAG = True
         STOP_millis = millis() # reset the flag so the motor won't stop
     # ================== Analog control ==================
-    elif ps2.LstickRead() != [128, 127] & ((millis() - A_watchdog) > ACCEL):
+    elif (ps2.LstickRead() != [128, 127]) & ((millis() - A_watchdog) > ACCEL):
         [Lx, Ly] = ps2.LstickRead()
         if Ly < 127: # moving forward
             if Ly < 40:
