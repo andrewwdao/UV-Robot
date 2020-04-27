@@ -76,7 +76,8 @@ def motor_controller():
         DANGER_FLAG = True
         STOP_millis = millis() # reset the flag so the motor won't stop
     # ================== Analog control ==================
-
+    # elif ps2.LstickRead() != []
+    print(ps2.LstickRead())
 
     # ================== Safety control ==================
     if (DANGER_FLAG) & ((millis() - STOP_millis) > SAFETY_TIME): # if time flag isn't gotten reset, then stop
@@ -90,10 +91,9 @@ def cmd_update():
 
     # ------------ Confirm release buttons ---------------------
     if ps2.released(ps2.SQUARE):
-        print('RECTANGULAR released')
+        print('SQUARE released')
         SQ_FLAG = True # reset flag for next use
 
-    
     # ------------- Confirm pressing buttons -------------------
     if ps2.cmdPressing():
          # --- START - turn off all relays
@@ -111,9 +111,9 @@ def cmd_update():
         if ps2.pressed(ps2.CROSS):
             print('CROSS pressed')
             Motor.MAX_PWM = LOW_SPEED
-        # --- RECTANGULAR - turn on UV lights
+        # --- SQUARE - turn on UV lights
         if ps2.pressed(ps2.SQUARE):
-            print('RECTANGULAR pressed')
+            print('SQUARE pressed')
             SQ_watchdog = millis() # for recalculating interval
         elif ps2.isPressing(ps2.SQUARE) & ((millis() - SQ_watchdog) > SAFETY_TIME*2) & SQ_FLAG:
             print('relays toggled')

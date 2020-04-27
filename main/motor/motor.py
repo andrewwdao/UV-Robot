@@ -24,7 +24,6 @@
 
  * In this specific version, PWM mode will be used.
  --------------------------------------------------------------"""
-
 import os
 import serial
 import struct
