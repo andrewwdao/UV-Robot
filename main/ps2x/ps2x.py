@@ -191,6 +191,12 @@ class PS2X(object):
         LX = self.Lsticks >> 8
         LY = self.Lsticks & 0x00FF
         return [LX,LY]
+    
+    def LxRead(self):
+        return self.Lsticks >> 8
+    
+    def LyRead(self):
+        return self.Lsticks & 0x00FF
 
     def flush(self):
         sys.stdout.flush() # flush all the left over from buffer

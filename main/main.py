@@ -101,6 +101,9 @@ def motor_controller():
                 Motor.move_bw(PWM_STEP) # increasing algorithm integrated
             FORWARD_FLAG = False
         
+        # for motor driver catching the information
+        time.sleep(0.001)  # sleep for 1ms
+
         if Lx < 128: # turning left
             if Ly < 40:
                 print('turn left+++')
