@@ -29,12 +29,12 @@ PWM_STEP = 10 # accel must be multiple of PWM_STEP = 10
 ACCEL = 150 # ms
 SAFETY_TIME = 500 #ms --> 1s
 DANGER_FLAG = False
-
+FORWARD_FLAG = True # flag for turning, defaut in forward direction
 
 millis = lambda: int(time.time() * 1000)
 # --------------------------- Set Up ----------------------------------------
 # start to count time
-U_watchdog = D_watchdog = L_watchdog = R_watchdog = millis() # monitoring interval for arrow buttons
+U_watchdog = D_watchdog = L_watchdog = R_watchdog = A_watchdog = millis() # monitoring interval for arrow buttons
 STOP_millis = millis() # time flag to trigger auto stop
 
 # L1_watchdog = L2_watchdog = R1_watchdog = R2_watchdog = millis() # monitoring interval for L, R buttons
@@ -76,8 +76,56 @@ def motor_controller():
         DANGER_FLAG = True
         STOP_millis = millis() # reset the flag so the motor won't stop
     # ================== Analog control ==================
-    # elif ps2.LstickRead() != []
-    print(ps2.LstickRead())
+    elif ps2.LstickRead() != [128, 127] & ((millis() - A_watchdog) > ACCEL):
+        [Lx, Ly] = ps2.LstickRead()
+        if Ly < 127: # moving forward
+            if Ly < 40:
+                print('forward+++')
+                Motor.move_fw(PWM_STEP*3) # increasing algorithm integrated
+            elif Ly < 80: # 40 < Ly < 80
+                print('forward++')
+                Motor.move_fw(PWM_STEP*2) # increasing algorithm integrated
+            else: # 80 < Ly < 127
+                print('forward+')
+                Motor.move_fw(PWM_STEP) # increasing algorithm integrated
+            FORWARD_FLAG = True
+        elif Ly > 127: # moving backward
+            if Ly > 210:
+                print('backward+++')
+                Motor.move_bw(PWM_STEP*3) # increasing algorithm integrated
+            elif Ly > 170: # 210 > Ly > 170
+                print('backward++')
+                Motor.move_bw(PWM_STEP*2) # increasing algorithm integrated
+            else: # 170 > Ly > 127
+                print('backward+')
+                Motor.move_bw(PWM_STEP) # increasing algorithm integrated
+            FORWARD_FLAG = False
+        
+        if Lx < 128: # turning left
+            if Ly < 40:
+                print('turn left+++')
+                Motor.turn_left(FORWARD_FLAG,PWM_STEP*3) # increasing algorithm integrated
+            elif Ly < 80: # 40 < Ly < 80
+                print('turn left++')
+                Motor.turn_left(FORWARD_FLAG,PWM_STEP*2) # increasing algorithm integrated
+            else: # 80 < Ly < 127
+                print('turn left+')
+                Motor.turn_left(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
+        elif Lx > 128: # turning right
+            if Ly > 210:
+                print('turn right+++')
+                Motor.turn_right(FORWARD_FLAG,PWM_STEP*3) # increasing algorithm integrated
+            elif Ly > 170: # 210 > Ly > 170
+                print('turn right++')
+                Motor.turn_right(FORWARD_FLAG,PWM_STEP*2) # increasing algorithm integrated
+            else: # 170 > Ly > 127
+                print('turn right+')
+                Motor.turn_right(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
+
+        #  turn on dangerous flag for release motor mechanism 
+        DANGER_FLAG = True
+        STOP_millis = A_watchdog = millis() # reset the flag so the motor won't stop
+    
 
     # ================== Safety control ==================
     if (DANGER_FLAG) & ((millis() - STOP_millis) > SAFETY_TIME): # if time flag isn't gotten reset, then stop
