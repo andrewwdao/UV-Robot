@@ -275,7 +275,7 @@ class MotorUART_PWM(object):
         @param port: a string dedicated to the connected device
         @param baudRate: an integer indicates the connection spped
         """
-        if baudRate < 9600 or baudRate > 115200 or baudRate % 9600 != 0:
+        if baudRate < 9600 or baudRate > 1000000:
             raise ValueError('The given baudrate is invalid!')
 
         # Initialize PySerial connection
