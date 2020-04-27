@@ -24,17 +24,17 @@ RELAY_R1 = 27 # BCM mode
 RELAY_R2 = 22 # BCM mode
 
 # for pwm control
-# PWM_STEP = 10 # accel must be multiple of PWM_STEP = 10
-# ACCEL = 150 #ms
-# SAFETY_TIME = 500 #ms --> 1s
-# DANGER_FLAG = False
+PWM_STEP = 10 # accel must be multiple of PWM_STEP = 10
+ACCEL = 150 #ms
+SAFETY_TIME = 500 #ms --> 1s
+DANGER_FLAG = False
 
 # for pid control
-# PWM_STEP = 10 # accel must be multiple of PWM_STEP = 10
-STEP = 1
-SAFETY_TIME = 1500 #ms
-HOLD_TIME = 300 #ms
-DANGER_FLAG = False
+# # PWM_STEP = 10 # accel must be multiple of PWM_STEP = 10
+# STEP = 1
+# SAFETY_TIME = 1500 #ms
+# HOLD_TIME = 300 #ms
+# DANGER_FLAG = False
 
 millis = lambda: int(time.time() * 1000)
 # --------------------------- Set Up ----------------------------------------
@@ -49,67 +49,27 @@ L1_FLAG = L2_FLAG = R1_FLAG = R2_FLAG = True
 server = WebServer()
 
 # =================================== motor control =============================================
-def motor_controller():
-    global DANGER_FLAG, STOP_millis
-    
-    # ================== Digital control ==================
-    if ps2.arrowPressing():
-        # --- UP
-        if ps2.isPressing(ps2.UP):
-            print('UP pressed')
-            Motor.move_fw(STEP) # increasing algorithm integrated
-        # --- DOWN
-        if ps2.isPressing(ps2.DOWN):
-            print('DOWN pressed')
-            Motor.move_bw(STEP) # increasing algorithm integrated
-        # --- LEFT
-        if ps2.isPressing(ps2.LEFT):
-            print('LEFT pressed')
-            Motor.turn_left(Motor.FORWARD,STEP) # increasing algorithm integrated
-        # --- RIGHT
-        if ps2.isPressing(ps2.RIGHT):
-            print('RIGHT pressed')
-            Motor.turn_right(Motor.FORWARD,STEP) # increasing algorithm integrated
-        # whether what arrow buttons are pressed, they created movement
-        # so turn on dangerous flag for release motor mechanism 
-        DANGER_FLAG = True
-        STOP_millis = millis() # reset the flag so the motor won't stop
-    # ================== Analog control ==================
-
-
-    # ================== Safety control ==================
-    elif DANGER_FLAG: # if time flag isn't gotten reset, then start releasing
-        print('Motor releasing')
-        Motor.release((millis() - STOP_millis) > HOLD_TIME, STEP)
-        if (millis() - STOP_millis) > SAFETY_TIME: # turn off when every has been settle
-            DANGER_FLAG = False
-
-# =================================== motor control =============================================
 # def motor_controller():
-#     global DANGER_FLAG, STOP_millis, U_watchdog, D_watchdog, L_watchdog, R_watchdog
+#     global DANGER_FLAG, STOP_millis
     
 #     # ================== Digital control ==================
 #     if ps2.arrowPressing():
 #         # --- UP
-#         if ps2.isPressing(ps2.UP) & ((millis() - U_watchdog) > ACCEL):
+#         if ps2.isPressing(ps2.UP):
 #             print('UP pressed')
-#             Motor.move_fw(PWM_STEP) # increasing algorithm integrated
-#             U_watchdog = millis() # for recalculating interval
+#             Motor.move_fw(STEP) # increasing algorithm integrated
 #         # --- DOWN
-#         if ps2.isPressing(ps2.DOWN) & ((millis() - D_watchdog) > ACCEL):
+#         if ps2.isPressing(ps2.DOWN):
 #             print('DOWN pressed')
-#             Motor.move_bw(PWM_STEP) # increasing algorithm integrated
-#             D_watchdog = millis() # for recalculating interval
+#             Motor.move_bw(STEP) # increasing algorithm integrated
 #         # --- LEFT
-#         if ps2.isPressing(ps2.LEFT) & ((millis() - L_watchdog) > ACCEL):
+#         if ps2.isPressing(ps2.LEFT):
 #             print('LEFT pressed')
-#             Motor.turn_left(Motor.FORWARD,PWM_STEP) # increasing algorithm integrated
-#             L_watchdog = millis() # for recalculating interval
+#             Motor.turn_left(Motor.FORWARD,STEP) # increasing algorithm integrated
 #         # --- RIGHT
-#         if ps2.isPressing(ps2.RIGHT) & ((millis() - R_watchdog) > ACCEL):
+#         if ps2.isPressing(ps2.RIGHT):
 #             print('RIGHT pressed')
-#             Motor.turn_right(Motor.FORWARD,PWM_STEP) # increasing algorithm integrated
-#             R_watchdog = millis() # for recalculating interval
+#             Motor.turn_right(Motor.FORWARD,STEP) # increasing algorithm integrated
 #         # whether what arrow buttons are pressed, they created movement
 #         # so turn on dangerous flag for release motor mechanism 
 #         DANGER_FLAG = True
@@ -118,10 +78,50 @@ def motor_controller():
 
 
 #     # ================== Safety control ==================
-#     if (DANGER_FLAG) & ((millis() - STOP_millis) > SAFETY_TIME): # if time flag isn't gotten reset, then stop
-#         print('Motor stop')
-#         Motor.release()
-#         DANGER_FLAG = False
+#     elif DANGER_FLAG: # if time flag isn't gotten reset, then start releasing
+#         print('Motor releasing')
+#         Motor.release((millis() - STOP_millis) > HOLD_TIME, STEP)
+#         if (millis() - STOP_millis) > SAFETY_TIME: # turn off when every has been settle
+#             DANGER_FLAG = False
+
+# =================================== motor control =============================================
+def motor_controller():
+    global DANGER_FLAG, STOP_millis, U_watchdog, D_watchdog, L_watchdog, R_watchdog
+    
+    # ================== Digital control ==================
+    if ps2.arrowPressing():
+        # --- UP
+        if ps2.isPressing(ps2.UP) & ((millis() - U_watchdog) > ACCEL):
+            print('UP pressed')
+            Motor.move_fw(PWM_STEP) # increasing algorithm integrated
+            U_watchdog = millis() # for recalculating interval
+        # --- DOWN
+        if ps2.isPressing(ps2.DOWN) & ((millis() - D_watchdog) > ACCEL):
+            print('DOWN pressed')
+            Motor.move_bw(PWM_STEP) # increasing algorithm integrated
+            D_watchdog = millis() # for recalculating interval
+        # --- LEFT
+        if ps2.isPressing(ps2.LEFT) & ((millis() - L_watchdog) > ACCEL):
+            print('LEFT pressed')
+            Motor.turn_left(Motor.FORWARD,PWM_STEP) # increasing algorithm integrated
+            L_watchdog = millis() # for recalculating interval
+        # --- RIGHT
+        if ps2.isPressing(ps2.RIGHT) & ((millis() - R_watchdog) > ACCEL):
+            print('RIGHT pressed')
+            Motor.turn_right(Motor.FORWARD,PWM_STEP) # increasing algorithm integrated
+            R_watchdog = millis() # for recalculating interval
+        # whether what arrow buttons are pressed, they created movement
+        # so turn on dangerous flag for release motor mechanism 
+        DANGER_FLAG = True
+        STOP_millis = millis() # reset the flag so the motor won't stop
+    # ================== Analog control ==================
+
+
+    # ================== Safety control ==================
+    if (DANGER_FLAG) & ((millis() - STOP_millis) > SAFETY_TIME): # if time flag isn't gotten reset, then stop
+        print('Motor stop')
+        Motor.release()
+        DANGER_FLAG = False
 
 # =================================== admin command =============================================
 def cmd_update():
