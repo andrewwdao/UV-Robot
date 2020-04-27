@@ -29,13 +29,14 @@ import os
 import serial
 import struct
 import time
-from math import pi, sin
+from math import pi, sin, cos
+
 
 ################# constant for PID #######################
 
 
 __serial = serial.Serial(port='/dev/ttyUSB0',
-                         baudrate=1000000,
+                         baudrate=250000,
                          bytesize=serial.EIGHTBITS, 
                          timeout=2
                           )
@@ -49,36 +50,49 @@ starter_cmd = "{N0 M2 A2000 R}" # Set all motors to PID mode, with Acceleration 
 starter_cmd = starter_cmd.encode('utf-8')
 __serial.write(starter_cmd)
 pos = 0
+last_post = 0
 speed = 0
 # pos_2 = 0
 # speed_2 = 0
 time.sleep(1)
-starter_cmd = "{N0 P1000 V300}" # Set all motors to PID mode, with Acceleration = 2000, reset position --> will also make all motors stop
+starter_cmd = "{N0 P1000 V70}" # Set all motors to PID mode, with Acceleration = 2000, reset position --> will also make all motors stop
 starter_cmd = starter_cmd.encode('utf-8')
 __serial.write(starter_cmd)
-time.sleep(1)
+time.sleep(3)
 starter_cmd = "{N0 R}" # Set all motors to PID mode, with Acceleration = 2000, reset position --> will also make all motors stop
 starter_cmd = starter_cmd.encode('utf-8')
 __serial.write(starter_cmd)
 
-ACCEL_TIME = 5
+ACCEL_TIME = 10
 DUTY_CYCLE = 0.005 # 4kHz
 alpha = 0
-MAX_SPEED = 300
+MAX_SPEED = 100
 RAD_STEP = pi/2*DUTY_CYCLE/ACCEL_TIME
+MAX_POS = 1
 time.sleep(1)
 print('running...')
-for x in range(0, 100000):
+millis = lambda: int(time.time() * 1000)
+for x in range(0, 3000):
+    last_millis = time.time()
     if alpha < pi/2:
-        alpha += RAD_STEP
-    pos = 54*pi*sin(alpha)
-    # speed = MAX_SPEED*sin(alpha)
-    speed = 200
-    cmd = "{N0 P" + str(round(pos,3)) + " V" + str(round(speed, 3)) + "}" # {N1 P500 V100} - set position and speed for PID
+    	alpha += RAD_STEP
+    # last_post = pos
+    pos += MAX_POS
+    speed = MAX_SPEED*sin(alpha)
+    duty_cycle = round(MAX_POS/MAX_SPEED,4)
+    #speed = 200
+    starter_cmd = "{N0 S}" # Set all motors to PID mode, with Acceleration = 2000, reset position --> w
+    starter_cmd = starter_cmd.encode('utf-8')
+    __serial.write(starter_cmd)
+    time.sleep(0)
+    cmd = "{N0 P" + str(round(pos,2)) + " V" + str(round(speed,2)) + "}" # {N1 P500 V100} - set position and speed for PID
+    #cmd = "{N0 P1000}"
     cmd = cmd.encode('utf-8')
     __serial.write(cmd) # send to the driver
-    time.sleep(DUTY_CYCLE)  # sleep for 4us --> 250kHz
-    print(str(round(speed, 3)))
+   # time.sleep(DUTY_CYCLE)  # sleep for 4us --> 250kHz
+    #duty_cycle = round(pos/speed,4)
+    time.sleep(duty_cycle*5)
+    print(round(pos,2))
 
 # ACCEL_TIME = 3
 # DUTY_CYCLE = 0.001 # 1kHz
