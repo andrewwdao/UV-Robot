@@ -117,7 +117,7 @@ def cmd_update():
             SQ_watchdog = millis() # for recalculating interval
         elif ps2.isPressing(ps2.SQUARE) & ((millis() - SQ_watchdog) > SAFETY_TIME*2) & SQ_FLAG:
             print('relays toggled')
-            if ~(GPIO.input(RELAY_01) or GPIO.input(RELAY_02) or GPIO.input(RELAY_03) or GPIO.input(RELAY_04)):
+            if not (GPIO.input(RELAY_01) or GPIO.input(RELAY_02) or GPIO.input(RELAY_03) or GPIO.input(RELAY_04)):
                 GPIO.output(RELAY_01, GPIO.HIGH) # turn off the relay
                 GPIO.output(RELAY_02, GPIO.HIGH) # turn off the relay
                 GPIO.output(RELAY_03, GPIO.HIGH) # turn off the relay
