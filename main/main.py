@@ -47,7 +47,7 @@ server = WebServer()
 
 # =================================== motor control =============================================
 def motor_controller():
-    global DANGER_FLAG, STOP_millis, U_watchdog, D_watchdog, L_watchdog, R_watchdog
+    global DANGER_FLAG, STOP_millis, U_watchdog, D_watchdog, L_watchdog, R_watchdog, A_watchdog
     
     # ================== Digital control ==================
     if ps2.arrowPressing():
