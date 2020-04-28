@@ -16,6 +16,9 @@ make clean   # cd /home/$(who am i | awk '{print $1}')/system/main/ps2x
 rm -rf ./obj
 mkdir ./obj
 make
+if [ -d "/ps2x" ] ; then  # check if the directory exist or not
+	rm -rf /ps2x
+fi
 mkdir /ps2x
 cp ./ps2x /ps2x/ps2x
 

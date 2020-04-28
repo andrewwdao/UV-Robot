@@ -27,8 +27,8 @@ import subprocess as subpro
 import time
 from datetime import timedelta
 
-# LOGGING_DIR = '/tmp/MIS_logs'
-LOGGING_DIR = './logs'
+LOGGING_DIR = '/tmp/MIS_logs'
+# LOGGING_DIR = './logs'
 
 streaming_app = Flask(__name__)
 streaming_app.config.from_object(Config)

@@ -10,7 +10,7 @@ fi
 echo "This will set up the streaming server's prequisites for Raspberry Pi camera"
 
 # workaround for automatically calling from main shell script
-if ! [ "$1" == "ignore" ] ; then
+if ! [ "${1-install}" == "ignore" ] ; then
 
 	apt-get update
 	apt-get upgrade -y
@@ -34,6 +34,10 @@ pip3 install flask-bootstrap
 pip3 install flask-login
 # Gevent networking platform to deploy production server - https://pypi.org/project/gevent/#downloads
 pip3 install gevent
+
+# setup server database for admin login
+chmod +x server-db_setup.sh
+./server-db_setup.sh
 
 echo
 echo

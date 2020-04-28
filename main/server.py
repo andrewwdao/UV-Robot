@@ -1,3 +1,20 @@
+"""------------------------------------------------------------*-
+  Application server module for Flask server
+  Tested on: Raspberry Pi 3 B+
+  (c) Minh-An Dao 2020
+  (c) Miguel Grinberg 2018
+  version 1.00 - 28/04/2020
+ --------------------------------------------------------------
+ * Server created for the purpose of streaming video
+ * Make the server a fully functional package
+ *
+ * ref:
+ * - https://blog.miguelgrinberg.com/post/video-streaming-with-flask
+ * - https://blog.miguelgrinberg.com/post/flask-video-streaming-revisited
+ * - https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iv-database
+ * - https://stackoverflow.com/questions/18277048/gevent-pywsgi-graceful-shutdown
+ 
+ --------------------------------------------------------------"""
 from gevent.pywsgi import WSGIServer
 import gevent
 from app import streaming_app
@@ -35,5 +52,3 @@ class WebServer(threading.Thread):
         
 
     # def start(self): --> existed already from parent 
-
-# ref: https://stackoverflow.com/questions/18277048/gevent-pywsgi-graceful-shutdown
