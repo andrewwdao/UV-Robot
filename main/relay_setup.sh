@@ -10,7 +10,7 @@ fi
 echo "This will set up the relay Controller's prequisites for Raspberry Pi"
 
 # workaround for automatically calling from main shell script
-if ! [ "$1" == "ignore" ] ; then
+if ! [ "${1-install}" == "ignore" ] ; then
 
 	apt-get update
 	apt-get upgrade -y

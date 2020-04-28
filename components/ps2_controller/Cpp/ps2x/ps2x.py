@@ -112,20 +112,24 @@ class PS2X(object):
         self.last_Lsticks = 0x807F # 128 << 8 + 127 --> stable state of the analog stick
 
         # self.TARGET = './ps2x'
-        self.TARGET = '/home/pi/system/components/ps2_controller/Cpp/ps2x/ps2x'
+        self.TARGET = '/ps2x/ps2x' # absolute directory, must run ps2_bin_reset.sh before run this
+        try:
+            self.ps2obj = sp.Popen(['sudo',self.TARGET,
+                                        '-d', str(self.dat_pin),
+                                        '-c', str(self.cmd_pin),
+                                        '-s', str(self.sel_pin),
+                                        '-k', str(self.clk_pin),
+                                        '-a', str(int(self.en_analog)),
+                                        '-l', str(int(self.en_locked)),
+                                        '-p', str(int(self.en_pressures)),
+                                        '-r', str(int(self.en_rumble))],
+                                        shell=False,
+                                        stdout=sp.PIPE,
+                                        stderr=sp.PIPE)
+        except Exception as e:
+            print(e)
+            raise ValueError("This may happened because you forgot to run ps2_bin_reset.sh. Please make sure to do that!")
         
-        self.ps2obj = sp.Popen(['sudo',self.TARGET,
-                                       '-d', str(self.dat_pin),
-                                       '-c', str(self.cmd_pin),
-                                       '-s', str(self.sel_pin),
-                                       '-k', str(self.clk_pin),
-                                       '-a', str(int(self.en_analog)),
-                                       '-l', str(int(self.en_locked)),
-                                       '-p', str(int(self.en_pressures)),
-                                       '-r', str(int(self.en_rumble))],
-                                       shell=False,
-                                       stdout=sp.PIPE,
-                                       stderr=sp.PIPE)
         self.output  = StreamReader(self.ps2obj.stdout)
         self.error   = StreamReader(self.ps2obj.stderr) 
 
@@ -160,21 +164,40 @@ class PS2X(object):
     
     def changed(self): # will be TRUE if any button changes state (on to off, or off to on) or Left stick changed
         return self.buttonChanged()|self.LstickChanged()
-
-    def isPressing(self, button): # will be TRUE as long as button is pressed
-        return (~self.buttons & button)>0
-
+    
     def pressed(self, button): # will be true only once when button is pressed
         return self.buttonChanged() & self.isPressing(button)
-    
+
+    # released must be place independently, not hybrid under a pressing method!  
     def released(self, button): # will be true only once when button is released
         return self.buttonChanged() & ((~self.last_buttons & button) > 0)
     
+    def buttonPressing(self): # will be TRUE as long as ANY button is pressed
+        return ~self.buttons
+    
+    def arrowPressing(self): # will be TRUE as long as arrow buttons (UP, DOWN, RIGHT, LEFT) are pressed
+        return (~self.buttons & 0x00F0)>0  # 0x00F0 = 0b0000000011110000 --> location of the arrow bits
+
+    def LRpressing(self): # will be TRUE as long as LR buttons (L1, L2, L3, R1, R2, R3) are pressed
+        return (~self.buttons & 0x0F06)>0  # 0x0F06 = 0b0000111100000110 --> location of the LR bits
+    
+    def cmdPressing(self): # will be TRUE as long as Command buttons (Cross, square, circle, triangle, select, start) are pressed
+        return (~self.buttons & 0xF009)>0  # 0xF009 = 0b1111000000001001 --> location of the command bits
+
+    def isPressing(self, button): # will be TRUE as long as a specific button is pressed
+        return (~self.buttons & button)>0
+
     def LstickRead(self): # release adc value of the Left analog stick
         LX = self.Lsticks >> 8
         LY = self.Lsticks & 0x00FF
         return [LX,LY]
-        
+    
+    def LxRead(self):
+        return self.Lsticks >> 8
+    
+    def LyRead(self):
+        return self.Lsticks & 0x00FF
+
     def flush(self):
         sys.stdout.flush() # flush all the left over from buffer
         return
