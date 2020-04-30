@@ -83,24 +83,24 @@ def motor_controller():
         if Ly < 127: # moving forward
             if Ly < 40:
                 print('forward+++')
-                Motor.move_fw(PWM_STEP*3) # increasing algorithm integrated
+                Motor.move_fw(PWM_STEP*1.5) # increasing algorithm integrated
             elif Ly < 80: # 40 < Ly < 80
                 print('forward++')
-                Motor.move_fw(PWM_STEP*2) # increasing algorithm integrated
+                Motor.move_fw(PWM_STEP) # increasing algorithm integrated
             else: # 80 < Ly < 127
                 print('forward+')
-                Motor.move_fw(PWM_STEP) # increasing algorithm integrated
+                Motor.move_fw(PWM_STEP/2) # increasing algorithm integrated
             FORWARD_FLAG = True
         elif Ly > 127: # moving backward
             if Ly > 210:
                 print('backward+++')
-                Motor.move_bw(PWM_STEP*3) # increasing algorithm integrated
+                Motor.move_bw(PWM_STEP*1.5) # increasing algorithm integrated
             elif Ly > 170: # 210 > Ly > 170
                 print('backward++')
-                Motor.move_bw(PWM_STEP*2) # increasing algorithm integrated
+                Motor.move_bw(PWM_STEP) # increasing algorithm integrated
             else: # 170 > Ly > 127
                 print('backward+')
-                Motor.move_bw(PWM_STEP) # increasing algorithm integrated
+                Motor.move_bw(PWM_STEP/2) # increasing algorithm integrated
             FORWARD_FLAG = False
         
         # for motor driver catching the information
@@ -109,23 +109,23 @@ def motor_controller():
         if Lx < 128: # turning left
             if Ly < 40:
                 print('turn left+++')
-                Motor.turn_left(FORWARD_FLAG,PWM_STEP*3) # increasing algorithm integrated
+                Motor.turn_left(FORWARD_FLAG,PWM_STEP*1.5) # increasing algorithm integrated
             elif Ly < 80: # 40 < Ly < 80
                 print('turn left++')
-                Motor.turn_left(FORWARD_FLAG,PWM_STEP*2) # increasing algorithm integrated
+                Motor.turn_left(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
             else: # 80 < Ly < 127
                 print('turn left+')
-                Motor.turn_left(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
+                Motor.turn_left(FORWARD_FLAG,PWM_STEP/2) # increasing algorithm integrated
         elif Lx > 128: # turning right
             if Ly > 210:
                 print('turn right+++')
-                Motor.turn_right(FORWARD_FLAG,PWM_STEP*3) # increasing algorithm integrated
+                Motor.turn_right(FORWARD_FLAG,PWM_STEP*1.5) # increasing algorithm integrated
             elif Ly > 170: # 210 > Ly > 170
                 print('turn right++')
-                Motor.turn_right(FORWARD_FLAG,PWM_STEP*2) # increasing algorithm integrated
+                Motor.turn_right(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
             else: # 170 > Ly > 127
                 print('turn right+')
-                Motor.turn_right(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
+                Motor.turn_right(FORWARD_FLAG,PWM_STEP/2) # increasing algorithm integrated
 
         #  turn on dangerous flag for release motor mechanism 
         DANGER_FLAG = True
