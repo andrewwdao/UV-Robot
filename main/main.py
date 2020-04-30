@@ -27,7 +27,7 @@ HIGH_SPEED = 600
 LOW_SPEED = 200
 PWM_STEP = 20 # accel must be multiple of PWM_STEP = 10
 ACCEL = 50 # ms
-SAFETY_TIME = 500 #ms --> 1s
+SAFETY_TIME = 300 #ms --> 1s
 DANGER_FLAG = False
 FORWARD_FLAG = True # flag for turning, defaut in forward direction
 

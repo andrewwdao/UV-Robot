@@ -34,8 +34,8 @@ RAD_STEP = 1 # radian
 # SEND_INTERVAL depends on the ps2, maximum 250kHz
 
 ################# constant for PWM #######################
-WAIT_TIME = 10 #ms
-PWM_STEP = 5 # accel must be multiple of PWM_STEP = 10
+WAIT_TIME = 5 #ms
+PWM_STEP = 10 # accel must be multiple of PWM_STEP = 10
 DEPART_PWM = 130
 STOP_PWM = 50 # value in which the motors almost don't move, so we can set them to zero immediately
 # MAX_PWM declared inside the class
@@ -310,7 +310,7 @@ class MotorUART_PWM(object):
         cmd_0 = cmd_0.encode('utf-8')
         cmd_1 = cmd_1.encode('utf-8')
         self.__serial.write(cmd_0)
-        time.sleep(WAIT_TIME/2) # stablize time
+        time.sleep(0.001) # stablize time
         self.__serial.write(cmd_1)
         print("Motor ready!")
 
