@@ -23,10 +23,10 @@ RELAY_03 = 27 # BCM mode
 RELAY_04 = 22 # BCM mode
 
 # for pwm control
-HIGH_SPEED = 400
+HIGH_SPEED = 600
 LOW_SPEED = 200
-PWM_STEP = 10 # accel must be multiple of PWM_STEP = 10
-ACCEL = 150 # ms
+PWM_STEP = 20 # accel must be multiple of PWM_STEP = 10
+ACCEL = 50 # ms
 SAFETY_TIME = 500 #ms --> 1s
 DANGER_FLAG = False
 FORWARD_FLAG = True # flag for turning, defaut in forward direction
@@ -132,10 +132,11 @@ def motor_controller():
 
     # ================== Safety control ==================
     if (DANGER_FLAG) & ((millis() - STOP_millis) > SAFETY_TIME): # if time flag isn't gotten reset, then stop
-        print('Motor stop')
-        Motor.release()
-        DANGER_FLAG = False
-
+        print('Releasing...')
+        DANGER_FLAG = Motor.release() # will only return False when stopped
+        if not DANGER_FLAG:
+            print('Motor stopped!')
+        
 # =================================== admin command =============================================
 def cmd_update():
     global SQ_watchdog, SQ_FLAG

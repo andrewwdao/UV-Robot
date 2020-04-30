@@ -34,11 +34,13 @@ RAD_STEP = 1 # radian
 # SEND_INTERVAL depends on the ps2, maximum 250kHz
 
 ################# constant for PWM #######################
-WAIT_TIME = 0.05 # 50ms
-PWM_STEP = 10 # accel must be multiple of PWM_STEP = 10
+WAIT_TIME = 20 #ms
+PWM_STEP = 1 # accel must be multiple of PWM_STEP = 10
 DEPART_PWM = 130
-STOP_PWM = 100 # value in which the motors almost don't move, so we can set them to zero immediately
+STOP_PWM = 50 # value in which the motors almost don't move, so we can set them to zero immediately
 # MAX_PWM declared inside the class
+
+millis = lambda: int(time.time() * 1000)
 
 class MotorUART_PID(object):
     """
@@ -294,6 +296,7 @@ class MotorUART_PWM(object):
         self.FORWARD = True # for outer use, not here
         self.BACKWARD = False # for outer use, not here
         self.MAX_PWM = speed
+        self.last_millis = millis()
 
         #   MODE_TURNING = 0
         #   MODE_SF_POSITION = 1
@@ -330,7 +333,7 @@ class MotorUART_PWM(object):
         self.__serial.write(cmd) # send to the driver
 
     def __release(self, pwm_in): # support frame for release method
-        time.sleep(WAIT_TIME) # give time for other task and slowly slow down
+        # time.sleep(WAIT_TIME) # give time for other task and slowly slow down
 
         pwm_out = 0 #  -STOP_PWM < pwm_in < STOP_PWM  --> stop now! so pwm_out = 0
 
@@ -342,7 +345,10 @@ class MotorUART_PWM(object):
         return pwm_out
 
     def release(self): # slow down slowly until really stop -  IMPORTANT function
-        while self.pwm_1 != 0 or self.pwm_2 != 0 : # 0 is stable, so try your best to become one
+        if self.pwm_1 == self.pwm_2 == 0:
+            return False # done works, so return false
+        elif (millis()- self.last_millis) > WAIT_TIME: # self.pwm_1 != 0 or self.pwm_2 != 0, 0 is stable, so try your best to become one
+            self.last_millis = millis() # reset counter
             # --- if moving for/back
             if self.pwm_1 == self.pwm_2:
                 self.pwm_1 = self.__release(self.pwm_1) # calculate value to really slow down
@@ -356,7 +362,7 @@ class MotorUART_PWM(object):
                     self.pwm_2 = self.__release(self.pwm_2) # calculate value to really slow down
                     cmd = "{N1 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
                     self.__send(cmd) # format and send to the driver
-                    time.sleep(WAIT_TIME/2) # stablize time
+                    time.sleep(0.001) # stablize time
                     cmd = "{N2 P" + str(self.pwm_2) + "}" # {N1 P500} - set speed for pwm
                     self.__send(cmd) # format and send to the driver
                 else: # now pwm_2 is really 0, we can take care of pwm_1 fully
@@ -370,14 +376,64 @@ class MotorUART_PWM(object):
                     self.pwm_2 = self.__release(self.pwm_2) # calculate value to really slow down
                     cmd = "{N1 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
                     self.__send(cmd) # format and send to the driver
-                    time.sleep(WAIT_TIME/2) # stablize time
+                    time.sleep(0.001) # stablize time
                     cmd = "{N2 P" + str(self.pwm_2) + "}" # {N1 P500} - set speed for pwm
                     self.__send(cmd) # format and send to the driver
                 else: # now pwm_1 is really 0, we can take care of pwm_2 fully
                     self.pwm_2 = self.__release(self.pwm_2) # calculate value to really slow down
                     cmd = "{N2 P" + str(self.pwm_2) + "}" # {N1 P500} - set speed for pwm
                     self.__send(cmd) # format and send to the driver
+        return True # not done work yet, so return True
 
+    # def __release(self, pwm_in): # support frame for release method
+    #     time.sleep(WAIT_TIME) # give time for other task and slowly slow down
+
+    #     pwm_out = 0 #  -STOP_PWM < pwm_in < STOP_PWM  --> stop now! so pwm_out = 0
+
+    #     if pwm_in > STOP_PWM : # limiter for fw rotation, always > 0
+    #         pwm_out = pwm_in - PWM_STEP # slow down a little bit
+    #     elif pwm_in < -STOP_PWM : # limiter for bw rotation, always < 0
+    #         pwm_out = pwm_in + PWM_STEP # slow down a little bit
+        
+    #     return pwm_out
+
+    # def release(self): # slow down slowly until really stop -  IMPORTANT function
+    #     while self.pwm_1 != 0 or self.pwm_2 != 0 : # 0 is stable, so try your best to become one
+    #         # --- if moving for/back
+    #         if self.pwm_1 == self.pwm_2:
+    #             self.pwm_1 = self.__release(self.pwm_1) # calculate value to really slow down
+    #             self.pwm_2 = self.pwm_1 # make them equal again
+    #             cmd = "{N0 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
+    #             self.__send(cmd) # format and send to the driver
+    #         # --- turning right
+    #         elif abs(self.pwm_1) > abs(self.pwm_2):
+    #             if self.pwm_2 != 0: # pwm_2 is supposed to be 0, if it's not zero, then reduce both until pwm_2 reaches zero
+    #                 self.pwm_1 = self.__release(self.pwm_1) # calculate value to really slow down
+    #                 self.pwm_2 = self.__release(self.pwm_2) # calculate value to really slow down
+    #                 cmd = "{N1 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
+    #                 self.__send(cmd) # format and send to the driver
+    #                 time.sleep(WAIT_TIME/2) # stablize time
+    #                 cmd = "{N2 P" + str(self.pwm_2) + "}" # {N1 P500} - set speed for pwm
+    #                 self.__send(cmd) # format and send to the driver
+    #             else: # now pwm_2 is really 0, we can take care of pwm_1 fully
+    #                 self.pwm_1 = self.__release(self.pwm_1) # calculate value to really slow down
+    #                 cmd = "{N1 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
+    #                 self.__send(cmd) # format and send to the driver
+    #         # --- turning left
+    #         else: # abs(self.pwm_1) < abs(self.pwm_2)
+    #             if self.pwm_1 != 0: # pwm_1 is supposed to be 0, if it's not zero, then reduce both until pwm_1 reaches zero
+    #                 self.pwm_1 = self.__release(self.pwm_1) # calculate value to really slow down
+    #                 self.pwm_2 = self.__release(self.pwm_2) # calculate value to really slow down
+    #                 cmd = "{N1 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
+    #                 self.__send(cmd) # format and send to the driver
+    #                 time.sleep(WAIT_TIME/2) # stablize time
+    #                 cmd = "{N2 P" + str(self.pwm_2) + "}" # {N1 P500} - set speed for pwm
+    #                 self.__send(cmd) # format and send to the driver
+    #             else: # now pwm_1 is really 0, we can take care of pwm_2 fully
+    #                 self.pwm_2 = self.__release(self.pwm_2) # calculate value to really slow down
+    #                 cmd = "{N2 P" + str(self.pwm_2) + "}" # {N1 P500} - set speed for pwm
+    #                 self.__send(cmd) # format and send to the driver
+    
     def move_fw(self, accel): # move forward, so both motor rotate at the same time
         if self.pwm_1 == self.pwm_2: # system not turning
             if -DEPART_PWM < self.pwm_1 < DEPART_PWM: # pwm_1 is equal pwm_2, so choose one to do math

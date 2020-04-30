@@ -30,7 +30,7 @@ from motor.motor import MotorUART_PID, MotorUART_PWM
 
 PORT = '/dev/ttyUSB0'
 BAUDRATE = 250000
-MAX_SPEED = 400
+MAX_SPEED = 600
 
 Motor = MotorUART_PWM(PORT, BAUDRATE, MAX_SPEED)
 # Motor = MotorUART_PWM(PORT, BAUDRATE)
