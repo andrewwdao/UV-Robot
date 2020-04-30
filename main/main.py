@@ -56,20 +56,22 @@ def motor_controller():
             print('UP pressed')
             Motor.move_fw(PWM_STEP) # increasing algorithm integrated
             U_watchdog = millis() # for recalculating interval
+            FORWARD_FLAG = True
         # --- DOWN
         if ps2.isPressing(ps2.DOWN) & ((millis() - D_watchdog) > ACCEL):
             print('DOWN pressed')
             Motor.move_bw(PWM_STEP) # increasing algorithm integrated
             D_watchdog = millis() # for recalculating interval
+            FORWARD_FLAG = False
         # --- LEFT
         if ps2.isPressing(ps2.LEFT) & ((millis() - L_watchdog) > ACCEL):
             print('LEFT pressed')
-            Motor.turn_left(Motor.FORWARD,PWM_STEP) # increasing algorithm integrated
+            Motor.turn_left(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
             L_watchdog = millis() # for recalculating interval
         # --- RIGHT
         if ps2.isPressing(ps2.RIGHT) & ((millis() - R_watchdog) > ACCEL):
             print('RIGHT pressed')
-            Motor.turn_right(Motor.FORWARD,PWM_STEP) # increasing algorithm integrated
+            Motor.turn_right(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
             R_watchdog = millis() # for recalculating interval
         # whether what arrow buttons are pressed, they created movement
         # so turn on dangerous flag for release motor mechanism 
