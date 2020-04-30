@@ -34,8 +34,8 @@ RAD_STEP = 1 # radian
 # SEND_INTERVAL depends on the ps2, maximum 250kHz
 
 ################# constant for PWM #######################
-WAIT_TIME = 25 #ms
-PWM_STEP = 20 # accel must be multiple of PWM_STEP = 10
+WAIT_TIME = 5 #ms
+PWM_STEP = 10 # accel must be multiple of PWM_STEP = 10
 DEPART_PWM = 130
 STOP_PWM = 50 # value in which the motors almost don't move, so we can set them to zero immediately
 # MAX_PWM declared inside the class
@@ -290,21 +290,21 @@ class MotorUART_PWM(object):
 
         self.__serial.open()
 
-        # self.pwm   = 0  # set initial pwm value for both motor -- forward or backward direction
         self.pwm_1 = 0  # set initial pwm value for motor 1 -- left or right direction
         self.pwm_2 = 0  # set initial pwm value for motor 2 -- left or right direction
         self.FORWARD = True # for outer use, not here
         self.BACKWARD = False # for outer use, not here
         self.MAX_PWM = speed
         self.last_millis = millis()
-
-        #   MODE_TURNING = 0
-        #   MODE_SF_POSITION = 1
-        #   MODE_PID_POSITION = 2
-        #   MODE_PI_VELOCITY = 3
-        #   MODE_SMART_POSITION = 4
-        #   MODE_PI_VELOCITY_BY_ADC = 5
-        #   MODE_PWM = 6
+        """
+          MODE_TURNING = 0
+          MODE_SF_POSITION = 1
+          MODE_PID_POSITION = 2
+          MODE_PI_VELOCITY = 3
+          MODE_SMART_POSITION = 4
+          MODE_PI_VELOCITY_BY_ADC = 5
+          MODE_PWM = 6
+        """
         cmd_0 = "{N0 M6}" # Set all motors to PWM mode
         cmd_1 = "{N0 P0}" # Set all motors to stand still
         cmd_0 = cmd_0.encode('utf-8')
@@ -333,8 +333,6 @@ class MotorUART_PWM(object):
         self.__serial.write(cmd) # send to the driver
 
     def __release(self, pwm_in): # support frame for release method
-        # time.sleep(WAIT_TIME) # give time for other task and slowly slow down
-
         pwm_out = 0 #  -STOP_PWM < pwm_in < STOP_PWM  --> stop now! so pwm_out = 0
 
         if pwm_in > STOP_PWM : # limiter for fw rotation, always > 0
