@@ -34,8 +34,8 @@ RAD_STEP = 1 # radian
 # SEND_INTERVAL depends on the ps2, maximum 250kHz
 
 ################# constant for PWM #######################
-WAIT_TIME = 20 #ms
-PWM_STEP = 1 # accel must be multiple of PWM_STEP = 10
+WAIT_TIME = 10 #ms
+PWM_STEP = 5 # accel must be multiple of PWM_STEP = 10
 DEPART_PWM = 130
 STOP_PWM = 50 # value in which the motors almost don't move, so we can set them to zero immediately
 # MAX_PWM declared inside the class
