@@ -37,7 +37,7 @@ RAD_STEP = 1 # radian
 WAIT_TIME = 5 #ms
 PWM_STEP = 10 # accel must be multiple of PWM_STEP = 10
 DEPART_PWM = 130
-STOP_PWM = 50 # value in which the motors almost don't move, so we can set them to zero immediately
+STOP_PWM = 100 # value in which the motors almost don't move, so we can set them to zero immediately
 # MAX_PWM declared inside the class
 
 millis = lambda: int(time.time() * 1000)
