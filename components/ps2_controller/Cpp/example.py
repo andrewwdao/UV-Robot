@@ -88,7 +88,7 @@ try:
       # ================== Analog monitoring ==================
     if ps2.LstickChanged(): # will triggered when Left stick is changing
       print(ps2.LstickRead())
-    if (ps2.LstickRead() != [128, 127]): # will triggered when Left stick is out of stable position (may not changing though)
+    if (ps2.LstickTouched()): # will triggered when Left stick is out of stable position (may not changing though)
       [Lx, Ly] = ps2.LstickRead()
       # do something you want with Lx, Ly
       

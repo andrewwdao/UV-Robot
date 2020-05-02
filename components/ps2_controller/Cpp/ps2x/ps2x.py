@@ -187,6 +187,9 @@ class PS2X(object):
     def isPressing(self, button): # will be TRUE as long as a specific button is pressed
         return (~self.buttons & button)>0
 
+    def LstickTouched(self): # will triggered when Left stick is out of stable position (may not changing though)
+        return self.Lsticks != 0x807F # ps2.LstickRead() != [128, 127]
+
     def LstickRead(self): # release adc value of the Left analog stick
         LX = self.Lsticks >> 8
         LY = self.Lsticks & 0x00FF
