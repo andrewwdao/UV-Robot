@@ -76,54 +76,54 @@ def motor_controller():
         STOP_millis = millis() # reset the flag so the motor won't stop
     # ================== Analog control ==================
     elif ps2.LstickTouched() & ((millis() - A_watchdog) > ACCEL):
-        print(ps2.LstickRead())
-        # [Lx, Ly] = ps2.LstickRead()
-        # if Ly < 127: # moving forward
-        #     if Ly < 40:
-        #         print('forward+++')
-        #         Motor.move_fw(PWM_STEP*2) # increasing algorithm integrated
-        #     elif Ly < 80: # 40 < Ly < 80
-        #         print('forward++')
-        #         Motor.move_fw(PWM_STEP) # increasing algorithm integrated
-        #     else: # 80 < Ly < 127
-        #         print('forward+')
-        #         Motor.move_fw(PWM_STEP/2) # increasing algorithm integrated
-        #     FORWARD_FLAG = True
-        # elif Ly > 127: # moving backward
-        #     if Ly > 210:
-        #         print('backward+++')
-        #         Motor.move_bw(PWM_STEP*2) # increasing algorithm integrated
-        #     elif Ly > 170: # 210 > Ly > 170
-        #         print('backward++')
-        #         Motor.move_bw(PWM_STEP) # increasing algorithm integrated
-        #     else: # 170 > Ly > 127
-        #         print('backward+')
-        #         Motor.move_bw(PWM_STEP/2) # increasing algorithm integrated
-        #     FORWARD_FLAG = False
+        # print(ps2.LstickRead())
+        [Lx, Ly] = ps2.LstickRead()
+        if Ly < 127: # moving forward
+            if Ly < 40:
+                print('forward+++')
+                Motor.move_fw(PWM_STEP*2) # increasing algorithm integrated
+            elif Ly < 80: # 40 < Ly < 80
+                print('forward++')
+                Motor.move_fw(PWM_STEP) # increasing algorithm integrated
+            else: # 80 < Ly < 127
+                print('forward+')
+                Motor.move_fw(PWM_STEP/2) # increasing algorithm integrated
+            FORWARD_FLAG = True
+        elif Ly > 127: # moving backward
+            if Ly > 210:
+                print('backward+++')
+                Motor.move_bw(PWM_STEP*2) # increasing algorithm integrated
+            elif Ly > 170: # 210 > Ly > 170
+                print('backward++')
+                Motor.move_bw(PWM_STEP) # increasing algorithm integrated
+            else: # 170 > Ly > 127
+                print('backward+')
+                Motor.move_bw(PWM_STEP/2) # increasing algorithm integrated
+            FORWARD_FLAG = False
         
-        # # for motor driver catching the information
-        # time.sleep(0.001)  # sleep for 1ms
+        # for motor driver catching the information
+        time.sleep(0.001)  # sleep for 1ms
 
-        # if Lx < 128: # turning left
-        #     if Ly < 40:
-        #         print('turn left+++')
-        #         Motor.turn_left(FORWARD_FLAG,PWM_STEP*2) # increasing algorithm integrated
-        #     elif Ly < 80: # 40 < Ly < 80
-        #         print('turn left++')
-        #         Motor.turn_left(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
-        #     else: # 80 < Ly < 127
-        #         print('turn left+')
-        #         Motor.turn_left(FORWARD_FLAG,PWM_STEP/2) # increasing algorithm integrated
-        # elif Lx > 128: # turning right
-        #     if Ly > 210:
-        #         print('turn right+++')
-        #         Motor.turn_right(FORWARD_FLAG,PWM_STEP*2) # increasing algorithm integrated
-        #     elif Ly > 170: # 210 > Ly > 170
-        #         print('turn right++')
-        #         Motor.turn_right(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
-        #     else: # 170 > Ly > 127
-        #         print('turn right+')
-        #         Motor.turn_right(FORWARD_FLAG,PWM_STEP/2) # increasing algorithm integrated
+        if Lx < 128: # turning left
+            if Lx < 40:
+                print('turn left+++')
+                Motor.turn_left(FORWARD_FLAG,PWM_STEP*2) # increasing algorithm integrated
+            elif Lx < 80: # 40 < Lx < 80
+                print('turn left++')
+                Motor.turn_left(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
+            else: # 80 < Lx < 127
+                print('turn left+')
+                Motor.turn_left(FORWARD_FLAG,PWM_STEP/2) # increasing algorithm integrated
+        elif Lx > 128: # turning right
+            if Lx > 210:
+                print('turn right+++')
+                Motor.turn_right(FORWARD_FLAG,PWM_STEP*2) # increasing algorithm integrated
+            elif Lx > 170: # 210 > Lx > 170
+                print('turn right++')
+                Motor.turn_right(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
+            else: # 170 > Lx > 127
+                print('turn right+')
+                Motor.turn_right(FORWARD_FLAG,PWM_STEP/2) # increasing algorithm integrated
 
         #  turn on dangerous flag for release motor mechanism 
         DANGER_FLAG = True
