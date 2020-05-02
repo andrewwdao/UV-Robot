@@ -18,14 +18,11 @@ import time
 
 # ---------------------------- Configurable parameters -------------------------
 RELAY_01 = 4  # BCM mode
-RELAY_02 = 17 # BCM mode
-RELAY_03 = 27 # BCM mode
-RELAY_04 = 22 # BCM mode
 
 # for pwm control
 HIGH_SPEED = 600
 LOW_SPEED = 200
-PWM_STEP = 20 # accel must be multiple of PWM_STEP = 10
+PWM_STEP = 30 # accel must be multiple of PWM_STEP = 10
 ACCEL = 50 # ms
 SAFETY_TIME = 300 #ms --> 1s
 DANGER_FLAG = False
@@ -83,7 +80,7 @@ def motor_controller():
         if Ly < 127: # moving forward
             if Ly < 40:
                 print('forward+++')
-                Motor.move_fw(PWM_STEP*1.5) # increasing algorithm integrated
+                Motor.move_fw(PWM_STEP*2) # increasing algorithm integrated
             elif Ly < 80: # 40 < Ly < 80
                 print('forward++')
                 Motor.move_fw(PWM_STEP) # increasing algorithm integrated
@@ -94,7 +91,7 @@ def motor_controller():
         elif Ly > 127: # moving backward
             if Ly > 210:
                 print('backward+++')
-                Motor.move_bw(PWM_STEP*1.5) # increasing algorithm integrated
+                Motor.move_bw(PWM_STEP*2) # increasing algorithm integrated
             elif Ly > 170: # 210 > Ly > 170
                 print('backward++')
                 Motor.move_bw(PWM_STEP) # increasing algorithm integrated
@@ -109,7 +106,7 @@ def motor_controller():
         if Lx < 128: # turning left
             if Ly < 40:
                 print('turn left+++')
-                Motor.turn_left(FORWARD_FLAG,PWM_STEP*1.5) # increasing algorithm integrated
+                Motor.turn_left(FORWARD_FLAG,PWM_STEP*2) # increasing algorithm integrated
             elif Ly < 80: # 40 < Ly < 80
                 print('turn left++')
                 Motor.turn_left(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
@@ -119,7 +116,7 @@ def motor_controller():
         elif Lx > 128: # turning right
             if Ly > 210:
                 print('turn right+++')
-                Motor.turn_right(FORWARD_FLAG,PWM_STEP*1.5) # increasing algorithm integrated
+                Motor.turn_right(FORWARD_FLAG,PWM_STEP*2) # increasing algorithm integrated
             elif Ly > 170: # 210 > Ly > 170
                 print('turn right++')
                 Motor.turn_right(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
@@ -154,9 +151,7 @@ def cmd_update():
         if ps2.pressed(ps2.START):
             print('START pressed - relays turned off')
             GPIO.output(RELAY_01, GPIO.HIGH) # turn off the relay
-            GPIO.output(RELAY_02, GPIO.HIGH) # turn off the relay
-            GPIO.output(RELAY_03, GPIO.HIGH) # turn off the relay
-            GPIO.output(RELAY_04, GPIO.HIGH) # turn off the relay
+            
         # --- TRIANGLE - high speed
         if ps2.pressed(ps2.TRIANGLE):
             print('TRIANGLE pressed')
@@ -171,25 +166,16 @@ def cmd_update():
             SQ_watchdog = millis() # for recalculating interval
         elif ps2.isPressing(ps2.SQUARE) & ((millis() - SQ_watchdog) > SAFETY_TIME*2) & SQ_FLAG:
             print('relays toggled')
-            if not (GPIO.input(RELAY_01) or GPIO.input(RELAY_02) or GPIO.input(RELAY_03) or GPIO.input(RELAY_04)):
-                GPIO.output(RELAY_01, GPIO.HIGH) # turn off the relay
-                GPIO.output(RELAY_02, GPIO.HIGH) # turn off the relay
-                GPIO.output(RELAY_03, GPIO.HIGH) # turn off the relay
-                GPIO.output(RELAY_04, GPIO.HIGH) # turn off the relay
+            if not GPIO.input(RELAY_01):
+                GPIO.output(RELAY_01, GPIO.HIGH) # turn off the relay  
             else:
                 GPIO.output(RELAY_01, GPIO.LOW) # turn on the relay
-                GPIO.output(RELAY_02, GPIO.LOW) # turn on the relay
-                GPIO.output(RELAY_03, GPIO.LOW) # turn on the relay
-                GPIO.output(RELAY_04, GPIO.LOW) # turn on the relay
             SQ_FLAG = False
 
 # =================================== relay module =============================================
 def relay_init():
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(RELAY_01, GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(RELAY_02, GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(RELAY_03, GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(RELAY_04, GPIO.OUT, initial=GPIO.HIGH)
 
 # other functions integrated inside cmd_update
         
