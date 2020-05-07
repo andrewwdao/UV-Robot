@@ -7,20 +7,22 @@ if [ 'root' != $( whoami ) ] ; then
   exit 1;
 fi
 
-echo "This will reset PS2 Controller's binary for Raspberry Pi"
+
+echo "This will reset ultrasonic sensor's binary for Raspberry Pi"
+
 
 # ----------- renew binary files --------------------
 # go to cpp code section, clean the c binary files and re-create them
-cd ./ps2x
+cd ./ultrasonic
 make clean   # cd /home/$(who am i | awk '{print $1}')/system/main/ps2x
 rm -rf ./obj
 mkdir ./obj
 make
-if [ -d "/ps2x" ] ; then  # check if the directory exist or not
-	rm -rf /ps2x
+if [ -d "/ultrasonic" ] ; then  # check if the directory exist or not
+	rm -rf /ultrasonic
 fi
-mkdir /ps2x
-cp ./ps2x /ps2x/ps2x
+mkdir /ultrasonic
+cp ./ultrasonic /ultrasonic/ultrasonic
 
 echo
 echo

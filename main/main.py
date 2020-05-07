@@ -155,11 +155,11 @@ def cmd_update():
             
         # --- TRIANGLE - high speed
         if ps2.pressed(ps2.TRIANGLE):
-            print('TRIANGLE pressed')
+            print('TRIANGLE pressed - high speed mode')
             Motor.MAX_PWM = HIGH_SPEED
         # --- CROSS - low speed
         if ps2.pressed(ps2.CROSS):
-            print('CROSS pressed')
+            print('CROSS pressed - low speed mode')
             Motor.MAX_PWM = LOW_SPEED
         # --- SQUARE - turn on UV lights
         if ps2.pressed(ps2.SQUARE):
