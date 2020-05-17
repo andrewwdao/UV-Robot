@@ -17,7 +17,9 @@ import os
 import time
 
 # ---------------------------- Configurable parameters -------------------------
-RELAY_01 = 4  # BCM mode
+RELAY_01_PIN = 4  # BCM mode
+
+L_LIMIT_UP_PIN = 10 # bcm mode - WARNING
 
 # for pwm control
 HIGH_SPEED = 600
@@ -39,8 +41,51 @@ STOP_millis = millis() # time flag to trigger auto stop
 SQ_watchdog = millis() # monitor interval for SQUARE button
 SQ_FLAG = True
 
+MIN_HEIGHT = 30 #cm
+L_UP_FLAG = True
+L_DOWN_FLAG = False # will be automatically updated to true
+R_UP_FLAG = True
+R_DOWN_FLAG = False # will be automatically updated to true
+
+
 # server initialize
 server = WebServer()
+
+# =================================== admin command =============================================
+def cmd_update():
+    global SQ_watchdog, SQ_FLAG
+
+    # ------------ Confirm release buttons ---------------------
+    if ps2.released(ps2.SQUARE):
+        print('SQUARE released')
+        SQ_FLAG = True # reset flag for next use
+
+    # ------------- Confirm pressing buttons -------------------
+    if ps2.cmdPressing():
+         # --- START - turn off all relays
+        if ps2.pressed(ps2.START):
+            print('START pressed - relays turned off')
+            GPIO.output(RELAY_01_PIN, GPIO.HIGH) # turn off the relay
+            
+        # --- TRIANGLE - high speed
+        if ps2.pressed(ps2.TRIANGLE):
+            print('TRIANGLE pressed - high speed mode')
+            motor.MAX_PWM = HIGH_SPEED
+        # --- CROSS - low speed
+        if ps2.pressed(ps2.CROSS):
+            print('CROSS pressed - low speed mode')
+            motor.MAX_PWM = LOW_SPEED
+        # --- SQUARE - turn on UV lights
+        if ps2.pressed(ps2.SQUARE):
+            print('SQUARE pressed')
+            SQ_watchdog = millis() # for recalculating interval
+        elif ps2.isPressing(ps2.SQUARE) & ((millis() - SQ_watchdog) > SAFETY_TIME*2) & SQ_FLAG:
+            print('relays toggled')
+            if not GPIO.input(RELAY_01_PIN):
+                GPIO.output(RELAY_01_PIN, GPIO.HIGH) # turn off the relay  
+            else:
+                GPIO.output(RELAY_01_PIN, GPIO.LOW) # turn on the relay
+            SQ_FLAG = False
 
 # =================================== motor control =============================================
 def motor_controller():
@@ -136,55 +181,73 @@ def motor_controller():
         DANGER_FLAG = motor.release() # will only return False when stopped
         if not DANGER_FLAG:
             print('motor stopped!')
-        
-# =================================== admin command =============================================
-def cmd_update():
-    global SQ_watchdog, SQ_FLAG
 
-    # ------------ Confirm release buttons ---------------------
-    if ps2.released(ps2.SQUARE):
-        print('SQUARE released')
-        SQ_FLAG = True # reset flag for next use
+# =================================== limit switch ISR =============================================
+# ==== ISR for limit switches =========
+def __Lhand_up_fallISR(channel):
+    global L_UP_FLAG
+    print("Hello there fall")
+    L_UP_FLAG = False
+    GPIO.remove_event_detect(L_LIMIT_UP_PIN)
+    GPIO.add_event_detect(L_LIMIT_UP_PIN, GPIO.RISING, callback=__Lhand_up_riseISR, bouncetime=500)
 
-    # ------------- Confirm pressing buttons -------------------
-    if ps2.cmdPressing():
-         # --- START - turn off all relays
-        if ps2.pressed(ps2.START):
-            print('START pressed - relays turned off')
-            GPIO.output(RELAY_01, GPIO.HIGH) # turn off the relay
-            
-        # --- TRIANGLE - high speed
-        if ps2.pressed(ps2.TRIANGLE):
-            print('TRIANGLE pressed - high speed mode')
-            motor.MAX_PWM = HIGH_SPEED
-        # --- CROSS - low speed
-        if ps2.pressed(ps2.CROSS):
-            print('CROSS pressed - low speed mode')
-            motor.MAX_PWM = LOW_SPEED
-        # --- SQUARE - turn on UV lights
-        if ps2.pressed(ps2.SQUARE):
-            print('SQUARE pressed')
-            SQ_watchdog = millis() # for recalculating interval
-        elif ps2.isPressing(ps2.SQUARE) & ((millis() - SQ_watchdog) > SAFETY_TIME*2) & SQ_FLAG:
-            print('relays toggled')
-            if not GPIO.input(RELAY_01):
-                GPIO.output(RELAY_01, GPIO.HIGH) # turn off the relay  
-            else:
-                GPIO.output(RELAY_01, GPIO.LOW) # turn on the relay
-            SQ_FLAG = False
+def __Lhand_up_riseISR(channel):
+    global L_UP_FLAG
+    print("Hello there rise")
+    L_UP_FLAG = True
+    GPIO.remove_event_detect(L_LIMIT_UP_PIN)
+    GPIO.add_event_detect(L_LIMIT_UP_PIN, GPIO.FALLING, callback=__Lhand_up_fallISR, bouncetime=500)
 
-# =================================== relay module =============================================
-def relay_init():
+# =================================== init gpio, including relays =============================================
+def gpio_init():
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(RELAY_01, GPIO.OUT, initial=GPIO.HIGH)
+    GPIO.setup(RELAY_01_PIN, GPIO.OUT, initial=GPIO.HIGH) # relay init
+    GPIO.setup(L_LIMIT_UP_PIN, GPIO.IN, pull_up_down = GPIO.PUD_UP) # pulling up
+    GPIO.add_event_detect(L_LIMIT_UP_PIN, GPIO.FALLING, callback=__Lhand_up_fallISR, bouncetime=500)
 
 # other functions integrated inside cmd_update
+
+# =================================== ultrasonic update =============================================
+def ultrasonic_update():
+    global L_DOWN_FLAG, R_DOWN_FLAG
+    sensorval = sensor.read()
+    # print(sensorval)
+    if int(sensorval[0]) > MIN_HEIGHT: # if sensor is greater than MIN_HEIGHT cm 
+        L_DOWN_FLAG = True
+    else: # sensor value < MIN_HEIGHT
+        L_DOWN_FLAG = False
+        motor.Lhand_stop() # motor stop
+
+# =================================== hand command =============================================
+def hand_controller():
+
+    # ------------ Confirm release buttons ---------------------
+    if ps2.released(ps2.L1):
+        print('L1 released')
+        motor.Lhand_stop() # motor stop
+    if ps2.released(ps2.L2):
+        print('L2 released')
+        motor.Lhand_stop() # motor stop
+
+    # ------------- Confirm pressing buttons -------------------
+    if ps2.LRpressing():
+        # --- L1 pressed - Lhand move up
+        if ps2.pressed(ps2.L1) and L_UP_FLAG:
+            print('L1 pressed - Lhand move up')
+            motor.Lhand_up() # motor move up
+            return
+        # --- L2 pressed - Lhand move up
+        if ps2.pressed(ps2.L2) and L_DOWN_FLAG:
+            print('L2 pressed - Lhand move down')
+            motor.Lhand_down() # motor move down
+            return
+
         
 # =================================================================================================
 
 
 def main():  # Main program block
-    relay_init()
+    gpio_init()
     server.start()
 
     # forever loop start...
@@ -193,8 +256,9 @@ def main():  # Main program block
 
         cmd_update()
         motor_controller()
-        
 
+        ultrasonic_update()
+        hand_controller()
 
 
 if __name__ == '__main__':
