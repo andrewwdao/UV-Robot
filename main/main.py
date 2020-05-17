@@ -8,7 +8,7 @@
  *
  --------------------------------------------------------------"""
 from server import WebServer
-from motor import Motor
+from usb_peripherals import sensor, motor
 from ps2x import ps2
 import RPi.GPIO as GPIO
 import subprocess as sp
@@ -51,24 +51,24 @@ def motor_controller():
         # --- UP
         if ps2.isPressing(ps2.UP) & ((millis() - U_watchdog) > ACCEL):
             print('UP pressed')
-            Motor.move_fw(PWM_STEP) # increasing algorithm integrated
+            motor.move_fw(PWM_STEP) # increasing algorithm integrated
             U_watchdog = millis() # for recalculating interval
             FORWARD_FLAG = True
         # --- DOWN
         if ps2.isPressing(ps2.DOWN) & ((millis() - D_watchdog) > ACCEL):
             print('DOWN pressed')
-            Motor.move_bw(PWM_STEP) # increasing algorithm integrated
+            motor.move_bw(PWM_STEP) # increasing algorithm integrated
             D_watchdog = millis() # for recalculating interval
             FORWARD_FLAG = False
         # --- LEFT
         if ps2.isPressing(ps2.LEFT) & ((millis() - L_watchdog) > ACCEL):
             print('LEFT pressed')
-            Motor.turn_left(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
+            motor.turn_left(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
             L_watchdog = millis() # for recalculating interval
         # --- RIGHT
         if ps2.isPressing(ps2.RIGHT) & ((millis() - R_watchdog) > ACCEL):
             print('RIGHT pressed')
-            Motor.turn_right(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
+            motor.turn_right(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
             R_watchdog = millis() # for recalculating interval
         # whether what arrow buttons are pressed, they created movement
         # so turn on dangerous flag for release motor mechanism 
@@ -81,24 +81,24 @@ def motor_controller():
         if Ly < 127: # moving forward
             if Ly < 40:
                 print('forward+++')
-                Motor.move_fw(PWM_STEP*2) # increasing algorithm integrated
+                motor.move_fw(PWM_STEP*2) # increasing algorithm integrated
             elif Ly < 80: # 40 < Ly < 80
                 print('forward++')
-                Motor.move_fw(PWM_STEP) # increasing algorithm integrated
+                motor.move_fw(PWM_STEP) # increasing algorithm integrated
             else: # 80 < Ly < 127
                 print('forward+')
-                Motor.move_fw(PWM_STEP/2) # increasing algorithm integrated
+                motor.move_fw(PWM_STEP/2) # increasing algorithm integrated
             FORWARD_FLAG = True
         elif Ly > 127: # moving backward
             if Ly > 210:
                 print('backward+++')
-                Motor.move_bw(PWM_STEP*2) # increasing algorithm integrated
+                motor.move_bw(PWM_STEP*2) # increasing algorithm integrated
             elif Ly > 170: # 210 > Ly > 170
                 print('backward++')
-                Motor.move_bw(PWM_STEP) # increasing algorithm integrated
+                motor.move_bw(PWM_STEP) # increasing algorithm integrated
             else: # 170 > Ly > 127
                 print('backward+')
-                Motor.move_bw(PWM_STEP/2) # increasing algorithm integrated
+                motor.move_bw(PWM_STEP/2) # increasing algorithm integrated
             FORWARD_FLAG = False
         
         # for motor driver catching the information
@@ -107,23 +107,23 @@ def motor_controller():
         if Lx < 128: # turning left
             if Lx < 40:
                 print('turn left+++')
-                Motor.turn_left(FORWARD_FLAG,PWM_STEP*2) # increasing algorithm integrated
+                motor.turn_left(FORWARD_FLAG,PWM_STEP*2) # increasing algorithm integrated
             elif Lx < 80: # 40 < Lx < 80
                 print('turn left++')
-                Motor.turn_left(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
+                motor.turn_left(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
             else: # 80 < Lx < 127
                 print('turn left+')
-                Motor.turn_left(FORWARD_FLAG,PWM_STEP/2) # increasing algorithm integrated
+                motor.turn_left(FORWARD_FLAG,PWM_STEP/2) # increasing algorithm integrated
         elif Lx > 128: # turning right
             if Lx > 210:
                 print('turn right+++')
-                Motor.turn_right(FORWARD_FLAG,PWM_STEP*2) # increasing algorithm integrated
+                motor.turn_right(FORWARD_FLAG,PWM_STEP*2) # increasing algorithm integrated
             elif Lx > 170: # 210 > Lx > 170
                 print('turn right++')
-                Motor.turn_right(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
+                motor.turn_right(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
             else: # 170 > Lx > 127
                 print('turn right+')
-                Motor.turn_right(FORWARD_FLAG,PWM_STEP/2) # increasing algorithm integrated
+                motor.turn_right(FORWARD_FLAG,PWM_STEP/2) # increasing algorithm integrated
 
         #  turn on dangerous flag for release motor mechanism 
         DANGER_FLAG = True
@@ -133,9 +133,9 @@ def motor_controller():
     # ================== Safety control ==================
     if (DANGER_FLAG) & ((millis() - STOP_millis) > SAFETY_TIME): # if time flag isn't gotten reset, then stop
         print('Releasing...')
-        DANGER_FLAG = Motor.release() # will only return False when stopped
+        DANGER_FLAG = motor.release() # will only return False when stopped
         if not DANGER_FLAG:
-            print('Motor stopped!')
+            print('motor stopped!')
         
 # =================================== admin command =============================================
 def cmd_update():
@@ -156,11 +156,11 @@ def cmd_update():
         # --- TRIANGLE - high speed
         if ps2.pressed(ps2.TRIANGLE):
             print('TRIANGLE pressed - high speed mode')
-            Motor.MAX_PWM = HIGH_SPEED
+            motor.MAX_PWM = HIGH_SPEED
         # --- CROSS - low speed
         if ps2.pressed(ps2.CROSS):
             print('CROSS pressed - low speed mode')
-            Motor.MAX_PWM = LOW_SPEED
+            motor.MAX_PWM = LOW_SPEED
         # --- SQUARE - turn on UV lights
         if ps2.pressed(ps2.SQUARE):
             print('SQUARE pressed')
@@ -204,7 +204,7 @@ if __name__ == '__main__':
         print(e)
         GPIO.cleanup()
         ps2.clean()
-        Motor.clean()
+        motor.clean()
         server.shutdown()
         # turn on ro
         sp.call(['sudo','mount','-o','remount,ro','/'], shell=False)
@@ -214,7 +214,7 @@ if __name__ == '__main__':
         print(e)
         GPIO.cleanup()
         ps2.clean()
-        Motor.clean()
+        motor.clean()
         server.shutdown()
         # turn on ro
         sp.call(['sudo','mount','-o','remount,ro','/'], shell=False)
@@ -239,19 +239,19 @@ if __name__ == '__main__':
 #         # --- UP
 #         if ps2.isPressing(ps2.UP):
 #             print('UP pressed')
-#             Motor.move_fw(STEP) # increasing algorithm integrated
+#             motor.move_fw(STEP) # increasing algorithm integrated
 #         # --- DOWN
 #         if ps2.isPressing(ps2.DOWN):
 #             print('DOWN pressed')
-#             Motor.move_bw(STEP) # increasing algorithm integrated
+#             motor.move_bw(STEP) # increasing algorithm integrated
 #         # --- LEFT
 #         if ps2.isPressing(ps2.LEFT):
 #             print('LEFT pressed')
-#             Motor.turn_left(Motor.FORWARD,STEP) # increasing algorithm integrated
+#             motor.turn_left(motor.FORWARD,STEP) # increasing algorithm integrated
 #         # --- RIGHT
 #         if ps2.isPressing(ps2.RIGHT):
 #             print('RIGHT pressed')
-#             Motor.turn_right(Motor.FORWARD,STEP) # increasing algorithm integrated
+#             motor.turn_right(motor.FORWARD,STEP) # increasing algorithm integrated
 #         # whether what arrow buttons are pressed, they created movement
 #         # so turn on dangerous flag for release motor mechanism 
 #         DANGER_FLAG = True
@@ -261,8 +261,8 @@ if __name__ == '__main__':
 
 #     # ================== Safety control ==================
 #     elif DANGER_FLAG: # if time flag isn't gotten reset, then start releasing
-#         print('Motor releasing')
-#         Motor.release((millis() - STOP_millis) > HOLD_TIME, STEP)
+#         print('motor releasing')
+#         motor.release((millis() - STOP_millis) > HOLD_TIME, STEP)
 #         if (millis() - STOP_millis) > SAFETY_TIME: # turn off when every has been settle
 #             DANGER_FLAG = False
 
