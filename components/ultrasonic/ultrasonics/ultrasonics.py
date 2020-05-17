@@ -27,7 +27,7 @@ class Ultrasonics(object):
     UART serial connection via PySerial.
     """
 
-    def __init__(self, port='/dev/ttyUSB1', baudRate=9600):
+    def __init__(self, baudRate=9600):
         """
         Constructor
         @param port: a string dedicated to the connected device
@@ -36,23 +36,33 @@ class Ultrasonics(object):
         if baudRate < 9600 or baudRate > 1000000:
             raise ValueError('The given baudrate is invalid!')
 
-        # Initialize PySerial connection
-        self.__serial = serial.Serial(port=port,
-                                      baudrate=baudRate,
-                                      bytesize=serial.EIGHTBITS, 
-                                      timeout=2
-                                      )
+        self.port = '/dev/ttyUSB0'
+        for i in range(0,4):
+            
+            self.port = self.port[:11] + str(i)
+            print(self.port) 
 
-        if self.__serial.isOpen():
+            # Initialize PySerial connection
+            self.__serial = serial.Serial(port=self.port,
+                                        baudrate=baudRate,
+                                        bytesize=serial.EIGHTBITS, 
+                                        timeout=2
+                                        )
+
+            if self.__serial.isOpen():
+                self.__serial.close()
+            self.__serial.open()
+
+            if len(self.read()) is 7:
+                print("Ultrasonic ready!")
+                return
+            
             self.__serial.close()
 
-        self.__serial.open()
-
-        #self.read()
-        
-        print("Ultrasonic ready!")
+        raise ValueError("No sensor is connected! Please check your wiring")
 
     def read(self):
-        data = self.__serial.readline().decode('utf-8').split(" ")
-        print(data)
+        self.__serial.flushInput()
+        data = self.__serial.readline().decode('utf-8', 'ignore').split(" ")
+        return data
 

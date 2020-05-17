@@ -63,6 +63,6 @@ class Ultrasonics(object):
 
     def read(self):
         self.__serial.flushInput()
-        data = self.__serial.readline().decode('utf-8', 'ignore').split(" ")
+        data = self.__serial.readline().decode('utf-8').split(" ")
         return data
 

@@ -1,5 +1,5 @@
 """------------------------------------------------------------*-
-  Main process for MISlocker
+  Main process for UVRobot
   Tested on: Raspberry Pi 3 B+
   (c) Minh-An Dao 2019 - 2020
   version 2.00 - 28/03/2020
