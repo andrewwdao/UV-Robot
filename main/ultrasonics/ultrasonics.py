@@ -27,7 +27,7 @@ class Ultrasonics(object):
     UART serial connection via PySerial.
     """
 
-    def __init__(self, port='/dev/ttyUSB0', baudRate=9600):
+    def __init__(self, port='/dev/ttyUSB1', baudRate=9600):
         """
         Constructor
         @param port: a string dedicated to the connected device
@@ -48,7 +48,7 @@ class Ultrasonics(object):
 
         self.__serial.open()
 
-        # self.last_millis = millis()
+        #self.read()
         
         print("Ultrasonic ready!")
 
