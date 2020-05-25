@@ -119,11 +119,11 @@ class MotorUART_PWM(object):
         self.__serial.write(cmd) # send to the driver
 
     def Lhand_up(self):
-        cmd = "{N3 P200}" # Set all motors to PWM mode
+        cmd = "{N3 P300}" # Set all motors to PWM mode
         self.__send(cmd) # format and send to the driver
 
     def Lhand_down(self):
-        cmd = "{N3 P-200}" # Set all motors to PWM mode
+        cmd = "{N3 P-300}" # Set all motors to PWM mode
         self.__send(cmd) # format and send to the driver
 
     def Lhand_stop(self):
@@ -131,11 +131,11 @@ class MotorUART_PWM(object):
         self.__send(cmd) # format and send to the driver
     
     def Rhand_up(self):
-        cmd = "{N4 P200}" # Set all motors to PWM mode
+        cmd = "{N4 P300}" # Set all motors to PWM mode
         self.__send(cmd) # format and send to the driver
 
     def Rhand_down(self):
-        cmd = "{N4 P-200}" # Set all motors to PWM mode
+        cmd = "{N4 P-300}" # Set all motors to PWM mode
         self.__send(cmd) # format and send to the driver
 
     def Rhand_stop(self):
