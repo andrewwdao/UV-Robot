@@ -163,6 +163,12 @@ class MotorUART_PWM(object):
                 self.pwm_2 = self.pwm_1 # make them equal again
                 cmd = "{N0 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
                 self.__send(cmd) # format and send to the driver
+                time.sleep(0.001) # stablize time
+                cmd = "{N3 P0}" # {N1 P500} - set speed for pwm
+                self.__send(cmd) # format and send to the driver
+                time.sleep(0.001) # stablize time
+                cmd = "{N4 P0}" # {N1 P500} - set speed for pwm
+                self.__send(cmd) # format and send to the driver
             # --- turning right
             elif abs(self.pwm_1) > abs(self.pwm_2):
                 if self.pwm_2 != 0: # pwm_2 is supposed to be 0, if it's not zero, then reduce both until pwm_2 reaches zero
@@ -207,6 +213,12 @@ class MotorUART_PWM(object):
                 self.pwm_1 += accel # faster a little bit
                 cmd = "{N0 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
                 self.__send(cmd) # format and send to the driver
+            time.sleep(0.001) # stablize time
+            cmd = "{N3 P0}" # {N1 P500} - set speed for pwm
+            self.__send(cmd) # format and send to the driver
+            time.sleep(0.001) # stablize time
+            cmd = "{N4 P0}" # {N1 P500} - set speed for pwm
+            self.__send(cmd) # format and send to the driver
             self.pwm_2 = self.pwm_1 # if pwm_1 changed, then change pwm_2
             return
         elif abs(self.pwm_1) > abs(self.pwm_2): # system is turning in some direction
@@ -245,6 +257,12 @@ class MotorUART_PWM(object):
                 self.pwm_1 -= accel # faster a little bit
                 cmd = "{N0 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
                 self.__send(cmd) # format and send to the driver
+            time.sleep(0.001) # stablize time
+            cmd = "{N3 P0}" # {N1 P500} - set speed for pwm
+            self.__send(cmd) # format and send to the driver
+            time.sleep(0.001) # stablize time
+            cmd = "{N4 P0}" # {N1 P500} - set speed for pwm
+            self.__send(cmd) # format and send to the driver
             self.pwm_2 = self.pwm_1 # if pwm_1 changed, then change pwm_2
             return
         elif abs(self.pwm_1) > abs(self.pwm_2): # system is turning in some direction
@@ -296,6 +314,12 @@ class MotorUART_PWM(object):
                     self.pwm_1 = self.pwm_2 = self.MAX_PWM # protection if real speed is higher than limit
                     cmd = "{N0 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
                     self.__send(cmd) # format and send to the driver
+                    time.sleep(0.001) # stablize time
+                    cmd = "{N3 P0}" # {N1 P500} - set speed for pwm
+                    self.__send(cmd) # format and send to the driver
+                    time.sleep(0.001) # stablize time
+                    cmd = "{N4 P0}" # {N1 P500} - set speed for pwm
+                    self.__send(cmd) # format and send to the driver
                     return
                 else: # self.pwm_1 == self.MAX_PWM, so self.pwm_2 == self.MAX_PWM too
                     self.pwm_2 -= DEPART_PWM  # slower the other motor
@@ -312,6 +336,12 @@ class MotorUART_PWM(object):
                 elif self.pwm_1 < -self.MAX_PWM:
                     self.pwm_1 = self.pwm_2 = -self.MAX_PWM # protection if real speed is higher than limit
                     cmd = "{N0 P" + str(self.pwm_1) + "}" # {N1 P500} - set speed for pwm
+                    self.__send(cmd) # format and send to the driver
+                    time.sleep(0.001) # stablize time
+                    cmd = "{N3 P0}" # {N1 P500} - set speed for pwm
+                    self.__send(cmd) # format and send to the driver
+                    time.sleep(0.001) # stablize time
+                    cmd = "{N4 P0}" # {N1 P500} - set speed for pwm
                     self.__send(cmd) # format and send to the driver
                     return
                 else: # self.pwm_1 == -self.MAX_PWM, so self.pwm_2 == -self.MAX_PWM too
@@ -399,6 +429,12 @@ class MotorUART_PWM(object):
                     self.pwm_1 = self.pwm_2 = self.MAX_PWM # protection if real speed is higher than limit
                     cmd = "{N0 P" + str(self.pwm_2) + "}" # {N1 P500} - set speed for pwm
                     self.__send(cmd) # format and send to the driver
+                    time.sleep(0.001) # stablize time
+                    cmd = "{N3 P0}" # {N1 P500} - set speed for pwm
+                    self.__send(cmd) # format and send to the driver
+                    time.sleep(0.001) # stablize time
+                    cmd = "{N4 P0}" # {N1 P500} - set speed for pwm
+                    self.__send(cmd) # format and send to the driver
                     return
                 else: # self.pwm_2 == self.MAX_PWM, so self.pwm_1 == self.MAX_PWM too
                     self.pwm_1 -= accel  # slower a little the other motor
@@ -415,6 +451,12 @@ class MotorUART_PWM(object):
                 elif self.pwm_2 < -self.MAX_PWM:
                     self.pwm_1 = self.pwm_2 = -self.MAX_PWM # protection if real speed is higher than limit
                     cmd = "{N0 P" + str(self.pwm_2) + "}" # {N1 P500} - set speed for pwm
+                    self.__send(cmd) # format and send to the driver
+                    time.sleep(0.001) # stablize time
+                    cmd = "{N3 P0}" # {N1 P500} - set speed for pwm
+                    self.__send(cmd) # format and send to the driver
+                    time.sleep(0.001) # stablize time
+                    cmd = "{N4 P0}" # {N1 P500} - set speed for pwm
                     self.__send(cmd) # format and send to the driver
                     return
                 else: # self.pwm_2 == -self.MAX_PWM, so self.pwm_1 == -self.MAX_PWM too

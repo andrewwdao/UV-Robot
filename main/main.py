@@ -19,7 +19,7 @@ import time
 # ---------------------------- Configurable parameters -------------------------
 RELAY_01_PIN = 4  # BCM mode
 
-L_LIMIT_UP_PIN = 10 # bcm mode - WARNING
+L_LIMIT_UP_PIN = 17 # bcm mode - WARNING
 
 # for pwm control
 HIGH_SPEED = 600
