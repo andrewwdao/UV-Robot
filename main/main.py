@@ -187,42 +187,43 @@ def motor_controller():
 
 # =================================== limit switch ISR =============================================
 # ==== ISR for limit switches =========
-def __Lhand_up_fallISR(channel):
-    global L_UP_FLAG
-    print("Left hand up limit reached!")
-    L_UP_FLAG = False
-    GPIO.remove_event_detect(L_LIMIT_UP_PIN)
-    GPIO.add_event_detect(L_LIMIT_UP_PIN, GPIO.RISING, callback=__Lhand_up_riseISR, bouncetime=500)
+# def __Lhand_up_fallISR(channel):
+#     global L_UP_FLAG
+#     print("Left hand up limit reached!")
+#     L_UP_FLAG = False
+#     GPIO.remove_event_detect(L_LIMIT_UP_PIN)
+#     GPIO.add_event_detect(L_LIMIT_UP_PIN, GPIO.RISING, callback=__Lhand_up_riseISR, bouncetime=500)
 
-def __Lhand_up_riseISR(channel):
-    global L_UP_FLAG
-    print("Left hand up limit released!")
-    L_UP_FLAG = True
-    GPIO.remove_event_detect(L_LIMIT_UP_PIN)
-    GPIO.add_event_detect(L_LIMIT_UP_PIN, GPIO.FALLING, callback=__Lhand_up_fallISR, bouncetime=500)
+# def __Lhand_up_riseISR(channel):
+#     global L_UP_FLAG
+#     print("Left hand up limit released!")
+#     L_UP_FLAG = True
+#     GPIO.remove_event_detect(L_LIMIT_UP_PIN)
+#     GPIO.add_event_detect(L_LIMIT_UP_PIN, GPIO.FALLING, callback=__Lhand_up_fallISR, bouncetime=500)
 
-def __Lhand_down_fallISR(channel):
-    global L_DOWN_FLAG
-    print("Left hand down limit reached!")
-    L_DOWN_FLAG = False
-    GPIO.remove_event_detect(L_LIMIT_DOWN_PIN)
-    GPIO.add_event_detect(L_LIMIT_DOWN_PIN, GPIO.RISING, callback=__Lhand_down_riseISR, bouncetime=500)
+# def __Lhand_down_fallISR(channel):
+#     global L_DOWN_FLAG
+#     print("Left hand down limit reached!")
+#     L_DOWN_FLAG = False
+#     GPIO.remove_event_detect(L_LIMIT_DOWN_PIN)
+#     GPIO.add_event_detect(L_LIMIT_DOWN_PIN, GPIO.RISING, callback=__Lhand_down_riseISR, bouncetime=500)
 
-def __Lhand_down_riseISR(channel):
-    global L_DOWN_FLAG
-    print("Left hand down limit released!")
-    L_DOWN_FLAG = True
-    GPIO.remove_event_detect(L_LIMIT_DOWN_PIN)
-    GPIO.add_event_detect(L_LIMIT_DOWN_PIN, GPIO.FALLING, callback=__Lhand_down_fallISR, bouncetime=500)
+# def __Lhand_down_riseISR(channel):
+#     global L_DOWN_FLAG
+#     print("Left hand down limit released!")
+#     L_DOWN_FLAG = True
+#     GPIO.remove_event_detect(L_LIMIT_DOWN_PIN)
+#     GPIO.add_event_detect(L_LIMIT_DOWN_PIN, GPIO.FALLING, callback=__Lhand_down_fallISR, bouncetime=500)
 
 # =================================== init gpio, including relays =============================================
 def gpio_init():
+    GPIO.cleanup()
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(RELAY_01_PIN, GPIO.OUT, initial=GPIO.HIGH) # relay init
     GPIO.setup(L_LIMIT_UP_PIN, GPIO.IN, pull_up_down = GPIO.PUD_UP) # pulling up
-    GPIO.add_event_detect(L_LIMIT_UP_PIN, GPIO.FALLING, callback=__Lhand_up_fallISR, bouncetime=500)
+    # GPIO.add_event_detect(L_LIMIT_UP_PIN, GPIO.FALLING, callback=__Lhand_up_fallISR, bouncetime=500)
     GPIO.setup(L_LIMIT_DOWN_PIN, GPIO.IN, pull_up_down = GPIO.PUD_UP) # pulling up
-    GPIO.add_event_detect(L_LIMIT_DOWN_PIN, GPIO.FALLING, callback=__Lhand_down_fallISR, bouncetime=500)
+    # GPIO.add_event_detect(L_LIMIT_DOWN_PIN, GPIO.FALLING, callback=__Lhand_down_fallISR, bouncetime=500)
 
 # other functions integrated inside cmd_update
 
@@ -251,15 +252,25 @@ def hand_controller():
     # ------------- Confirm pressing buttons -------------------
     if ps2.LRpressing():
         # --- L1 pressed - Lhand move up
-        if ps2.pressed(ps2.L1) and L_UP_FLAG:
+        if ps2.pressed(ps2.L1) and GPIO.input(L_LIMIT_UP_PIN):
             print('L1 pressed - Lhand move up')
             motor.Lhand_up() # motor move up
             return
         # --- L2 pressed - Lhand move up
-        if ps2.pressed(ps2.L2) and L_DOWN_FLAG and L_UL_FLAG:
+        if ps2.pressed(ps2.L2) and GPIO.input(L_LIMIT_DOWN_PIN) and L_UL_FLAG:
             print('L2 pressed - Lhand move down')
             motor.Lhand_down() # motor move down
             return
+        # # --- L1 pressed - Lhand move up
+        # if ps2.pressed(ps2.L1) and L_UP_FLAG:
+        #     print('L1 pressed - Lhand move up')
+        #     motor.Lhand_up() # motor move up
+        #     return
+        # # --- L2 pressed - Lhand move up
+        # if ps2.pressed(ps2.L2) and L_DOWN_FLAG and L_UL_FLAG:
+        #     print('L2 pressed - Lhand move down')
+        #     motor.Lhand_down() # motor move down
+        #     return
         
 # =================================================================================================
 
