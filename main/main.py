@@ -21,6 +21,8 @@ RELAY_01_PIN = 4  # BCM mode
 
 L_LIMIT_UP_PIN = 5 # bcm mode - WARNING
 L_LIMIT_DOWN_PIN = 6 # bcm mode - WARNING
+R_LIMIT_UP_PIN = 19 # bcm mode - WARNING
+R_LIMIT_DOWN_PIN = 26 # bcm mode - WARNING
 
 # for pwm control
 HIGH_SPEED = 600
@@ -43,10 +45,6 @@ SQ_watchdog = millis() # monitor interval for SQUARE button
 SQ_FLAG = True
 
 MIN_HEIGHT = 30 #cm
-# L_UP_FLAG = True
-# L_DOWN_FLAG = True
-# R_UP_FLAG = True
-# R_DOWN_FLAG = True
 LR_PRESS_FLAG = True
 L_UL_FLAG = False # will be automatically updated to true
 R_UL_FLAG = False # will be automatically updated to true
@@ -186,58 +184,37 @@ def motor_controller():
         if not DANGER_FLAG:
             print('motor stopped!')
 
-# =================================== limit switch ISR =============================================
-# ==== ISR for limit switches =========
-# def __Lhand_up_fallISR(channel):
-#     global L_UP_FLAG
-#     print("Left hand up limit reached!")
-#     L_UP_FLAG = False
-#     GPIO.remove_event_detect(L_LIMIT_UP_PIN)
-#     GPIO.add_event_detect(L_LIMIT_UP_PIN, GPIO.RISING, callback=__Lhand_up_riseISR, bouncetime=500)
-
-# def __Lhand_up_riseISR(channel):
-#     global L_UP_FLAG
-#     print("Left hand up limit released!")
-#     L_UP_FLAG = True
-#     GPIO.remove_event_detect(L_LIMIT_UP_PIN)
-#     GPIO.add_event_detect(L_LIMIT_UP_PIN, GPIO.FALLING, callback=__Lhand_up_fallISR, bouncetime=500)
-
-# def __Lhand_down_fallISR(channel):
-#     global L_DOWN_FLAG
-#     print("Left hand down limit reached!")
-#     L_DOWN_FLAG = False
-#     GPIO.remove_event_detect(L_LIMIT_DOWN_PIN)
-#     GPIO.add_event_detect(L_LIMIT_DOWN_PIN, GPIO.RISING, callback=__Lhand_down_riseISR, bouncetime=500)
-
-# def __Lhand_down_riseISR(channel):
-#     global L_DOWN_FLAG
-#     print("Left hand down limit released!")
-#     L_DOWN_FLAG = True
-#     GPIO.remove_event_detect(L_LIMIT_DOWN_PIN)
-#     GPIO.add_event_detect(L_LIMIT_DOWN_PIN, GPIO.FALLING, callback=__Lhand_down_fallISR, bouncetime=500)
-
 # =================================== init gpio, including relays =============================================
 def gpio_init():
     GPIO.cleanup()
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(RELAY_01_PIN, GPIO.OUT, initial=GPIO.HIGH) # relay init
     GPIO.setup(L_LIMIT_UP_PIN, GPIO.IN, pull_up_down = GPIO.PUD_UP) # pulling up
-    # GPIO.add_event_detect(L_LIMIT_UP_PIN, GPIO.FALLING, callback=__Lhand_up_fallISR, bouncetime=500)
     GPIO.setup(L_LIMIT_DOWN_PIN, GPIO.IN, pull_up_down = GPIO.PUD_UP) # pulling up
-    # GPIO.add_event_detect(L_LIMIT_DOWN_PIN, GPIO.FALLING, callback=__Lhand_down_fallISR, bouncetime=500)
-
+    GPIO.setup(R_LIMIT_UP_PIN, GPIO.IN, pull_up_down = GPIO.PUD_UP) # pulling up
+    GPIO.setup(R_LIMIT_DOWN_PIN, GPIO.IN, pull_up_down = GPIO.PUD_UP) # pulling up
+    
 # other functions integrated inside cmd_update
 
 # =================================== ultrasonic update =============================================
 def ultrasonic_update():
-    global L_UL_FLAG
+    global L_UL_FLAG, R_UL_FLAG
     sensorval = sensor.read()
     # print(sensorval)
+
+    # left hand ultrasonics sensor
     if int(sensorval[0]) > MIN_HEIGHT: # if sensor is greater than MIN_HEIGHT cm 
         L_UL_FLAG = True
     else: # sensor value < MIN_HEIGHT
         L_UL_FLAG = False
         motor.Lhand_stop() # motor stop
+
+    # right hand ultrasonics sensor
+    if int(sensorval[1]) > MIN_HEIGHT: # if sensor is greater than MIN_HEIGHT cm 
+        R_UL_FLAG = True
+    else: # sensor value < MIN_HEIGHT
+        R_UL_FLAG = False
+        motor.Rhand_stop() # motor stop
 
 # =================================== hand command =============================================
 def hand_controller():
@@ -251,9 +228,13 @@ def hand_controller():
         print('Hand Released')
         LR_PRESS_FLAG = False
         motor.Lhand_stop() # motor stop
-    # if ps2.released(ps2.L2):
-    #     print('L2 released')
-    #     motor.Lhand_stop() # motor stop
+    if ((ps2.released(ps2.R1) or
+       ps2.released(ps2.R2) or
+       GPIO.input(R_LIMIT_UP_PIN)==GPIO.LOW or 
+       GPIO.input(R_LIMIT_DOWN_PIN)==GPIO.LOW) and LR_PRESS_FLAG):
+        print('Hand Released')
+        LR_PRESS_FLAG = False
+        motor.Rhand_stop() # motor stop
 
     # ------------- Confirm pressing buttons -------------------
     if ps2.LRpressing():
@@ -263,22 +244,23 @@ def hand_controller():
             print('L1 pressed - Lhand move up')
             motor.Lhand_up() # motor move up
             return
-        # --- L2 pressed - Lhand move up
+        # --- L2 pressed - Lhand move down
         if ps2.pressed(ps2.L2) and GPIO.input(L_LIMIT_DOWN_PIN)==GPIO.HIGH and L_UL_FLAG:
             print('L2 pressed - Lhand move down')
             motor.Lhand_down() # motor move down
             return
-        # # --- L1 pressed - Lhand move up
-        # if ps2.pressed(ps2.L1) and L_UP_FLAG:
-        #     print('L1 pressed - Lhand move up')
-        #     motor.Lhand_up() # motor move up
-        #     return
-        # # --- L2 pressed - Lhand move up
-        # if ps2.pressed(ps2.L2) and L_DOWN_FLAG and L_UL_FLAG:
-        #     print('L2 pressed - Lhand move down')
-        #     motor.Lhand_down() # motor move down
-        #     return
         
+        # --- R1 pressed - Rhand move up
+        if ps2.pressed(ps2.R1) and GPIO.input(R_LIMIT_UP_PIN)==GPIO.HIGH:
+            print('R1 pressed - Rhand move up')
+            motor.Rhand_up() # motor move up
+            return
+        # --- R2 pressed - Rhand move down
+        if ps2.pressed(ps2.R2) and GPIO.input(R_LIMIT_DOWN_PIN)==GPIO.HIGH and R_UL_FLAG:
+            print('R2 pressed - Rhand move down')
+            motor.Rhand_down() # motor move down
+            return
+
 # =================================================================================================
 
 
