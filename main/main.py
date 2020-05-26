@@ -208,7 +208,7 @@ def __Lhand_down_fallISR(channel):
     GPIO.remove_event_detect(L_LIMIT_DOWN_PIN)
     GPIO.add_event_detect(L_LIMIT_DOWN_PIN, GPIO.RISING, callback=__Lhand_down_riseISR, bouncetime=500)
 
-def __Lhand_up_riseISR(channel):
+def __Lhand_down_riseISR(channel):
     global L_DOWN_FLAG
     print("Left hand down limit released!")
     L_DOWN_FLAG = True
