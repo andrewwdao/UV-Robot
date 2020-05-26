@@ -242,12 +242,15 @@ def ultrasonic_update():
 def hand_controller():
 
     # ------------ Confirm release buttons ---------------------
-    if ps2.released(ps2.L1):
-        print('L1 released')
+    if (ps2.released(ps2.L1) or
+       ps2.released(ps2.L2) or
+       GPIO.input(L_LIMIT_UP_PIN)==GPIO.LOW or 
+       GPIO.input(L_LIMIT_DOWN_PIN)==GPIO.LOW):
+        print('Hand Released')
         motor.Lhand_stop() # motor stop
-    if ps2.released(ps2.L2):
-        print('L2 released')
-        motor.Lhand_stop() # motor stop
+    # if ps2.released(ps2.L2):
+    #     print('L2 released')
+    #     motor.Lhand_stop() # motor stop
 
     # ------------- Confirm pressing buttons -------------------
     if ps2.LRpressing():
