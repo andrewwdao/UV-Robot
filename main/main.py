@@ -43,11 +43,12 @@ SQ_watchdog = millis() # monitor interval for SQUARE button
 SQ_FLAG = True
 
 MIN_HEIGHT = 30 #cm
-L_UP_FLAG = True
-L_DOWN_FLAG = True
+# L_UP_FLAG = True
+# L_DOWN_FLAG = True
+# R_UP_FLAG = True
+# R_DOWN_FLAG = True
+LR_PRESS_FLAG = True
 L_UL_FLAG = False # will be automatically updated to true
-R_UP_FLAG = True
-R_DOWN_FLAG = True
 R_UL_FLAG = False # will be automatically updated to true
 
 
@@ -242,11 +243,12 @@ def ultrasonic_update():
 def hand_controller():
 
     # ------------ Confirm release buttons ---------------------
-    if (ps2.released(ps2.L1) or
+    if ((ps2.released(ps2.L1) or
        ps2.released(ps2.L2) or
        GPIO.input(L_LIMIT_UP_PIN)==GPIO.LOW or 
-       GPIO.input(L_LIMIT_DOWN_PIN)==GPIO.LOW):
+       GPIO.input(L_LIMIT_DOWN_PIN)==GPIO.LOW) and LR_PRESS_FLAG):
         print('Hand Released')
+        LR_PRESS_FLAG = False
         motor.Lhand_stop() # motor stop
     # if ps2.released(ps2.L2):
     #     print('L2 released')
@@ -254,6 +256,7 @@ def hand_controller():
 
     # ------------- Confirm pressing buttons -------------------
     if ps2.LRpressing():
+        LR_PRESS_FLAG = True
         # --- L1 pressed - Lhand move up
         if ps2.pressed(ps2.L1) and GPIO.input(L_LIMIT_UP_PIN)==GPIO.HIGH:
             print('L1 pressed - Lhand move up')
