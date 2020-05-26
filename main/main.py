@@ -252,12 +252,12 @@ def hand_controller():
     # ------------- Confirm pressing buttons -------------------
     if ps2.LRpressing():
         # --- L1 pressed - Lhand move up
-        if ps2.pressed(ps2.L1) and GPIO.input(L_LIMIT_UP_PIN):
+        if ps2.pressed(ps2.L1) and GPIO.input(L_LIMIT_UP_PIN)==GPIO.HIGH:
             print('L1 pressed - Lhand move up')
             motor.Lhand_up() # motor move up
             return
         # --- L2 pressed - Lhand move up
-        if ps2.pressed(ps2.L2) and GPIO.input(L_LIMIT_DOWN_PIN) and L_UL_FLAG:
+        if ps2.pressed(ps2.L2) and GPIO.input(L_LIMIT_DOWN_PIN)==GPIO.HIGH and L_UL_FLAG:
             print('L2 pressed - Lhand move down')
             motor.Lhand_down() # motor move down
             return
