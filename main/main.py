@@ -242,6 +242,7 @@ def ultrasonic_update():
 # =================================== hand command =============================================
 def hand_controller():
 
+    global LR_PRESS_FLAG
     # ------------ Confirm release buttons ---------------------
     if ((ps2.released(ps2.L1) or
        ps2.released(ps2.L2) or
