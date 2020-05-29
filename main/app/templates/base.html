@@ -2,11 +2,13 @@
 
 {% block styles %}
 {{super()}}
-<link rel="icon" href="../static/img/MIS.png">
-<link rel="stylesheet"
+  <link rel="icon" href="../static/img/MIS.png">
+  <link rel="stylesheet"
       href="{{url_for('.static', filename='../static/style/style.css')}}">
 <!-- <link rel="stylesheet"
       href="{{url_for('.static', filename='../static/style/normalize.css')}}"> -->
+
+  <script src="../static/js/code.js"></script>
 {% endblock %}
 
 {% block title %}
@@ -24,4 +26,3 @@
   </div>
 {% endblock %}
 
-<script src="../static/js/code.js"></script>
