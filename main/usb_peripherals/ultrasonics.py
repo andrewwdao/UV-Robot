@@ -37,7 +37,7 @@ class Ultrasonics(object):
             raise ValueError('The given baudrate is invalid!')
 
         self.port = '/dev/ttyUSB0'
-        for i in range(0,4):
+        for i in range(0,2):
             
             self.port = self.port[:11] + str(i)
             print(self.port) 
@@ -59,10 +59,16 @@ class Ultrasonics(object):
             
             self.__serial.close()
 
-        raise ValueError("No sensor is connected! Please check your wiring")
+        self.port = 'Not Connected'
+        print("No sensor is connected! Please check your wiring")
+        return
+        # raise ValueError("No sensor is connected! Please check your wiring")
 
     def read(self):
-        self.__serial.flushInput()
-        data = self.__serial.readline().decode('utf-8').split(" ")
-        return data
+        try:
+            self.__serial.flushInput()
+            data = self.__serial.readline().decode('utf-8').split(" ")
+            return data
+        except:
+            return [999,999,999,999,999,999] # return for not connected
 
