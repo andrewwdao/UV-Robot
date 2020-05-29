@@ -23,3 +23,18 @@
 // 		$( "#credits" ).slideDown( "fast", function() {});
 // 	});
 // })
+
+document.addEventListener("keydown", keyPressed, false);
+
+function keyPressed(e) {
+    var keyCode = e.keyCode;
+    if(keyCode==87) {
+        console.log("W");
+    } else if (keyCode==65) {
+        console.log("A");
+    } else if (keyCode==68) {
+        console.log("D");
+    } else if (keyCode==83) {
+        console.log("S");
+    }
+}
