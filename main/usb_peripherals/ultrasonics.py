@@ -37,33 +37,35 @@ class Ultrasonics(object):
             raise ValueError('The given baudrate is invalid!')
 
         self.port = '/dev/ttyUSB0'
-        for i in range(0,2):
-            
-            self.port = self.port[:11] + str(i)
-            print(self.port) 
+        try:
+            for i in range(0,2):
+                
+                self.port = self.port[:11] + str(i)
+                print(self.port) 
 
-            # Initialize PySerial connection
-            self.__serial = serial.Serial(port=self.port,
-                                        baudrate=baudRate,
-                                        bytesize=serial.EIGHTBITS, 
-                                        timeout=2
-                                        )
+                # Initialize PySerial connection
+                self.__serial = serial.Serial(port=self.port,
+                                            baudrate=baudRate,
+                                            bytesize=serial.EIGHTBITS, 
+                                            timeout=2
+                                            )
 
-            if self.__serial.isOpen():
+                if self.__serial.isOpen():
+                    self.__serial.close()
+                self.__serial.open()
+
+                if len(self.read()) is 7:
+                    print("Ultrasonic ready!")
+                    return
+                
                 self.__serial.close()
-            self.__serial.open()
 
-            if len(self.read()) is 7:
-                print("Ultrasonic ready!")
-                return
-            
-            self.__serial.close()
-
-        self.port = 'Not Connected'
-        print("No sensor is connected! Please check your wiring")
-        return
-        # raise ValueError("No sensor is connected! Please check your wiring")
-
+            # raise ValueError("Port existed but no sensor is connected! Please check your wiring")
+        except:
+            self.port = 'Not Connected'
+            print("No sensor is connected! Please check your wiring")
+            return
+        
     def read(self):
         try:
             self.__serial.flushInput()
