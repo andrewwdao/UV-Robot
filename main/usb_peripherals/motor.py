@@ -51,7 +51,7 @@ class MotorUART_PWM(object):
     UART serial connection via PySerial.
     """
 
-    def __init__(self, busy_port='/dev/ttyUSB0', baudRate=115200, speed = 400):
+    def __init__(self, busy_port='/dev/ttyUSB0', baudRate=250000, speed = 400):
         """
         Constructor
         @param port: a string dedicated to the connected device
