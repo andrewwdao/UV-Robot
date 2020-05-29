@@ -15,6 +15,7 @@
  
  --------------------------------------------------------------"""
 from flask import Flask, url_for, session, g
+from flask_socketio import SocketIO
 from app.config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -39,7 +40,7 @@ streaming_app.config['BOOTSTRAP_SERVE_LOCAL'] = True  # make bootstrap use local
 login = LoginManager(streaming_app)
 login.login_view = 'login' # The name of the view to redirect to when the user needs to log in. 
 login.refresh_view = 'login' # The name of the view to redirect to when the user needs to reauthenticate.
-
+socket = SocketIO(streaming_app)
 
 from app.errors import bp as errors_bp
 streaming_app.register_blueprint(errors_bp)
@@ -59,6 +60,5 @@ if not streaming_app.debug:  # move it to tmp folder for read-only system
 
     streaming_app.logger.setLevel(logging.WARNING) # DEBUG, INFO, WARNING, ERROR and CRITICAL
     streaming_app.logger.info('System startup')
-
 
 from app import models

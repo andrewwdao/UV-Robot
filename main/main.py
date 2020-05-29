@@ -51,7 +51,7 @@ R_UL_FLAG = False # will be automatically updated to true
 
 
 # server initialize
-server = WebServer()
+# server = WebServer()
 
 # =================================== admin command =============================================
 def cmd_update():
