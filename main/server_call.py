@@ -36,8 +36,8 @@ def test_connect():
 def test_disconnect():
     print('Client disconnected')
 
-@socket.on('hello')
-def hello(data):
+@socket.on('my event')
+def hello():
     print("ABC")
 
 

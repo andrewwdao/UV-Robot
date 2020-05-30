@@ -28,8 +28,7 @@ document.addEventListener("keydown", keyPressed, false);
 
 var socket = io();
 socket.on('connect', () => {
-    socket.emit('hello', {data: "I'm in!"});
-    socket.broadcast.emit('hello');
+    socket.emit('my event');
 })
 
 function keyPressed(e) {
