@@ -31,12 +31,24 @@ from flask_socketio import emit
 @socket.on('connect')
 def test_connect():
     # emit('my response', {'data': 'Connected'})
-    print('connected')
+    print('Client connected')
 
-@socket.on('hello')
-def handle_hello(json):
-    emit('my response2', {'data': 'Connected'})
-    print("ABC")
+@socket.on('w pressed')
+def handle_w_pressed():
+    emit('my response2')
+    print("W")
+
+@socket.on('a pressed')
+def handle_a_pressed():
+    print("A")
+
+@socket.on('s pressed')
+def handle_s_pressed():
+    print("S")
+
+@socket.on('d pressed')
+def handle_d_pressed():
+    print("D")
 
 
 if __name__ == "__main__":

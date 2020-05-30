@@ -29,28 +29,23 @@ document.addEventListener("keydown", keyPressed, false);
 var socket = io();
 
 socket.on('connect', () => {
-    socket.emit('hello', {data: 'User connected'});
-    console.log("Connected");
-});
-
-socket.on('my response', () => {
-    console.log("Response from server");
-});
-
-socket.on('my response2', () => {
-    console.log("Response from server2");
+    // socket.emit('hello');
+    console.log("Server connected");
 });
 
 function keyPressed(e) {
     var keyCode = e.keyCode;
     if(keyCode==87) {
         console.log("W");
-        socket.emit('hello', {data: "User connected"});
+        socket.emit('w pressed');
     } else if (keyCode==65) {
         console.log("A");
-    } else if (keyCode==68) {
-        console.log("D");
+        socket.emit('a pressed');
     } else if (keyCode==83) {
         console.log("S");
+        socket.emit('s pressed');
+    } else if (keyCode==68) {
+        console.log("D");
+        socket.emit('d pressed');
     }
 }
