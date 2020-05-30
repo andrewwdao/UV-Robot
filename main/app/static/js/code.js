@@ -61,8 +61,11 @@ function keyPressed(e) {
     
         var pressedKey = keyMap[e.keyCode];
         if (pressedKey) {
-            document.getElementById(pressedKey[K_CLASS]).classList.add("pressed");
-            socket.emit('key pressed', pressedKey[K_SIGNAL]);
+            if (!document.getElementById(pressedKey[K_CLASS]).classList.contains('pressed')) {
+                document.getElementById(pressedKey[K_CLASS]).classList.add("pressed");
+                console.log(pressedKey[K_CLASS]);
+                socket.emit('key pressed', pressedKey[K_SIGNAL]);
+            }
         }
     }
 }
@@ -71,5 +74,7 @@ function keyReleased(e) {
     var pressedKey = keyMap[e.keyCode];
     if (pressedKey) {
         document.getElementById(pressedKey[K_CLASS]).classList.remove("pressed");
+        console.log(pressedKey[K_CLASS] + " released");
+        socket.emit('key released', pressedKey[K_SIGNAL] + " released")
     }
 }
