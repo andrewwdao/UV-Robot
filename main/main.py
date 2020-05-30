@@ -187,7 +187,7 @@ def motor_controller():
 
 # =================================== init gpio, including relays =============================================
 def gpio_init():
-    GPIO.cleanup()
+    # GPIO.cleanup()
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(RELAY_01_PIN, GPIO.OUT, initial=GPIO.HIGH) # relay init
     GPIO.setup(L_LIMIT_UP_PIN, GPIO.IN, pull_up_down = GPIO.PUD_UP) # pulling up

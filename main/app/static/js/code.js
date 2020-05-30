@@ -35,6 +35,7 @@ function keyPressed(e) {
     var keyCode = e.keyCode;
     if(keyCode==87) {
         console.log("W");
+        socket.emit('hello')
     } else if (keyCode==65) {
         console.log("A");
     } else if (keyCode==68) {
