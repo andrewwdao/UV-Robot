@@ -15,18 +15,62 @@
  * - https://stackoverflow.com/questions/18277048/gevent-pywsgi-graceful-shutdown
  
  --------------------------------------------------------------"""
-from gevent.pywsgi import WSGIServer
-import gevent
-from app import streaming_app, socket
-import threading
-import signal
-import os
+# from gevent.pywsgi import WSGIServer
+# import gevent
+import subprocess as sp
+from ps2x.streamReader import StreamReader
+import sys
+import time
+# import threading
+# import signal
+# import os
 
-# ======================== for development only =====================
-def start():
-    # streaming_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app
-    socket.run(streaming_app,host='0.0.0.0', port=7497)
-# ===================================================================
+class WebServer(object):
+    """
+    A python written module for interacting with the server.
+
+    """
+    def __init__(self):
+        self.TARGET = 'server_call.py' # absolute directory
+        try:
+            self.svobj = sp.Popen(['sudo',self.TARGET],
+                                           shell=False,
+                                           stdout=sp.PIPE,
+                                           stderr=sp.PIPE)
+        except Exception as e:
+            print(e)
+            raise ValueError("Something went wrong on the server side")
+        
+        self.output  = StreamReader(self.svobj.stdout)
+        self.error   = StreamReader(self.svobj.stderr)
+        print("Web server ready!")
+        # value for the buttons and sticks
+        # self.buttons = "." # all button released
+        # self.last_buttons = "." # all button released
+
+    def update(self):
+        output = self.output.readline(0.01)  # 0.01 secs = 10ms to let the shell output the result
+        error  = self.error.readline(0.01)  # 0.01 secs = 10ms to let the shell output the result
+        sys.stdout.flush()
+        if error is not None:
+            raise ValueError(error.strip().decode("utf-8"))
+        if output is not None:  # turn it into string if it is not a null
+            return output.strip().decode("utf-8")
+        return '~'
+
+    def shutdown(self):
+        # check if process terminated or not
+        # A None value indicates that the process hasn't terminated yet.
+        if self.svobj.poll() is None:
+            self.svobj.terminate()
+            self.svobj.kill()
+            print('Web Server terminated!')
+
+# # ======================== for development only =====================
+# def start():
+#     # streaming_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app
+#     socket.run(streaming_app,host='0.0.0.0', port=7497)
+# # ===================================================================
 
 # ========================== for production =========================
 # class WebServer(threading.Thread):

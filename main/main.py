@@ -8,6 +8,7 @@
  *
  --------------------------------------------------------------"""
 from server import WebServer
+# import server
 from usb_peripherals import sensor, motor
 from ps2x import ps2
 import RPi.GPIO as GPIO
@@ -51,7 +52,7 @@ R_UL_FLAG = False # will be automatically updated to true
 
 
 # server initialize
-# server = WebServer()
+server = WebServer()
 
 # =================================== admin command =============================================
 def cmd_update():
@@ -266,11 +267,12 @@ def hand_controller():
 
 def main():  # Main program block
     gpio_init()
-    server.start()
+    # server.start()
 
     # forever loop start...
     while True:
         ps2.update()
+        server.update()
 
         cmd_update()
         motor_controller()
