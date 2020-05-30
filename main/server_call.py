@@ -30,11 +30,11 @@ from flask_socketio import emit
 
 @socket.on('connect')
 def test_connect():
-    emit('my response', {'data': 'Connected'})
+    # emit('my response', {'data': 'Connected'})
     print('connected')
 
 @socket.on('hello')
-def hello_function():
+def handle_hello():
     emit('my response2', {'data': 'Connected'})
     print("ABC")
 

@@ -29,9 +29,9 @@ document.addEventListener("keydown", keyPressed, false);
 var socket = io();
 
 socket.on('connect', () => {
-    socket.emit('hello', {data: "User connected"});
+    socket.emit('hello', {data: 'User connected'});
     console.log("Connected");
-})
+});
 
 socket.on('my response', () => {
     console.log("Response from server");
@@ -45,7 +45,7 @@ function keyPressed(e) {
     var keyCode = e.keyCode;
     if(keyCode==87) {
         console.log("W");
-        socket.emit('hello')
+        socket.emit('hello', {data: "User connected"});
     } else if (keyCode==65) {
         console.log("A");
     } else if (keyCode==68) {
