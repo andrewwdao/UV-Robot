@@ -34,7 +34,7 @@ def test_connect():
     print('connected')
 
 @socket.on('hello')
-def hello_function(json):
+def hello_function():
     emit('my response2', {'data': 'Connected'})
     print("ABC")
 
