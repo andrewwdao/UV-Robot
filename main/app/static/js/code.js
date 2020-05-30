@@ -32,7 +32,7 @@ socket.on('connect', () => {
     console.log("Server connected");
 });
 
-function keyPressed(e) {
+async function keyPressed(e) {
     var keyCode = e.keyCode;
     if(keyCode==87) { //W
         console.log("W");
