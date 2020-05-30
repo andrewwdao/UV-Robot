@@ -27,6 +27,7 @@
 document.addEventListener("keydown", keyPressed, false);
 
 var socket = io();
+
 socket.on('connect', () => {
     socket.emit('hello', {data: "User connected"});
     console.log("Connected");
@@ -34,6 +35,10 @@ socket.on('connect', () => {
 
 socket.on('my response', () => {
     console.log("Response from server");
+});
+
+socket.on('my response2', () => {
+    console.log("Response from server2");
 });
 
 function keyPressed(e) {
