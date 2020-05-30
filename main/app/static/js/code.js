@@ -44,20 +44,40 @@ function keyPressed(e) {
         lastTime = curTime;
     
         var keyCode = e.keyCode;
-        if(keyCode==87) { //W
-            console.log("W");
-            socket.emit('key pressed', 'UP');
-        } else if (keyCode==65) { //A
-            console.log("A");
-            socket.emit('key pressed', 'LEFT');
-        } else if (keyCode==83) { //S
-            console.log("S");
-            socket.emit('key pressed', 'DOWN');
-        } else if (keyCode==68) { //D
-            console.log("D");
-            socket.emit('key pressed', 'RIGHT');
+        switch (keyCode) {
+            case 87: //W
+                // console.log("W");
+                socket.emit('key pressed', 'UP');
+                break;
+            case 65: //A
+                socket.emit('key pressed', 'LEFT');
+                break;
+            case 68: //D
+                socket.emit('key pressed', 'RIGHT');
+                break;
+            case 83: //S
+                socket.emit('key pressed', 'DOWN');
+                break;
+            
+            case 72: //H
+                socket.emit('key pressed', 'LHAND_UP');
+                break;
+            case 74: //J
+                socket.emit('key pressed', 'LHAND_DOWN');
+                break;
+            case 75: //K
+                socket.emit('key pressed', 'RHAND_UP');
+                break;
+            case 76: //L
+                socket.emit('key pressed', 'RHAND_DOWN');
+                break;
+
+            case 49: //1
+                socket.emit('key pressed', 'LOW_SPEED');
+                break;
+            case 50: //2
+                socket.emit('key pressed', 'HIGH_SPEED');
+                break;
         }
     }
-    
-    // await new Promise(r => setTimeout(r, 5000)); //ms . ref: https://stackoverflow.com/questions/951021/what-is-the-javascript-version-of-sleep
 }
