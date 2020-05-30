@@ -47,5 +47,5 @@ async function keyPressed(e) {
         console.log("D");
         socket.emit('key pressed', 'RIGHT');
     }
-    await new Promise(r => setTimeout(r, 50)); //ms . ref: https://stackoverflow.com/questions/951021/what-is-the-javascript-version-of-sleep
+    await new Promise(r => setTimeout(r, 5000)); //ms . ref: https://stackoverflow.com/questions/951021/what-is-the-javascript-version-of-sleep
 }
