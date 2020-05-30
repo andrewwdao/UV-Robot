@@ -30,7 +30,6 @@ def handle_key_pressed(signal):
     sys.stdout.flush()
 
 
-
 if __name__ == "__main__":
     # streaming_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app
     socket.run(streaming_app,host='0.0.0.0', port=8003)

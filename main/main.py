@@ -223,14 +223,16 @@ def hand_controller():
     global LR_PRESS_FLAG
     # ------------ Confirm release buttons ---------------------
     if ((ps2.released(ps2.L1) or
-       ps2.released(ps2.L2) or
-       GPIO.input(L_LIMIT_UP_PIN)==GPIO.LOW or 
-       GPIO.input(L_LIMIT_DOWN_PIN)==GPIO.LOW) and LR_PRESS_FLAG):
+        ps2.released(ps2.L2) or
+        server.isReleased() or
+        GPIO.input(L_LIMIT_UP_PIN)==GPIO.LOW or 
+        GPIO.input(L_LIMIT_DOWN_PIN)==GPIO.LOW) and LR_PRESS_FLAG):
         print('Hand Released')
         LR_PRESS_FLAG = False
         motor.Lhand_stop() # motor stop
     if ((ps2.released(ps2.R1) or
        ps2.released(ps2.R2) or
+       server.isReleased() or
        GPIO.input(R_LIMIT_UP_PIN)==GPIO.LOW or 
        GPIO.input(R_LIMIT_DOWN_PIN)==GPIO.LOW) and LR_PRESS_FLAG):
         print('Hand Released')
@@ -241,23 +243,23 @@ def hand_controller():
     if ps2.LRpressing():
         LR_PRESS_FLAG = True
         # --- L1 pressed - Lhand move up
-        if ps2.pressed(ps2.L1) and GPIO.input(L_LIMIT_UP_PIN)==GPIO.HIGH:
+        if (ps2.pressed(ps2.L1) or server.isPressed('LHAND_UP')) and GPIO.input(L_LIMIT_UP_PIN)==GPIO.HIGH:
             print('L1 pressed - Lhand move up')
             motor.Lhand_up() # motor move up
             return
         # --- L2 pressed - Lhand move down
-        if ps2.pressed(ps2.L2) and GPIO.input(L_LIMIT_DOWN_PIN)==GPIO.HIGH and L_UL_FLAG:
+        if (ps2.pressed(ps2.L2) or server.isPressed('LHAND_DOWN')) and GPIO.input(L_LIMIT_DOWN_PIN)==GPIO.HIGH and L_UL_FLAG:
             print('L2 pressed - Lhand move down')
             motor.Lhand_down() # motor move down
             return
         
         # --- R1 pressed - Rhand move up
-        if ps2.pressed(ps2.R1) and GPIO.input(R_LIMIT_UP_PIN)==GPIO.HIGH:
+        if (ps2.pressed(ps2.R1) or server.isPressed('RHAND_UP')) and GPIO.input(R_LIMIT_UP_PIN)==GPIO.HIGH:
             print('R1 pressed - Rhand move up')
             motor.Rhand_up() # motor move up
             return
         # --- R2 pressed - Rhand move down
-        if ps2.pressed(ps2.R2) and GPIO.input(R_LIMIT_DOWN_PIN)==GPIO.HIGH and R_UL_FLAG:
+        if (ps2.pressed(ps2.R2) or server.isPressed('RHAND_DOWN')) and GPIO.input(R_LIMIT_DOWN_PIN)==GPIO.HIGH and R_UL_FLAG:
             print('R2 pressed - Rhand move down')
             motor.Rhand_down() # motor move down
             return
@@ -267,19 +269,15 @@ def hand_controller():
 
 def main():  # Main program block
     gpio_init()
-    # server.start()
 
     # forever loop start...
     while True:
         ps2.update()
-        sv_cmd = server.read()
-        if sv_cmd:
-            print(sv_cmd)
+        server.update()
+        ultrasonic_update()
 
         cmd_update()
         motor_controller()
-
-        ultrasonic_update()
         hand_controller()
 
 
@@ -306,97 +304,3 @@ if __name__ == '__main__':
         sp.call(['sudo','mount','-o','remount,ro','/'], shell=False)
         sp.call(['sudo','mount','-o','remount,ro','/boot'], shell=False)
         
-
-
-
-# for pid control
-# # PWM_STEP = 10 # accel must be multiple of PWM_STEP = 10
-# STEP = 1
-# SAFETY_TIME = 1500 #ms
-# HOLD_TIME = 300 #ms
-# DANGER_FLAG = False
-
-# =================================== motor control =============================================
-# def motor_controller():
-#     global DANGER_FLAG, STOP_millis
-    
-#     # ================== Digital control ==================
-#     if ps2.arrowPressing():
-#         # --- UP
-#         if ps2.isPressing(ps2.UP):
-#             print('UP pressed')
-#             motor.move_fw(STEP) # increasing algorithm integrated
-#         # --- DOWN
-#         if ps2.isPressing(ps2.DOWN):
-#             print('DOWN pressed')
-#             motor.move_bw(STEP) # increasing algorithm integrated
-#         # --- LEFT
-#         if ps2.isPressing(ps2.LEFT):
-#             print('LEFT pressed')
-#             motor.turn_left(motor.FORWARD,STEP) # increasing algorithm integrated
-#         # --- RIGHT
-#         if ps2.isPressing(ps2.RIGHT):
-#             print('RIGHT pressed')
-#             motor.turn_right(motor.FORWARD,STEP) # increasing algorithm integrated
-#         # whether what arrow buttons are pressed, they created movement
-#         # so turn on dangerous flag for release motor mechanism 
-#         DANGER_FLAG = True
-#         STOP_millis = millis() # reset the flag so the motor won't stop
-#     # ================== Analog control ==================
-
-
-#     # ================== Safety control ==================
-#     elif DANGER_FLAG: # if time flag isn't gotten reset, then start releasing
-#         print('motor releasing')
-#         motor.release((millis() - STOP_millis) > HOLD_TIME, STEP)
-#         if (millis() - STOP_millis) > SAFETY_TIME: # turn off when every has been settle
-#             DANGER_FLAG = False
-
-
-# # =================================== relay module =============================================
-# def relay_init():
-#     GPIO.setmode(GPIO.BCM)
-#     GPIO.setup(RELAY_L1, GPIO.OUT, initial=GPIO.HIGH)
-#     GPIO.setup(RELAY_L2, GPIO.OUT, initial=GPIO.HIGH)
-#     GPIO.setup(RELAY_R1, GPIO.OUT, initial=GPIO.HIGH)
-#     GPIO.setup(RELAY_R2, GPIO.OUT, initial=GPIO.HIGH)
-
-# def __relay_toggle(FLAG, watchdog, button, RELAY):
-#     if ps2.pressed(button):
-#         print('pressed')
-#         watchdog = millis() # for recalculating interval
-#     elif ps2.isPressing(button) & ((millis() - watchdog) > SAFETY_TIME*2) & FLAG:
-#         print('toggled')
-#         if GPIO.input(RELAY):
-#             GPIO.output(RELAY, GPIO.LOW) # turn on the relay
-#         else:
-#             GPIO.output(RELAY, GPIO.HIGH) # turn off the relay
-#         FLAG = False
-#     return [FLAG, watchdog]
-
-# def relay_controller():
-#     global L1_watchdog, L2_watchdog, R1_watchdog, R2_watchdog, L1_FLAG, L2_FLAG, R1_FLAG, R2_FLAG
-    
-#     if ps2.released(ps2.L1):
-#         print('L1 released')
-#         L1_FLAG = True # reset flag for next use
-#     if ps2.released(ps2.L2):
-#         print('L2 released')
-#         L2_FLAG = True # reset flag for next use
-#     if ps2.released(ps2.R1):
-#         print('R1 released')
-#         R1_FLAG = True # reset flag for next use
-#     if ps2.released(ps2.R2):
-#         print('R2 released')
-#         R2_FLAG = True # reset flag for next use
-
-#     if ps2.LRpressing():
-#         # --- L1
-#         [L1_FLAG, L1_watchdog] = __relay_toggle(L1_FLAG, L1_watchdog, ps2.L1, RELAY_L1)
-#         # --- L2
-#         [L2_FLAG, L2_watchdog] = __relay_toggle(L2_FLAG, L2_watchdog, ps2.L2, RELAY_L2)
-#         # --- R1
-#         [R1_FLAG, R1_watchdog] = __relay_toggle(R1_FLAG, R1_watchdog, ps2.R1, RELAY_R1)
-#         # --- R2
-#         [R2_FLAG, R2_watchdog] = __relay_toggle(R2_FLAG, R2_watchdog, ps2.R2, RELAY_R2)
-# =================================================================================================

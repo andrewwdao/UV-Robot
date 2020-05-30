@@ -36,27 +36,25 @@ class WebServer(object):
             self.svobj = sp.Popen(['sudo','python3',self.TARGET],
                                                     shell=False,
                                                     stdout=sp.PIPE,
-                                                    stderr=sp.PIPE)
+                                                    stderr=sp.STDOUT)
         except Exception as e:
             print(e)
             raise ValueError("Something went wrong on the server side")
         
         self.output  = StreamReader(self.svobj.stdout)
-        self.error   = StreamReader(self.svobj.stderr)
         print("Web server ready!")
         # value for the buttons and sticks
-        # self.buttons = "." # all button released
+        self.buttons = None # all button released
         # self.last_buttons = "." # all button released
 
-    def read(self):
+    def update(self):
         output = self.output.readline(0.05)  # 0.05 secs = 10ms to let the shell output the result
-        error  = self.error.readline(0.05)  # 0.05 secs = 10ms to let the shell output the result
         sys.stdout.flush()
-        if error:
-            raise ValueError(error.strip().decode("utf-8"))
         if output:  # turn it into string if it is not a null
-            return output.strip().decode("utf-8")
-        return None
+            self.buttons = output.strip().decode("utf-8")
+            return
+        self.buttons = None
+        return
 
     def shutdown(self):
         # check if process terminated or not
@@ -65,6 +63,16 @@ class WebServer(object):
             self.svobj.terminate()
             self.svobj.kill()
             print('Web Server terminated!')
+    
+    def isPressed(self, button):
+        if self.buttons == button:
+            return True
+        return False
+    
+    def isReleased(self):
+        if self.buttons:
+            return False
+        return True
 
 # # ======================== for development only =====================
 # def start():

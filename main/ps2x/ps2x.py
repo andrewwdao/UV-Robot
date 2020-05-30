@@ -101,14 +101,13 @@ class PS2X(object):
                                         '-r', str(int(self.en_rumble))],
                                         shell=False,
                                         stdout=sp.PIPE,
-                                        stderr=sp.PIPE)
+                                        stderr=sp.STDOUT)
         except Exception as e:
             print(e)
             raise ValueError("This may happened because you forgot to run ps2_bin_reset.sh. Please make sure to do that!")
         
         self.output  = StreamReader(self.ps2obj.stdout)
-        self.error   = StreamReader(self.ps2obj.stderr) 
-
+        
         # DualShock button constants
         self.SELECT     = 0x0001
         self.L3         = 0x0002
@@ -142,10 +141,7 @@ class PS2X(object):
     
     def update(self):
         output = self.output.readline(0.05)  # 0.05 secs = 50ms to let the shell output the result
-        error  = self.error.readline(0.05)  # 0.05 secs = 50ms to let the shell output the result
         sys.stdout.flush()
-        if error is not None:
-            raise ValueError(error.strip().decode("utf-8"))
         if output is not None:  # turn it into string if it is not a null
             raw_data = output.strip().decode("utf-8")
             data = list(raw_data.split(" "))
@@ -156,6 +152,14 @@ class PS2X(object):
                     self.Lsticks = int(data[2])
             else: # if this is information, then dump it to output
                 print(raw_data)
+    
+    def clean(self):
+        # check if process terminated or not
+        # A None value indicates that the process hasn't terminated yet.
+        if self.ps2obj.poll() is None:
+            self.ps2obj.terminate()
+            self.ps2obj.kill()
+            print('PS2 Controller terminated!')
 
     def buttonChanged(self): # will be TRUE if any button changes state (on to off, or off to on)
         return self.last_buttons != self.buttons
@@ -206,10 +210,3 @@ class PS2X(object):
         sys.stdout.flush() # flush all the left over from buffer
         return
 
-    def clean(self):
-        # check if process terminated or not
-        # A None value indicates that the process hasn't terminated yet.
-        if self.ps2obj.poll() is None:
-            self.ps2obj.terminate()
-            self.ps2obj.kill()
-            print('PS2 Controller terminated!')

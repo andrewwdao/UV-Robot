@@ -25,6 +25,22 @@
 // })
 
 document.addEventListener("keydown", keyPressed, false);
+document.addEventListener("keyup", keyReleased, false);
+
+const K_SIGNAL = 0, K_CLASS = 1;
+const keyMap = {
+    87: ['UP', 'w'],           // W
+    65: ['LEFT', 'a'],         // A
+    68: ['RIGHT', 'd'],        // D
+    83: ['DOWN', 's'],         // S
+    72: ['LHAND_UP', 'h'],     // H
+    74: ['LHAND_DOWN', 'j'],   // J
+    75: ['RHAND_UP', 'k'],     // K
+    76: ['RHAND_DOWN', 'l'],   // L
+    49: ['K1', 'k1'],          // 1
+    50: ['K2', 'k2'],          // 2
+    32: ['SPACE', 'space'],    // Space
+};
 
 var socket = io();
 
@@ -43,41 +59,17 @@ function keyPressed(e) {
     
         lastTime = curTime;
     
-        var keyCode = e.keyCode;
-        switch (keyCode) {
-            case 87: //W
-                // console.log("W");
-                socket.emit('key pressed', 'UP');
-                break;
-            case 65: //A
-                socket.emit('key pressed', 'LEFT');
-                break;
-            case 68: //D
-                socket.emit('key pressed', 'RIGHT');
-                break;
-            case 83: //S
-                socket.emit('key pressed', 'DOWN');
-                break;
-            
-            case 72: //H
-                socket.emit('key pressed', 'LHAND_UP');
-                break;
-            case 74: //J
-                socket.emit('key pressed', 'LHAND_DOWN');
-                break;
-            case 75: //K
-                socket.emit('key pressed', 'RHAND_UP');
-                break;
-            case 76: //L
-                socket.emit('key pressed', 'RHAND_DOWN');
-                break;
-
-            case 49: //1
-                socket.emit('key pressed', 'LOW_SPEED');
-                break;
-            case 50: //2
-                socket.emit('key pressed', 'HIGH_SPEED');
-                break;
+        var pressedKey = keyMap[e.keyCode];
+        if (pressedKey) {
+            document.getElementById(pressedKey[K_CLASS]).classList.add("pressed");
+            socket.emit('key pressed', pressedKey[K_SIGNAL]);
         }
+    }
+}
+
+function keyReleased(e) {
+    var pressedKey = keyMap[e.keyCode];
+    if (pressedKey) {
+        document.getElementById(pressedKey[K_CLASS]).classList.remove("pressed");
     }
 }

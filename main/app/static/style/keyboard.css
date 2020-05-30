@@ -1,0 +1,135 @@
+* {
+    box-sizing: border-box;
+}
+
+.btn-group {
+    position: fixed;
+    top: 70%;
+    background-color: #dbdbdb;
+    height:26%;
+    width: 90%;
+    max-width: 900px;
+    border-radius: 20px;
+    align-self: center;
+    display: inline-block;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.btn-custom {
+    border-radius: 20px;
+    background-color: rgba(250, 250, 250);
+    padding: 1em 1.7em 2em 1.7em;
+    font-weight: bold;
+    position: absolute;
+    text-align: center;
+    width: 8%;
+    transition: .4s;
+
+}
+
+.btn-custom:hover, .btn-custom.pressed {
+    background-color: #527dd9;
+    color: white;
+}
+
+#w {
+    margin-top: 3%;
+    margin-left: 24%;
+}
+
+#a {
+    margin-top: 11%;
+    margin-left: 15%;
+}
+
+#s {
+    margin-top: 11%;
+    margin-left: 24%;
+}
+
+#d {
+    margin-top: 11%;
+    margin-left: 33%;
+}
+
+#h {
+    margin-top: 11%;
+    margin-left: 46%;
+}
+
+#j {
+    margin-top: 11%;
+    margin-left: 55%;
+}
+
+#k {
+    margin-top: 11%;
+    margin-left: 64%;
+}
+
+#l {
+    margin-top: 11%;
+    margin-left: 73%;
+}
+
+#k1 {
+    margin-top: 3%;
+    margin-left: 3%;
+}
+
+#k2 {
+    margin-top: 11%;
+    margin-left: 3%;
+}
+
+#space {
+    width: 10%; 
+    height: 70%;
+    margin-top: 3%;
+    margin-left: 86%;
+    text-align: center;
+    transition: 0s;
+    overflow: hidden;
+    background-color: white;
+    transition: 1s;
+}
+
+.space-txt {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+.space-cover {
+    position: absolute;
+    bottom: 0;
+    height: 0;
+    left: 0;
+    width: 100%;
+    border-radius: 20px;
+    transition: 1s;
+}
+
+#space.pressed .space-cover, #space:hover .space-cover {
+    height: 100%;
+    background-color: #527dd9;
+}
+
+.btn-label {
+    position: absolute;
+    font-size: 55%;
+    width: 100%;
+    color: #545454;
+    bottom: 20%;
+    left: 0;
+    transition: .4s;
+    font-weight: ;
+}
+
+.btn-custom.pressed .btn-label, .btn-custom:hover .btn-label {
+    color: white;
+}
+
