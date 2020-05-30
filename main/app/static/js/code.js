@@ -32,11 +32,11 @@ socket.on('connect', () => {
     console.log("Server connected");
 });
 
-lastMil = new Date().getMiliseconds();
+lastMil = new Date().getMilliseconds();
 
 function keyPressed(e) {
 
-    var curMil = new Date().getMiliseconds();
+    var curMil = new Date().getMilliseconds();
     if (curMil - lastMil < 500)
         return;
 
