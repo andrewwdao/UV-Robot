@@ -33,6 +33,10 @@ socket.on('connect', () => {
     console.log(socket);
 })
 
+socket.on('my response', () => {
+    console.log("Response from server");
+});
+
 function keyPressed(e) {
     var keyCode = e.keyCode;
     if(keyCode==87) {
