@@ -38,7 +38,7 @@ function keyPressed(e) {
 
     var curTime = new Date().getTime();
 
-    if (curTime - lastTime < 200) // ms
+    if (curTime - lastTime < 100) // ms
         return;
 
     lastTime = curTime;
