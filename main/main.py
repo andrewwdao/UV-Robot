@@ -273,7 +273,7 @@ def main():  # Main program block
     while True:
         ps2.update()
         sv_cmd = server.read()
-        if sv_cmd:
+        if sv_cmd is not None:
             print(sv_cmd)
 
         cmd_update()
