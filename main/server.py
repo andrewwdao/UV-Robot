@@ -33,10 +33,10 @@ class WebServer(object):
     def __init__(self):
         self.TARGET = 'server_call.py' # absolute directory
         try:
-            self.svobj = sp.Popen(['sudo',self.TARGET],
-                                           shell=False,
-                                           stdout=sp.PIPE,
-                                           stderr=sp.PIPE)
+            self.svobj = sp.Popen(['sudo','python3',self.TARGET],
+                                                    shell=False,
+                                                    stdout=sp.PIPE,
+                                                    stderr=sp.PIPE)
         except Exception as e:
             print(e)
             raise ValueError("Something went wrong on the server side")
