@@ -37,9 +37,10 @@ lastMil = new Date().getMilliseconds();
 function keyPressed(e) {
 
     var curMil = new Date().getMilliseconds();
-    
+
     if (curMil - lastMil < 500)
         return;
+    lastMil = curMil;
 
     var keyCode = e.keyCode;
     if(keyCode==87) { //W
