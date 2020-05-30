@@ -36,7 +36,7 @@ def test_connect():
 def test_disconnect():
     print('Client disconnected')
 
-@socket.on('my event')
+@socket.on('hello')
 def hello(json, methods=['GET', 'POST']):
     print("ABC")
 
