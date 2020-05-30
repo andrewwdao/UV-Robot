@@ -141,8 +141,8 @@ class PS2X(object):
         self.clean()
     
     def update(self):
-        output = self.output.readline(0.03)  # 0.03 secs = 30ms to let the shell output the result
-        error  = self.error.readline(0.03)  # 0.03 secs = 30ms to let the shell output the result
+        output = self.output.readline(0.05)  # 0.05 secs = 50ms to let the shell output the result
+        error  = self.error.readline(0.05)  # 0.05 secs = 50ms to let the shell output the result
         sys.stdout.flush()
         if error is not None:
             raise ValueError(error.strip().decode("utf-8"))
