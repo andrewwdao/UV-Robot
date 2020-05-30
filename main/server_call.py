@@ -30,6 +30,7 @@ from flask_socketio import emit
 @socket.on('connect')
 def test_connect():
     emit('my response', {'data': 'Connected'})
+    print('connected')
 
 @socket.on('disconnect')
 def test_disconnect():
