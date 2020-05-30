@@ -52,7 +52,7 @@ R_UL_FLAG = False # will be automatically updated to true
 
 
 # server initialize
-server = WebServer()
+# server = WebServer()
 
 # =================================== admin command =============================================
 def cmd_update():
@@ -272,7 +272,7 @@ def main():  # Main program block
     # forever loop start...
     while True:
         ps2.update()
-        server.update()
+        # server.update()
 
         cmd_update()
         motor_controller()
@@ -289,7 +289,7 @@ if __name__ == '__main__':
         GPIO.cleanup()
         ps2.clean()
         motor.clean()
-        server.shutdown()
+        # server.shutdown()
         # turn on ro
         sp.call(['sudo','mount','-o','remount,ro','/'], shell=False)
         sp.call(['sudo','mount','-o','remount,ro','/boot'], shell=False)
@@ -299,7 +299,7 @@ if __name__ == '__main__':
         GPIO.cleanup()
         ps2.clean()
         motor.clean()
-        server.shutdown()
+        # server.shutdown()
         # turn on ro
         sp.call(['sudo','mount','-o','remount,ro','/'], shell=False)
         sp.call(['sudo','mount','-o','remount,ro','/boot'], shell=False)
