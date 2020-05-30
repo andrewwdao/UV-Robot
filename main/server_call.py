@@ -23,13 +23,11 @@ import sys
 def test_connect():
     sys.stdout.write("Client connected!\n")
     sys.stdout.flush()
-    print('Client connected')
 
 @socket.on('key pressed')
 def handle_key_pressed(signal):
     sys.stdout.write(signal + "\n")
     sys.stdout.flush()
-    print(signal)
 
 
 
