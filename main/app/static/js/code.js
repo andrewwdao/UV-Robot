@@ -26,6 +26,11 @@
 
 document.addEventListener("keydown", keyPressed, false);
 
+var socket = io();
+socket.on('connect', () => {
+    socket.emit('hello', {data: "I'm in!"});
+})
+
 function keyPressed(e) {
     var keyCode = e.keyCode;
     if(keyCode==87) {

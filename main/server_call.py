@@ -20,11 +20,25 @@
 # import subprocess as sp
 # from ps2x.streamReader import StreamReader
 from app import streaming_app, socket
+from flask_socketio import emit
 # import sys
 # import time
 # import threading
 # import signal
 # import os
+
+@socket.on('connect')
+def test_connect():
+    emit('my response', {'data': 'Connected'})
+
+@socket.on('disconnect', namespace='/test')
+def test_disconnect():
+    print('Client disconnected')
+
+@socket.on('hello')
+def hello(data):
+    print("ABC")
+
 
 if __name__ == "__main__":
     # streaming_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app
