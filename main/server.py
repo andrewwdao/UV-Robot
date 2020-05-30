@@ -23,7 +23,7 @@ import sys
 import time
 # import threading
 # import signal
-# import os
+import os
 
 class WebServer(object):
     """
@@ -41,6 +41,8 @@ class WebServer(object):
             print(e)
             raise ValueError("Something went wrong on the server side")
         
+        self.unbuffered = os.fdopen(sys.stdout.fileno(), 'w', 0)
+        self.svobj.stdout = self.unbuffered
         self.output  = StreamReader(self.svobj.stdout)
         self.error   = StreamReader(self.svobj.stderr)
         print("Web server ready!")
