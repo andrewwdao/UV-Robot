@@ -30,7 +30,6 @@ var socket = io();
 socket.on('connect', () => {
     socket.emit('hello', {data: "User connected"});
     console.log("Connected");
-    console.log(socket);
 })
 
 socket.on('my response', () => {

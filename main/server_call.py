@@ -27,23 +27,21 @@ from flask_socketio import emit
 # import signal
 # import os
 
+
+if __name__ == "__main__":
+    # streaming_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app
+    socket.run(streaming_app,host='0.0.0.0', port=8002)
+
+
 @socket.on('connect')
 def test_connect():
     emit('my response', {'data': 'Connected'})
     print('connected')
 
-@socket.on('disconnect')
-def test_disconnect():
-    print('Client disconnected')
-
 @socket.on('hello')
-def hello(json, methods=['GET', 'POST']):
+def hello(json):
+    emit('my response', {'data': 'Connected'})
     print("ABC")
-
-
-if __name__ == "__main__":
-    # streaming_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app
-    socket.run(streaming_app,host='0.0.0.0', port=8002)
 
 # ========================== for production =========================
 # class WebServer(threading.Thread):
