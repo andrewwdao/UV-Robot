@@ -48,7 +48,7 @@ class WebServer(object):
         # self.buttons = "." # all button released
         # self.last_buttons = "." # all button released
 
-    def update(self):
+    def read(self):
         output = self.output.readline(0.05)  # 0.05 secs = 10ms to let the shell output the result
         error  = self.error.readline(0.05)  # 0.05 secs = 10ms to let the shell output the result
         sys.stdout.flush()
@@ -56,7 +56,7 @@ class WebServer(object):
             raise ValueError(error.strip().decode("utf-8"))
         if output is not None:  # turn it into string if it is not a null
             return output.strip().decode("utf-8")
-        return '~'
+        return None
 
     def shutdown(self):
         # check if process terminated or not

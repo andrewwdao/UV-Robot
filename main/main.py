@@ -272,7 +272,9 @@ def main():  # Main program block
     # forever loop start...
     while True:
         ps2.update()
-        server.update()
+        sv_cmd = server.read()
+        if sv_cmd:
+            print(sv_cmd)
 
         cmd_update()
         motor_controller()
