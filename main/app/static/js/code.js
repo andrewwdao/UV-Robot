@@ -32,15 +32,16 @@ socket.on('connect', () => {
     console.log("Server connected");
 });
 
-lastMil = new Date().getMilliseconds();
+lastTime = new Date().getTime();
 
 function keyPressed(e) {
 
-    var curMil = new Date().getMilliseconds();
+    var curTime = new Date().getTime();
 
-    if (curMil - lastMil < 500)
+    if (curTime - lastTime < 500) // ms
         return;
-    lastMil = curMil;
+
+    lastTime = curTime;
 
     var keyCode = e.keyCode;
     if(keyCode==87) { //W
