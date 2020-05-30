@@ -32,7 +32,14 @@ socket.on('connect', () => {
     console.log("Server connected");
 });
 
-async function keyPressed(e) {
+lastMil = new Date().getMiliseconds();
+
+function keyPressed(e) {
+
+    var curMil = new Date().getMiliseconds();
+    if (curMil - lastMil < 500)
+        return;
+
     var keyCode = e.keyCode;
     if(keyCode==87) { //W
         console.log("W");
