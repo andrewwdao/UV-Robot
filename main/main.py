@@ -60,7 +60,8 @@ def change_speed():
         motor.MAX_PWM = LOW_SPEED
     else:
         motor.MAX_PWM = HIGH_SPEED
-        
+    
+    print("SPEED SIGNAL SENT")
     emit('speed')
         
 # =================================== admin command =============================================
