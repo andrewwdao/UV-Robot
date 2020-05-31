@@ -238,6 +238,7 @@ def hand_controller():
        GPIO.input(R_LIMIT_UP_PIN)==GPIO.LOW or 
        GPIO.input(R_LIMIT_DOWN_PIN)==GPIO.LOW) and LR_PRESS_FLAG):
         print('Right Hand Released')
+        print(server.buttons)
         LR_PRESS_FLAG = False
         motor.Rhand_stop() # motor stop
 
