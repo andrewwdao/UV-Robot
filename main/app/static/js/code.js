@@ -25,8 +25,8 @@
 // })
 
 // ref: https://www.w3schools.com/jsref/dom_obj_event.asp
-document.addEventListener("keypress", keyPressed, false);
-// document.addEventListener("keydown", keyIsPressing, false);
+// document.addEventListener("keypress", keyPressed, false);
+document.addEventListener("keydown", keyIsPressing, false);
 document.addEventListener("keyup", keyReleased, false);
 
 const K_SIGNAL = 0, K_ID = 1;
