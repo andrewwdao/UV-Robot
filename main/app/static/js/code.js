@@ -25,7 +25,7 @@
 // })
 
 // ref: https://www.w3schools.com/jsref/dom_obj_event.asp
-document.addEventListener("keypress", keyPressed, false);
+// document.addEventListener("keypress", keyPressed, false);
 document.addEventListener("keydown", keyIsPressing, false);
 document.addEventListener("keyup", keyReleased, false);
 
@@ -51,19 +51,6 @@ socket.on('connect', () => {
 });
 
 lastTime = new Date().getTime();
-
-function keyPressed(e) {
-    if (document.getElementById("app-inner")) {
-        var pressedKey = keyMap[e.keyCode];
-        if (pressedKey) {
-            if (!document.getElementById(pressedKey[K_ID]).classList.contains('pressed')) {
-                document.getElementById(pressedKey[K_ID]).classList.add("pressed");
-                console.log(pressedKey[K_ID]+ " pressed");
-                socket.emit('pressed', pressedKey[K_SIGNAL] + "P");
-            }
-        }
-    }
-}
 
 function keyIsPressing(e) {
     if (document.getElementById("app-inner")) {
@@ -93,3 +80,16 @@ function keyReleased(e) {
         }
     }
 }
+
+// function keyPressed(e) {
+//     if (document.getElementById("app-inner")) {
+//         var pressedKey = keyMap[e.keyCode];
+//         if (pressedKey) {
+//             if (!document.getElementById(pressedKey[K_ID]).classList.contains('pressed')) {
+//                 document.getElementById(pressedKey[K_ID]).classList.add("pressed");
+//                 console.log(pressedKey[K_ID]+ " pressed");
+//                 socket.emit('pressed', pressedKey[K_SIGNAL] + "P");
+//             }
+//         }
+//     }
+// }

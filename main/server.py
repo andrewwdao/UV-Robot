@@ -65,7 +65,7 @@ class WebServer(object):
             print('Web Server terminated!')
     
     def isPressed(self, button):
-        if self.buttons == button + "P":
+        if self.buttons == button:
             return True
         return False
     

@@ -24,10 +24,10 @@ def test_connect():
     sys.stdout.write("Client connected!\n")
     sys.stdout.flush()
 
-@socket.on('pressed')
-def handle_key_pressed(signal):
-    sys.stdout.write(signal + "\n")
-    sys.stdout.flush()
+# @socket.on('pressed')
+# def handle_key_pressed(signal):
+#     sys.stdout.write(signal + "\n")
+#     sys.stdout.flush()
 
 @socket.on('holding')
 def handle_key_is_pressing(signal):
