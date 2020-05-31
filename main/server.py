@@ -52,6 +52,7 @@ class WebServer(object):
         sys.stdout.flush()
         if output:  # turn it into string if it is not a null
             self.buttons = output.strip().decode("utf-8")
+            print(self.buttons)
             return
         self.buttons = None
         return
