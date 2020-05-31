@@ -232,13 +232,12 @@ def hand_controller():
         LR_PRESS_FLAG = False
         motor.Lhand_stop() # motor stop
     if ((ps2.released(ps2.R1) or
-       ps2.released(ps2.R2) or
-       server.isReleased("RHAND_UP") or
-       server.isReleased("RHAND_DOWN") or
-       GPIO.input(R_LIMIT_UP_PIN)==GPIO.LOW or 
-       GPIO.input(R_LIMIT_DOWN_PIN)==GPIO.LOW) and LR_PRESS_FLAG):
+        ps2.released(ps2.R2) or
+        server.isReleased("RHAND_UP") or
+        server.isReleased("RHAND_DOWN") or
+        GPIO.input(R_LIMIT_UP_PIN)==GPIO.LOW or 
+        GPIO.input(R_LIMIT_DOWN_PIN)==GPIO.LOW) and LR_PRESS_FLAG):
         print('Right Hand Released')
-        print(server.buttons)
         LR_PRESS_FLAG = False
         motor.Rhand_stop() # motor stop
 
