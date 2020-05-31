@@ -50,6 +50,11 @@ socket.on('connect', () => {
     console.log("Server connected");
 });
 
+socket.on('speed', () => {
+    document.getElementById('k1').classList.toggle('active');
+    document.getElementById('k2').classList.toggle('active');
+});
+
 lastTime = new Date().getTime();
 
 function keyIsPressing(e) {
