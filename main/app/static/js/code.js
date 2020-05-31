@@ -77,6 +77,7 @@ function keyIsPressing(e) {
         var pressedKey = keyMap[e.keyCode];
         if (pressedKey) {
             document.getElementById(pressedKey[K_ID]).classList.add("pressed");
+            console.log(pressedKey[K_ID]+ " pressing");
             socket.emit('holding', pressedKey[K_SIGNAL]);
         }
     }
