@@ -48,7 +48,6 @@ class WebServer(object):
 
     def update(self):
         output = self.output.readline(0.05)  # 0.05 secs = 10ms to let the shell output the result
-        # sys.stdout.flush()
         if output:  # turn it into string if it is not a null
             self.buttons = output.strip().decode("utf-8")
             print(self.buttons)
@@ -71,8 +70,8 @@ class WebServer(object):
     
     def isPressing(self):
         if self.buttons:
-            return False
-        return True
+            return True
+        return False
     
     def isReleased(self, button):
         if self.buttons == button + "R":
