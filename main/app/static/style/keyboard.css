@@ -84,6 +84,7 @@
 
 .speed-high {
     display: none;
+    color: white;
 }
 
 .active .speed-high {
