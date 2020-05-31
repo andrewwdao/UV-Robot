@@ -39,19 +39,28 @@ const keyMap = {
     74: ['LHAND_DOWN', 'j'],   // J
     75: ['RHAND_UP', 'k'],     // K
     76: ['RHAND_DOWN', 'l'],   // L
-    49: ['HIGH_SPEED', 'k1'],          // 1
-    50: ['LOW_SPEED', 'k2'],          // 2
+    81: ['SPEED', 'q'],        // Q
+    // 50: ['LOW_SPEED', 'k2'],          // 2
     32: ['TOGGLE', 'space'],    // Space
 };
 
 var socket = io();
 
+// --------------- see if client send something to me ------------
 socket.on('connect', () => {
     console.log("Server connected");
 });
 
-lastTime = new Date().getTime();
+socket.on('high-speed', () => {
+    document.getElementById('q').classList.add('active'); //force to turn on
+});
 
+socket.on('low-speed', () => {
+    document.getElementById('q').classList.remove('active'); //force to turn off
+});
+
+// Send signal back to client
+lastTime = new Date().getTime();
 function keyIsPressing(e) {
     if (document.getElementById("app-inner")) {
         var curTime = new Date().getTime();

@@ -16,6 +16,7 @@ import subprocess as sp
 import signal
 import os
 import time
+from flask_socketio import emit
 
 # ---------------------------- Configurable parameters -------------------------
 RELAY_01_PIN = 4  # BCM mode
@@ -54,6 +55,14 @@ R_UL_FLAG = False # will be automatically updated to true
 # server initialize
 server = WebServer()
 
+def change_speed():
+    if motor.MAX_PWM == HIGH_SPEED:
+        motor.MAX_PWM = LOW_SPEED
+        emit('high-speed')
+    else:
+        motor.MAX_PWM = HIGH_SPEED
+        emit('low-speed')
+
 # =================================== admin command =============================================
 def cmd_update():
     global SQ_watchdog, SQ_FLAG
@@ -72,12 +81,13 @@ def cmd_update():
             
         # --- TRIANGLE - high speed
         if ps2.pressed(ps2.TRIANGLE):
-            print('TRIANGLE pressed - high speed mode')
-            motor.MAX_PWM = HIGH_SPEED
+            print('TRIANGLE pressed - toggle speed mode')
+            # motor.MAX_PWM = HIGH_SPEED
+            change_speed()
         # --- CROSS - low speed
-        if ps2.pressed(ps2.CROSS):
-            print('CROSS pressed - low speed mode')
-            motor.MAX_PWM = LOW_SPEED
+        # if ps2.pressed(ps2.CROSS):
+        #     print('CROSS pressed - low speed mode')
+        #     motor.MAX_PWM = LOW_SPEED
         # --- SQUARE - turn on UV lights
         if ps2.pressed(ps2.SQUARE):
             print('SQUARE pressed')
@@ -94,6 +104,10 @@ def cmd_update():
 def motor_controller():
     global DANGER_FLAG, FORWARD_FLAG, STOP_millis, U_watchdog, D_watchdog, L_watchdog, R_watchdog, A_watchdog
     
+    # --- change speed by server
+    if server.isReleased('SPEED'):
+        change_speed()
+
     # ================== Digital control ==================
     if ps2.arrowPressing():
         # --- UP

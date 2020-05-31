@@ -18,12 +18,20 @@
 from app import streaming_app, socket
 from flask_socketio import emit
 import sys
+from main import motor.MAX_PWM, HIGH_SPEED
+
+# for pwm control
+# LOW_SPEED = 200
 
 @socket.on('connect')
 def test_connect():
     sys.stdout.write("Client connected!\n")
     sys.stdout.flush()
-
+    if motor.MAX_PWM == HIGH_SPEED:
+        emit('high-speed')
+    else:
+        emit('low-speed')
+        
 # @socket.on('pressed')
 # def handle_key_pressed(signal):
 #     sys.stdout.write(signal + "\n")
