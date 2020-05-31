@@ -104,6 +104,10 @@ def cmd_update():
 def motor_controller():
     global DANGER_FLAG, FORWARD_FLAG, STOP_millis, U_watchdog, D_watchdog, L_watchdog, R_watchdog, A_watchdog
     
+    # --- change speed by server
+    if server.isPressed('SPEED'):
+        change_speed()
+
     # ================== Digital control ==================
     if ps2.arrowPressing():
         # --- UP

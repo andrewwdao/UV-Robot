@@ -29,6 +29,7 @@
 
 .btn-custom.active {
     background-color: deeppink;
+    color: white;
 }
 
 .btn-custom:hover, .btn-custom.pressed {
@@ -76,14 +77,25 @@
     margin-left: 73%;
 }
 
-#k1 {
+#q {
     margin-top: 3%;
     margin-left: 3%;
 }
 
-#k2 {
-    margin-top: 11%;
-    margin-left: 3%;
+.speed-high {
+    display: none;
+}
+
+.active .speed-high {
+    display: unset;
+}
+
+.speed-low {
+    display: unset;
+}
+
+.active .speed-low {
+    display: none;
 }
 
 #space {
