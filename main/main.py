@@ -58,10 +58,10 @@ server = WebServer()
 def change_speed():
     if motor.MAX_PWM == HIGH_SPEED:
         motor.MAX_PWM = LOW_SPEED
+        emit('speed')
     else:
         motor.MAX_PWM = HIGH_SPEED
-        
-    emit('speed')
+        emit('speed')
         
 # =================================== admin command =============================================
 def cmd_update():

@@ -52,7 +52,6 @@ socket.on('connect', () => {
 
 socket.on('speed', () => {
     document.getElementById('q').classList.toggle('active');
-    console.log("SPEED CHANGED");
 });
 
 lastTime = new Date().getTime();
