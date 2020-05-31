@@ -25,10 +25,7 @@
     text-align: center;
     width: 8%;
     transition: .4s;
-}
 
-.btn-custom.active {
-    background-color: deeppink;
 }
 
 .btn-custom:hover, .btn-custom.pressed {
