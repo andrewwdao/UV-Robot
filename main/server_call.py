@@ -26,7 +26,7 @@ LOW_SPEED = 200
 def test_connect():
     sys.stdout.write("Client connected!\n")
     sys.stdout.flush()
-    if (motor.MAX_PWM == LOW_SPEED):
+    if (motor.MAX_PWM == LOW_SPEED)
         emit('speed')
 
 # @socket.on('pressed')

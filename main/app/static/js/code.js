@@ -39,8 +39,8 @@ const keyMap = {
     74: ['LHAND_DOWN', 'j'],   // J
     75: ['RHAND_UP', 'k'],     // K
     76: ['RHAND_DOWN', 'l'],   // L
-    81: ['SPEED', 'q'],        // Q
-    // 50: ['LOW_SPEED', 'k2'],          // 2
+    49: ['HIGH_SPEED', 'k1'],          // 1
+    50: ['LOW_SPEED', 'k2'],          // 2
     32: ['TOGGLE', 'space'],    // Space
 };
 
@@ -51,7 +51,8 @@ socket.on('connect', () => {
 });
 
 socket.on('speed', () => {
-    document.getElementById('q').classList.toggle('active');
+    document.getElementById('k1').classList.toggle('active');
+    document.getElementById('k2').classList.toggle('active');
 });
 
 lastTime = new Date().getTime();
