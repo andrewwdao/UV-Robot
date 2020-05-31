@@ -35,8 +35,7 @@ class WebServer(object):
         try:
             self.svobj = sp.Popen(['sudo','python3',self.TARGET],
                                                     shell=False,
-                                                    stdout=sp.PIPE,
-                                                    stderr=sp.STDOUT)
+                                                    stdout=sp.PIPE)
         except Exception as e:
             print(e)
             raise ValueError("Something went wrong on the server side")
@@ -49,7 +48,7 @@ class WebServer(object):
 
     def update(self):
         output = self.output.readline(0.05)  # 0.05 secs = 10ms to let the shell output the result
-        sys.stdout.flush()
+        # sys.stdout.flush()
         if output:  # turn it into string if it is not a null
             self.buttons = output.strip().decode("utf-8")
             print(self.buttons)
