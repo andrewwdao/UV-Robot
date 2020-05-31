@@ -24,11 +24,20 @@ def test_connect():
     sys.stdout.write("Client connected!\n")
     sys.stdout.flush()
 
-@socket.on('key pressed')
+@socket.on('pressed')
 def handle_key_pressed(signal):
     sys.stdout.write(signal + "\n")
     sys.stdout.flush()
 
+@socket.on('holding')
+def handle_key_is_pressing(signal):
+    sys.stdout.write(signal + "\n")
+    sys.stdout.flush()
+
+@socket.on('released')
+def handle_key_released(signal):
+    sys.stdout.write(signal + "\n")
+    sys.stdout.flush()
 
 if __name__ == "__main__":
     # streaming_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app

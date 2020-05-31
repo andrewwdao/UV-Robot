@@ -224,42 +224,48 @@ def hand_controller():
     # ------------ Confirm release buttons ---------------------
     if ((ps2.released(ps2.L1) or
         ps2.released(ps2.L2) or
-        server.isReleased() or
+        server.isReleased("LHAND_UP") or
+        server.isReleased("LHAND_DOWN") or
         GPIO.input(L_LIMIT_UP_PIN)==GPIO.LOW or 
         GPIO.input(L_LIMIT_DOWN_PIN)==GPIO.LOW) and LR_PRESS_FLAG):
-        print('Hand Released')
+        print('Left Hand Released')
         LR_PRESS_FLAG = False
         motor.Lhand_stop() # motor stop
     if ((ps2.released(ps2.R1) or
        ps2.released(ps2.R2) or
-       server.isReleased() or
+       server.isReleased("RHAND_UP") or
+       server.isReleased("RHAND_DOWN") or
        GPIO.input(R_LIMIT_UP_PIN)==GPIO.LOW or 
        GPIO.input(R_LIMIT_DOWN_PIN)==GPIO.LOW) and LR_PRESS_FLAG):
-        print('Hand Released')
+        print('Right Hand Released')
         LR_PRESS_FLAG = False
         motor.Rhand_stop() # motor stop
 
     # ------------- Confirm pressing buttons -------------------
-    if ps2.LRpressing():
+    if ps2.LRpressing() or server.isPressing():
         LR_PRESS_FLAG = True
         # --- L1 pressed - Lhand move up
-        if (ps2.pressed(ps2.L1) or server.isPressed('LHAND_UP')) and GPIO.input(L_LIMIT_UP_PIN)==GPIO.HIGH:
+        if ((ps2.pressed(ps2.L1) or server.isPressed('LHAND_UP')) and 
+            GPIO.input(L_LIMIT_UP_PIN)==GPIO.HIGH):
             print('L1 pressed - Lhand move up')
             motor.Lhand_up() # motor move up
             return
         # --- L2 pressed - Lhand move down
-        if (ps2.pressed(ps2.L2) or server.isPressed('LHAND_DOWN')) and GPIO.input(L_LIMIT_DOWN_PIN)==GPIO.HIGH and L_UL_FLAG:
+        elif ((ps2.pressed(ps2.L2) or server.isPressed('LHAND_DOWN')) and 
+            GPIO.input(L_LIMIT_DOWN_PIN)==GPIO.HIGH and L_UL_FLAG):
             print('L2 pressed - Lhand move down')
             motor.Lhand_down() # motor move down
             return
         
         # --- R1 pressed - Rhand move up
-        if (ps2.pressed(ps2.R1) or server.isPressed('RHAND_UP')) and GPIO.input(R_LIMIT_UP_PIN)==GPIO.HIGH:
+        if ((ps2.pressed(ps2.R1) or server.isPressed('RHAND_UP')) and
+            GPIO.input(R_LIMIT_UP_PIN)==GPIO.HIGH):
             print('R1 pressed - Rhand move up')
             motor.Rhand_up() # motor move up
             return
         # --- R2 pressed - Rhand move down
-        if (ps2.pressed(ps2.R2) or server.isPressed('RHAND_DOWN')) and GPIO.input(R_LIMIT_DOWN_PIN)==GPIO.HIGH and R_UL_FLAG:
+        elif ((ps2.pressed(ps2.R2) or server.isPressed('RHAND_DOWN')) and
+            GPIO.input(R_LIMIT_DOWN_PIN)==GPIO.HIGH and R_UL_FLAG):
             print('R2 pressed - Rhand move down')
             motor.Rhand_down() # motor move down
             return
