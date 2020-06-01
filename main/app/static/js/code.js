@@ -71,7 +71,7 @@ function keyIsPressing(e) {
                 if (lightPressedTime === 0) {
                     lightPressedTime = new Date().getTime();
                 } else if ((curTime - lightPressedTime > 1000 && !lightOn) ||
-                           (curTime - lightPressedTime < 300 && lightOn)) {
+                           (curTime - lightPressedTime < 500 && lightOn)) {
                     toggleLight();
                     console.log("YOU SHOULD GET HERE");
                 } else {
@@ -110,6 +110,7 @@ function toggleSpeed() {
 function toggleLight() {
     console.log("LIGHT");
     lightOn = !lightOn;
+    
     if (lightOn) {
         document.getElementById("space").classList.add("active");
     } else {

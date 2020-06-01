@@ -90,6 +90,9 @@
     text-align: center;
     transition: 0s;
     overflow: hidden;
+}
+
+#space:hover, #space.pressed {
     background-color: white;
 }
 
@@ -108,7 +111,7 @@
     left: 0;
     width: 100%;
     border-radius: 20px;
-    transition: 1s;
+    transition: .1s;
 }
 
 #space.pressed .space-cover, #space:hover .space-cover {
