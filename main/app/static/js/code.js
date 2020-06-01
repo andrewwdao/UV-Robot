@@ -51,6 +51,7 @@ socket.on('connect', () => {
 
 socket.on('light', (status) => {
     toggleLight(status);
+    console.log("TOGGLE LIGHT");
 });
 
 lastTime = new Date().getTime();
