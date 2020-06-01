@@ -88,17 +88,18 @@
     margin-top: 3%;
     margin-left: 86%;
     text-align: center;
-    transition: 0s;
+    transition: .4s;
     overflow: hidden;
 }
 
-#space:hover, #space.pressed {
+/* #space:hover, */
+#space.pressed {
     background-color: white;
+    color: black;
 }
 
-#space.active:hover,
-#space.active.pressed {
-    background-color: hotpink;
+#space.active {
+    color: white;
 }
 
 .space-txt {
@@ -119,16 +120,24 @@
     transition: 0s;
 }
 
-#space.pressed .space-cover,
-#space:hover .space-cover {
+/* #space:hover .space-cover, */
+#space.pressed .space-cover {
     height: 100%;
     background-color: hotpink;
     transition: 1s;
 }
 
-#space.pressed.active .space-cover,
-#space.active:hover .space-cover {
+/* #space.active:hover .space-cover, */
+#space.active.pressed .space-cover {
     height: 0;
+}
+
+#space .btn-label {
+    color: black;
+}
+
+#space.active .btn-label {
+    color: white;
 }
 
 .btn-label {
@@ -142,7 +151,8 @@
     font-weight: ;
 }
 
-.btn-custom.pressed .btn-label, .btn-custom:hover .btn-label {
+.btn-custom.pressed .btn-label,
+.btn-custom:hover .btn-label {
     color: white;
 }
 
