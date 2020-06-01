@@ -45,7 +45,8 @@
     bottom: 20%;
     left: 0;
     transition: .4s;
-    font-weight: ;
+    font-weight: bold;
+    transition: .2s;
 }
 
 .btn-custom.pressed .btn-label,
@@ -103,7 +104,7 @@
     color: white;
 }
 
-#q.active .speed-high { display: unset; };
+#q.active .speed-high { display: unset; }
 #q.active .speed-low { display: none; }
 
 #space {
