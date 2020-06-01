@@ -68,7 +68,7 @@ function keyIsPressing(e) {
             // console.log(pressedKey[K_ID]+ " pressing");
 
             if (pressedKey[K_SIGNAL] === 'TOGGLE') {
-                if (lightOn) {
+                if (lightOn && lightPressedTime === 0) {
                     toggleLight();
                     lightPressedTime = 1600;
                 } else if (lightPressedTime === 0 && !lightOn) {
