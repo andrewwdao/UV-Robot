@@ -1,29 +1,3 @@
-
-// function close_window() {
-// 	if (confirm("Close Window?")) {
-// 		window.close();
-// 	}
-//   }
-
-// $(document).ready(function(){
-// 	$("#cancel").on("click", function() {
-// 		$( "#connect" ).slideUp( "fast", function() {});
-// 		$( "#connect_manual" ).slideUp( "fast", function() {});
-// 		$( "#wifi" ).slideDown( "fast", function() {});
-// 	});
-
-// 	$("#ok-credits").on("click", function() {
-// 		$( "#credits" ).slideUp( "fast", function() {});
-// 		$( "#app" ).slideDown( "fast", function() {});
-		
-// 	});
-	
-// 	$("#acredits").on("click", function() {
-// 		$( "#app" ).slideUp( "fast", function() {});
-// 		$( "#credits" ).slideDown( "fast", function() {});
-// 	});
-// })
-
 // ref: https://www.w3schools.com/jsref/dom_obj_event.asp
 // document.addEventListener("keypress", keyPressed, false);
 document.addEventListener("keydown", keyIsPressing, false);
@@ -44,19 +18,29 @@ const keyMap = {
 };
 
 var socket = io();
+lastTime = new Date().getTime();
+lightOn = false;
+lightPressedTime = 0;
 
 socket.on('connect', () => {
     console.log("Server connected");
 });
 
 socket.on('light', (status) => {
-    toggleLight(status);
-    console.log("TOGGLE LIGHT");
-});
+    lightOn = status;
+    // console.log("LIGHT " + status);
 
-lastTime = new Date().getTime();
-lightOn = false;
-lightPressedTime = 0;
+    lightToggler = document.getElementById("space");
+    if (lightOn) {
+        console.log("LIGHT ON");
+        lightToggler.classList.add("active");
+    } else {
+        console.log("LIGHT OFF");
+        lightToggler.classList.remove("active");
+    }
+
+    lightToggler.classList.remove("pressed");
+});
 
 function keyIsPressing(e) {
     var pressedKey = keyMap[e.keyCode];
@@ -82,7 +66,7 @@ function keyIsPressing(e) {
         }
 
         document.getElementById(pressedKey[K_ID]).classList.add("pressed");
-        // console.log(pressedKey[K_ID]+ " pressing");
+        console.log(pressedKey[K_ID]+ " pressing");
         socket.emit('holding', pressedKey[K_SIGNAL]);
     }
 }
@@ -93,28 +77,27 @@ function keyReleased(e) {
         if (releasedKey[K_SIGNAL] === 'TOGGLE') {
             lightPressedTime = 0;
         }
-
         document.getElementById(releasedKey[K_ID]).classList.remove("pressed");
         console.log(releasedKey[K_ID] + " released");
         socket.emit('released', releasedKey[K_SIGNAL] + "R")
     }
 }
 
-function toggleLight(status) {
-    lightOn = status;
-    console.log("LIGHT " + status);
+// function toggleLight(status) {
+//     lightOn = status;
+//     // console.log("LIGHT " + status);
 
-    lightToggler = document.getElementById("space");
-    if (lightOn) {
-        console.log("LIGHT ON");
-        lightToggler.classList.add("active");
-    } else {
-        console.log("LIGHT OFF");
-        lightToggler.classList.remove("active");
-    }
+//     lightToggler = document.getElementById("space");
+//     if (lightOn) {
+//         console.log("LIGHT ON");
+//         lightToggler.classList.add("active");
+//     } else {
+//         console.log("LIGHT OFF");
+//         lightToggler.classList.remove("active");
+//     }
 
-    lightToggler.classList.remove("pressed");
-}
+//     lightToggler.classList.remove("pressed");
+// }
 
 // function keyPressed(e) {
 //     if (document.getElementById("app-inner")) {
@@ -128,3 +111,29 @@ function toggleLight(status) {
 //         }
 //     }
 // }
+
+
+// function close_window() {
+// 	if (confirm("Close Window?")) {
+// 		window.close();
+// 	}
+//   }
+
+// $(document).ready(function(){
+// 	$("#cancel").on("click", function() {
+// 		$( "#connect" ).slideUp( "fast", function() {});
+// 		$( "#connect_manual" ).slideUp( "fast", function() {});
+// 		$( "#wifi" ).slideDown( "fast", function() {});
+// 	});
+
+// 	$("#ok-credits").on("click", function() {
+// 		$( "#credits" ).slideUp( "fast", function() {});
+// 		$( "#app" ).slideDown( "fast", function() {});
+		
+// 	});
+	
+// 	$("#acredits").on("click", function() {
+// 		$( "#app" ).slideUp( "fast", function() {});
+// 		$( "#credits" ).slideDown( "fast", function() {});
+// 	});
+// })

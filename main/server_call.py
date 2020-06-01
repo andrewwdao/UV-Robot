@@ -17,18 +17,26 @@
  --------------------------------------------------------------"""
 from app import streaming_app, socket
 from flask_socketio import emit
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
 import sys
 
-RELAY_01_PIN = 4  # BCM mode
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(RELAY_01_PIN, GPIO.OUT, initial=GPIO.HIGH) # relay init
+# RELAY_01_PIN = 4  # BCM mode
+# GPIO.setmode(GPIO.BCM)
+# GPIO.setup(RELAY_01_PIN, GPIO.OUT, initial=GPIO.HIGH) # relay init
 
 @socket.on('connect')
 def test_connect():
     sys.stdout.write("Client connected!\n")
     sys.stdout.flush()
-    emit('light', not GPIO.input(RELAY_01_PIN))
+
+    try:
+        with f as open("/tmp/MIS_logs/light", "r"):
+            emit('light', f.read() == 'ON')
+    except FileNotFoundError:
+        sys.stdout.write("/tmp/MIS_logs/light not found!")
+        sys.stdout.flush()
+
+    # emit('light', not GPIO.input(RELAY_01_PIN))
 
 # @socket.on('pressed')
 # def handle_key_pressed(signal):
@@ -47,15 +55,30 @@ def handle_key_released(signal):
 
 @socket.on('light')
 def handle_light_toggle():
-    if not GPIO.input(RELAY_01_PIN):
-        sys.stdout.write("LIGHT OFF\n")
-        emit('light', False)
-        GPIO.output(RELAY_01_PIN, GPIO.HIGH)
-    else:
-        sys.stdout.write("LIGHT ON\n")
-        emit('light', True)
-        GPIO.output(RELAY_01_PIN, GPIO.LOW)
-    sys.stdout.flush()
+    # if GPIO.input(RELAY_01_PIN):
+    #     sys.stdout.write("LIGHT ON\n")
+    #     emit('light', True)
+    #     GPIO.output(RELAY_01_PIN, GPIO.LOW)
+    # else:
+    #     sys.stdout.write("LIGHT OFF\n")
+    #     emit('light', False)
+    #     GPIO.output(RELAY_01_PIN, GPIO.HIGH)
+    # sys.stdout.flush()
+    try:
+        f = open("/tmp/MIS_logs/light", "r")
+        state = (f.read() != 'ON')
+        emit('light', state)
+        f.close()
+
+        with f as open("/tmp/MIS_logs", "w"):
+            if state:
+                f.write("ON")
+            else:
+                f.wrie("OFF")
+
+    except FileNotFoundError:
+        sys.stdout.write("/tmp/MIS_logs/light not found!")
+        sys.stdout.flush()
 
 if __name__ == "__main__":
     # streaming_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app
