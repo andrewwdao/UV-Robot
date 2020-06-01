@@ -25,11 +25,7 @@
     text-align: center;
     width: 8%;
     transition: .4s;
-}
 
-.btn-custom.active {
-    background-color: deeppink;
-    color: white;
 }
 
 .btn-custom:hover, .btn-custom.pressed {
@@ -77,25 +73,14 @@
     margin-left: 73%;
 }
 
-#q {
+#k1 {
     margin-top: 3%;
     margin-left: 3%;
 }
 
-.speed-high {
-    display: none;
-}
-
-.active .speed-high {
-    display: unset;
-}
-
-.speed-low {
-    display: unset;
-}
-
-.active .speed-low {
-    display: none;
+#k2 {
+    margin-top: 11%;
+    margin-left: 3%;
 }
 
 #space {
