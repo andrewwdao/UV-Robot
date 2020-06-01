@@ -65,7 +65,7 @@ function keyIsPressing(e) {
         var pressedKey = keyMap[e.keyCode];
         if (pressedKey) {
             document.getElementById(pressedKey[K_ID]).classList.add("pressed");
-            console.log(pressedKey[K_ID]+ " pressing");
+            // console.log(pressedKey[K_ID]+ " pressing");
             
             if (pressedKey[K_SIGNAL] === 'TOGGLE') {
                 if (lightPressedTime === 0) {
@@ -73,6 +73,7 @@ function keyIsPressing(e) {
                 } else if ((curTime - lightPressedTime > 1000 && !lightOn) ||
                            (curTime - lightPressedTime < 300 && lightOn)) {
                     toggleLight();
+                    console.log("YOU SHOULD GET HERE");
                 } else {
                     console.log(curTime - lightPressedTime);
                     return;
@@ -109,6 +110,11 @@ function toggleSpeed() {
 function toggleLight() {
     console.log("LIGHT");
     lightOn = !lightOn;
+    if (lightOn) {
+        document.getElementById("space").classList.add("active");
+    } else {
+        document.getElementById("space").classList.remove("active");
+    }
 }
 
 // function keyPressed(e) {
