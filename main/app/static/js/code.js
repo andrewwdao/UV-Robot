@@ -105,14 +105,14 @@ function keyReleased(e) {
 
 function toggleLight(status) {
     lightOn = status;
-    console.log(status);
-    console.log("LIGHT");
+    console.log("LIGHT " + status);
 
-    var lightToggler = document.getElementById("space");
     if (lightOn) {
-        lightToggler.classList.add("active");
+        console.log("LIGHT ON");
+        document.getElementById("space").classList.add("active");
     } else {
-        lightToggler.classList.remove("active");
+        console.log("LIGHT OFF");
+        document.getElementById("space").classList.remove("active");
     }
 
     lightToggler.classList.remove("pressed");
