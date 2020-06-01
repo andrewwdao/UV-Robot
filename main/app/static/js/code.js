@@ -31,17 +31,17 @@ document.addEventListener("keyup", keyReleased, false);
 
 const K_SIGNAL = 0, K_ID = 1;
 const keyMap = {
-    87: ['UP', 'w'],           // W
-    65: ['LEFT', 'a'],         // A
-    68: ['RIGHT', 'd'],        // D
-    83: ['DOWN', 's'],         // S
-    72: ['LHAND_UP', 'h'],     // H
-    74: ['LHAND_DOWN', 'j'],   // J
-    75: ['RHAND_UP', 'k'],     // K
-    76: ['RHAND_DOWN', 'l'],   // L
-    49: ['HIGH_SPEED', 'k1'],          // 1
-    50: ['LOW_SPEED', 'k2'],          // 2
-    32: ['TOGGLE', 'space'],    // Space
+    87: ['UP', 'w'],                  // W
+    65: ['LEFT', 'a'],                // A
+    68: ['RIGHT', 'd'],               // D
+    83: ['DOWN', 's'],                // S
+    72: ['LHAND_UP', 'h'],            // H
+    74: ['LHAND_DOWN', 'j'],          // J
+    75: ['RHAND_UP', 'k'],            // K
+    76: ['RHAND_DOWN', 'l'],          // L
+    81: ['SPEED', 'q', toggleSpeed],  // Q
+    // 50: ['LOW_SPEED', 'k2'],          // 2
+    32: ['TOGGLE', 'space'],          // Space
 };
 
 var socket = io();
@@ -79,6 +79,10 @@ function keyReleased(e) {
             socket.emit('released', pressedKey[K_SIGNAL] + "R")
         }
     }
+}
+
+function toggleSpeed() {
+    console.log("SPEED")
 }
 
 // function keyPressed(e) {
