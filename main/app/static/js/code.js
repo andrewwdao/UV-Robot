@@ -108,12 +108,13 @@ function toggleLight(status) {
     lightOn = status;
     console.log("LIGHT " + status);
 
+    lightToggler = document.getElementById("space");
     if (lightOn) {
         console.log("LIGHT ON");
-        document.getElementById("space").classList.add("active");
+        lightToggler.classList.add("active");
     } else {
         console.log("LIGHT OFF");
-        document.getElementById("space").classList.remove("active");
+        lightToggler.classList.remove("active");
     }
 
     lightToggler.classList.remove("pressed");
