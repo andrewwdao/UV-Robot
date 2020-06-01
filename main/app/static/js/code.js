@@ -49,6 +49,10 @@ socket.on('connect', () => {
     console.log("Server connected");
 });
 
+socket.on('light', () => {
+    toggleLight();
+});
+
 lastTime = new Date().getTime();
 lightOn = false;
 lightPressedTime = 0;
@@ -65,15 +69,14 @@ function keyIsPressing(e) {
             lastTime = curTime;
 
             if (pressedKey[K_SIGNAL] === 'TOGGLE') {
-                if (lightOn && lightPressedTime === 0) {
+                if ((lightOn && lightPressedTime === 0) ||
+                    (curTime - lightPressedTime > 1000 && !lightOn && curTime - lightPressedTime < 1500)) {
                     toggleLight();
+                    // socket.emit('light');
                     lightPressedTime = 1600;
                 } else if (lightPressedTime === 0 && !lightOn) {
                     lightPressedTime = new Date().getTime();
                     document.getElementById(pressedKey[K_ID]).classList.add("pressed");
-                } else if (curTime - lightPressedTime > 1000 && !lightOn && curTime - lightPressedTime < 1500) {
-                    toggleLight();
-                    lightPressedTime = 1600;
                 }
                 return;
             }
