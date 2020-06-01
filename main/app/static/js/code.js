@@ -71,9 +71,10 @@ function keyIsPressing(e) {
                 if (lightPressedTime === 0 && !lightOn) {
                     lightPressedTime = new Date().getTime();
                 } else if ((curTime - lightPressedTime > 1000 && !lightOn) ||
-                           (curTime - lightPressedTime < 200 && lightOn)) {
+                           (curTime - lightPressedTime < 300 && lightOn)) {
                     toggleLight();
                 } else {
+                    console.log(curTime - lightPressedTime);
                     return;
                 }
             } else if (pressedKey[K_SIGNAL] === 'SPEED') {
