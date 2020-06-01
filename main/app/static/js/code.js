@@ -57,35 +57,36 @@ function keyIsPressing(e) {
     if (document.getElementById("app-inner")) {
         var pressedKey = keyMap[e.keyCode];
         if (pressedKey) {
+            document.getElementById(pressedKey[K_ID]).classList.add("pressed");
+            // console.log(pressedKey[K_ID]+ " pressing");
+
             var curTime = new Date().getTime();
 
-            document.getElementById(pressedKey[K_ID]).classList.add("pressed");
+            if (curTime - lastTime < 100) // ms
+                return;
+    
+            lastTime = curTime;
         
             if (pressedKey[K_SIGNAL] === 'TOGGLE') {
+                var duration = curTime - lightPressedTime;
                 if (lightPressedTime === 0) {
                     lightPressedTime = new Date().getTime();
-                } else if ((curTime - lightPressedTime > 1000 && !lightOn) ||
-                           (curTime - lightPressedTime < 500 && lightOn)) {
-                    console.log("LIGHT");
+                    console.log("JUST GET HERE ONCE");
+                } else if ((duration >= 1000 && duration <= 1500 && !lightOn) ||
+                            (duration < 500 && lightOn)) {
                     lightOn = !lightOn;
-                    
+                    lightPressedTime = 1600;
+                    console.log("LIGHT");
                     if (lightOn) {
                         document.getElementById("space").classList.add("active");
                     } else {
                         document.getElementById("space").classList.remove("active");
                     }
                 } else {
-                    console.log(curTime - lightPressedTime);
                     return;
                 }
             }
 
-            if (curTime - lastTime < 100) // ms
-                return;
-    
-            lastTime = curTime;
-
-            // console.log(pressedKey[K_ID]+ " pressing");
             socket.emit('holding', pressedKey[K_SIGNAL]);
         }
     }
