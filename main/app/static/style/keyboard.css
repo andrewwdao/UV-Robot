@@ -37,6 +37,22 @@
     color: white;
 }
 
+.btn-label {
+    position: absolute;
+    font-size: 55%;
+    width: 100%;
+    color: #545454;
+    bottom: 20%;
+    left: 0;
+    transition: .4s;
+    font-weight: ;
+}
+
+.btn-custom.pressed .btn-label,
+.btn-custom:hover .btn-label {
+    color: white;
+}
+
 #w {
     margin-top: 3%;
     margin-left: 24%;
@@ -81,6 +97,14 @@
     margin-top: 3%;
     margin-left: 3%;
 }
+
+#q .speed-high {
+    display: none;
+    color: white;
+}
+
+#q.active .speed-high { display: unset; };
+#q.active .speed-low { display: none; }
 
 #space {
     width: 10%; 
@@ -137,22 +161,6 @@
 }
 
 #space.active .btn-label {
-    color: white;
-}
-
-.btn-label {
-    position: absolute;
-    font-size: 55%;
-    width: 100%;
-    color: #545454;
-    bottom: 20%;
-    left: 0;
-    transition: .4s;
-    font-weight: ;
-}
-
-.btn-custom.pressed .btn-label,
-.btn-custom:hover .btn-label {
     color: white;
 }
 
