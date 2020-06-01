@@ -41,7 +41,7 @@ const keyMap = {
     76: ['RHAND_DOWN', 'l'],   // L
     81: ['SPEED', 'q'],        // Q
     // 50: ['LOW_SPEED', 'k2'],          // 2
-    32: ['TOGGLE', 'space']    // Space
+    32: ['TOGGLE', 'space'],    // Space
 };
 
 var socket = io();
@@ -51,13 +51,13 @@ socket.on('connect', () => {
     console.log("Server connected");
 });
 
-// socket.on('high-speed', () => {
-//     document.getElementById('q').classList.add('active'); //force to turn on
-// });
+socket.on('high-speed', () => {
+    document.getElementById('q').classList.add('active'); //force to turn on
+});
 
-// socket.on('low-speed', () => {
-//     document.getElementById('q').classList.remove('active'); //force to turn off
-// });
+socket.on('low-speed', () => {
+    document.getElementById('q').classList.remove('active'); //force to turn off
+});
 
 // Send signal back to client
 lastTime = new Date().getTime();
