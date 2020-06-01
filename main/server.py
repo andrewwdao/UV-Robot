@@ -83,8 +83,13 @@ class WebServer(object):
             return True
         return False
     
-    def light(self, state):
-        if self.buttons == "LIGHT "+state:
+    def lighton(self):
+        if self.buttons == "LIGHT ON":
+            return True
+        return False
+    
+    def lightoff(self):
+        if self.buttons == "LIGHT OFF":
             return True
         return False
 

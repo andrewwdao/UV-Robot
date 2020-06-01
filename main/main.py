@@ -61,9 +61,9 @@ def cmd_update():
     global SQ_watchdog, SQ_FLAG
 
     if server.got_cmd():
-        if server.light("ON"):
+        if server.lighton():
             GPIO.output(RELAY_01_PIN, GPIO.LOW) # turn on the relay
-        else:
+        elif server.lightoff():
             GPIO.output(RELAY_01_PIN, GPIO.HIGH) # turn off the relay
 
     # ------------ Confirm release buttons ---------------------
