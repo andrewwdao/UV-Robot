@@ -68,7 +68,7 @@ function keyIsPressing(e) {
             console.log(pressedKey[K_ID]+ " pressing");
             
             if (pressedKey[K_SIGNAL] === 'TOGGLE') {
-                if (lightPressedTime === 0 && !lightOn) {
+                if (lightPressedTime === 0) {
                     lightPressedTime = new Date().getTime();
                 } else if ((curTime - lightPressedTime > 1000 && !lightOn) ||
                            (curTime - lightPressedTime < 300 && lightOn)) {
