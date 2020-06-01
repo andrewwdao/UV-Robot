@@ -75,7 +75,7 @@ function keyIsPressing(e) {
                     toggleLight();
                 }
                 return;
-            } else (pressedKey[K_SIGNAL] === 'SPEED') {
+            } else if (pressedKey[K_SIGNAL] === 'SPEED') {
                 toggleSpeed();
             }
 
