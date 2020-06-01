@@ -63,9 +63,6 @@ function keyIsPressing(e) {
                 return;
     
             lastTime = curTime;
-        
-            document.getElementById(pressedKey[K_ID]).classList.add("pressed");
-            // console.log(pressedKey[K_ID]+ " pressing");
 
             if (pressedKey[K_SIGNAL] === 'TOGGLE') {
                 if (lightOn && lightPressedTime === 0) {
@@ -73,12 +70,18 @@ function keyIsPressing(e) {
                     lightPressedTime = 1600;
                 } else if (lightPressedTime === 0 && !lightOn) {
                     lightPressedTime = new Date().getTime();
+                    document.getElementById(pressedKey[K_ID]).classList.add("pressed");
+                    return;
                 } else if (curTime - lightPressedTime > 1000 && !lightOn && curTime - lightPressedTime < 1500) {
                     toggleLight();
                     lightPressedTime = 1600;
+                } else {
+                    return;
                 }
             }
-
+            
+            document.getElementById(pressedKey[K_ID]).classList.add("pressed");
+            // console.log(pressedKey[K_ID]+ " pressing");
             socket.emit('holding', pressedKey[K_SIGNAL]);
         }
     }
@@ -103,11 +106,14 @@ function toggleLight() {
     lightOn = !lightOn;
     console.log("LIGHT");
 
+    var lightToggler = document.getElementById("space");
     if (lightOn) {
-        document.getElementById("space").classList.add("active");
+        lightToggler.classList.add("active");
     } else {
-        document.getElementById("space").classList.remove("active");
+        lightToggler.classList.remove("active");
     }
+
+    lightToggler.classList.remove("pressed");
 }
 
 // function keyPressed(e) {
