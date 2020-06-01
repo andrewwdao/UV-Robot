@@ -34,7 +34,8 @@ class WebServer(object):
         self.TARGET = 'server_call.py' # absolute directory
         try:
             self.svobj = sp.Popen(['sudo','python3',self.TARGET],
-                                                    shell=False)
+                                                    shell=False,
+                                                    stdout=sp.PIPE)
         except Exception as e:
             print(e)
             raise ValueError("Something went wrong on the server side")

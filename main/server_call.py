@@ -27,7 +27,7 @@ GPIO.setup(RELAY_01_PIN, GPIO.OUT, initial=GPIO.HIGH) # relay init
 @socket.on('connect')
 def test_connect():
     sys.stdout.write("Client connected!\n")
-    sys.stdout.flush()
+    # sys.stdout.flush()
     emit('light', not GPIO.input(RELAY_01_PIN))
 
 # @socket.on('pressed')
@@ -38,12 +38,12 @@ def test_connect():
 @socket.on('holding')
 def handle_key_is_pressing(signal):
     sys.stdout.write(signal + "\n")
-    sys.stdout.flush()
+    # sys.stdout.flush()
 
 @socket.on('released')
 def handle_key_released(signal):
     sys.stdout.write(signal + "\n")
-    sys.stdout.flush()
+    # sys.stdout.flush()
 
 @socket.on('light')
 def handle_light_toggle():
@@ -55,7 +55,7 @@ def handle_light_toggle():
         sys.stdout.write("LIGHT ON\n")
         emit('light', True)
         GPIO.output(RELAY_01_PIN, GPIO.LOW)
-    sys.stdout.flush()
+    # sys.stdout.flush()
 
 if __name__ == "__main__":
     # streaming_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app
