@@ -29,19 +29,18 @@
 document.addEventListener("keydown", keyIsPressing, false);
 document.addEventListener("keyup", keyReleased, false);
 
-const K_SIGNAL = 0, K_ID = 1;
+const K_SIGNAL = 0, K_ID = 1, K_FUNC = 2;
 const keyMap = {
-    87: ['UP', 'w'],                  // W
-    65: ['LEFT', 'a'],                // A
-    68: ['RIGHT', 'd'],               // D
-    83: ['DOWN', 's'],                // S
-    72: ['LHAND_UP', 'h'],            // H
-    74: ['LHAND_DOWN', 'j'],          // J
-    75: ['RHAND_UP', 'k'],            // K
-    76: ['RHAND_DOWN', 'l'],          // L
-    81: ['SPEED', 'q', toggleSpeed],  // Q
-    // 50: ['LOW_SPEED', 'k2'],          // 2
-    32: ['TOGGLE', 'space'],          // Space
+    87: ['UP', 'w'],                             // W
+    65: ['LEFT', 'a'],                           // A
+    68: ['RIGHT', 'd'],                          // D
+    83: ['DOWN', 's'],                           // S
+    72: ['LHAND_UP', 'h'],                       // H
+    74: ['LHAND_DOWN', 'j'],                     // J
+    75: ['RHAND_UP', 'k'],                       // K
+    76: ['RHAND_DOWN', 'l'],                     // L
+    81: ['SPEED', 'q', toggleSpeed],             // Q
+    32: ['TOGGLE', 'space', toggleLight],        // Space
 };
 
 var socket = io();
@@ -51,6 +50,8 @@ socket.on('connect', () => {
 });
 
 lastTime = new Date().getTime();
+lightOn = false;
+lightPressedTime = 0;
 
 function keyIsPressing(e) {
     if (document.getElementById("app-inner")) {
@@ -58,31 +59,50 @@ function keyIsPressing(e) {
 
         if (curTime - lastTime < 100) // ms
             return;
-    
+
         lastTime = curTime;
     
         var pressedKey = keyMap[e.keyCode];
         if (pressedKey) {
+            if (pressedKey[K_SIGNAL] === 'TOGGLE') {
+                if (lightPressedTime === 0 && !lightOn) {
+                    lightPressedTime = new Date().getTime();
+                } else if ((new Date().getTime() - lightPressedTime > 1000) || lightOn) {
+                    toggleLight();
+                    lightOn = !lightOn;
+                }
+                return;
+            }
+        
             document.getElementById(pressedKey[K_ID]).classList.add("pressed");
             console.log(pressedKey[K_ID]+ " pressing");
             socket.emit('holding', pressedKey[K_SIGNAL]);
+            pressedKey[K_FUNC]();
         }
     }
 }
 
 function keyReleased(e) {
     if (document.getElementById("app-inner")) {
-        var pressedKey = keyMap[e.keyCode];
-        if (pressedKey) {
-            document.getElementById(pressedKey[K_ID]).classList.remove("pressed");
-            console.log(pressedKey[K_ID] + " released");
-            socket.emit('released', pressedKey[K_SIGNAL] + "R")
+        var releasedKey = keyMap[e.keyCode];
+        if (releasedKey) {
+            if (releasedKey[K_SIGNAL] === 'TOGGLE') {
+                lightPressedTime = 0;
+            }
+
+            document.getElementById(releasedKey[K_ID]).classList.remove("pressed");
+            console.log(releasedKey[K_ID] + " released");
+            socket.emit('released', releasedKey[K_SIGNAL] + "R")
         }
     }
 }
 
 function toggleSpeed() {
     console.log("SPEED")
+}
+
+function toggleLight() {
+    console.log("LIGHT");
 }
 
 // function keyPressed(e) {
