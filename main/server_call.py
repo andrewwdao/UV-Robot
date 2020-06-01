@@ -17,26 +17,22 @@
  --------------------------------------------------------------"""
 from app import streaming_app, socket
 from flask_socketio import emit
-# import RPi.GPIO as GPIO
 import sys
 
-# RELAY_01_PIN = 4  # BCM mode
-# GPIO.setmode(GPIO.BCM)
-# GPIO.setup(RELAY_01_PIN, GPIO.OUT, initial=GPIO.HIGH) # relay init
+# L_DIR = "/tmp/MIS_logs/light"
+LOCAL_STATE = False
 
 @socket.on('connect')
 def test_connect():
     sys.stdout.write("Client connected!\n")
     sys.stdout.flush()
 
-    try:
-        with open("/tmp/MIS_logs/light", "r") as f:
-            emit('light', f.read() == 'ON')
-    except FileNotFoundError:
-        sys.stdout.write("/tmp/MIS_logs/light not found!")
-        sys.stdout.flush()
-
-    # emit('light', not GPIO.input(RELAY_01_PIN))
+    # try:
+    #     with open(L_DIR, "r") as f:
+    #         emit('light', f.read() == 'ON')
+    # except FileNotFoundError:
+    #     sys.stdout.write(L_DIR + " not found!")
+    #     sys.stdout.flush()
 
 # @socket.on('pressed')
 # def handle_key_pressed(signal):
@@ -55,30 +51,34 @@ def handle_key_released(signal):
 
 @socket.on('light')
 def handle_light_toggle():
-    # if GPIO.input(RELAY_01_PIN):
-    #     sys.stdout.write("LIGHT ON\n")
-    #     emit('light', True)
-    #     GPIO.output(RELAY_01_PIN, GPIO.LOW)
-    # else:
-    #     sys.stdout.write("LIGHT OFF\n")
-    #     emit('light', False)
-    #     GPIO.output(RELAY_01_PIN, GPIO.HIGH)
-    # sys.stdout.flush()
-    try:
-        f = open("/tmp/MIS_logs/light", "r")
-        state = (f.read() != 'ON')
-        emit('light', state)
-        f.close()
+    if LOCAL_STATE:
+        sys.stdout.write("LIGHT ON\n")
+        emit('light', True)
+        # GPIO.output(RELAY_01_PIN, GPIO.LOW)
+    else:
+        sys.stdout.write("LIGHT OFF\n")
+        emit('light', False)
+        # GPIO.output(RELAY_01_PIN, GPIO.HIGH)
+    LOCAL_STATE = ~LOCAL_STATE
+    sys.stdout.flush()
+    # try:
+    #     f = open(L_DIR, "r")
+    #     state = (f.read() != 'ON')
+    #     emit('light', state)
+    #     f.close()
 
-        with open("/tmp/MIS_logs", "w") as f:
-            if state:
-                f.write("ON")
-            else:
-                f.wrie("OFF")
+    #     with open(L_DIR, "w") as f:
+    #         if state:
+    #             f.write("ON")
+    #             sys.stdout.write("LIGHT ON\n")
+    #         else:
+    #             f.write("OFF")
+    #             sys.stdout.write("LIGHT OFF\n")
+    #         sys.stdout.flush()
 
-    except FileNotFoundError:
-        sys.stdout.write("/tmp/MIS_logs/light not found!")
-        sys.stdout.flush()
+    # except FileNotFoundError:
+    #     sys.stdout.write(L_DIR + " not found!")
+    #     sys.stdout.flush()
 
 if __name__ == "__main__":
     # streaming_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app

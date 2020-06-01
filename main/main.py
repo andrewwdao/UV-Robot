@@ -25,6 +25,8 @@ L_LIMIT_DOWN_PIN = 6 # bcm mode - WARNING
 R_LIMIT_UP_PIN = 19 # bcm mode - WARNING
 R_LIMIT_DOWN_PIN = 26 # bcm mode - WARNING
 
+L_DIR = "/tmp/MIS_logs/light"
+
 # for pwm control
 HIGH_SPEED = 600
 LOW_SPEED = 200
@@ -58,6 +60,12 @@ server = WebServer()
 def cmd_update():
     global SQ_watchdog, SQ_FLAG
 
+    if server.got_cmd():
+        if server.light("ON"):
+            GPIO.output(RELAY_01_PIN, GPIO.LOW) # turn on the relay
+        else:
+            GPIO.output(RELAY_01_PIN, GPIO.HIGH) # turn off the relay
+
     # ------------ Confirm release buttons ---------------------
     if ps2.released(ps2.SQUARE):
         print('SQUARE released')
@@ -84,8 +92,8 @@ def cmd_update():
             SQ_watchdog = millis() # for recalculating interval
         elif ps2.isPressing(ps2.SQUARE) & ((millis() - SQ_watchdog) > SAFETY_TIME*2) & SQ_FLAG:
             print('relays toggled')
-            if not GPIO.input(RELAY_01_PIN):
-                GPIO.output(RELAY_01_PIN, GPIO.HIGH) # turn off the relay  
+            if GPIO.input(RELAY_01_PIN)==GPIO.LOW: # toggle
+                GPIO.output(RELAY_01_PIN, GPIO.HIGH) # turn off the relay
             else:
                 GPIO.output(RELAY_01_PIN, GPIO.LOW) # turn on the relay
             SQ_FLAG = False
@@ -195,7 +203,13 @@ def gpio_init():
     GPIO.setup(R_LIMIT_UP_PIN, GPIO.IN, pull_up_down = GPIO.PUD_UP) # pulling up
     GPIO.setup(R_LIMIT_DOWN_PIN, GPIO.IN, pull_up_down = GPIO.PUD_UP) # pulling up
     
-# other functions integrated inside cmd_update
+# # other functions integrated inside cmd_update
+# def status_file_init():
+#     with open(L_DIR, "w") as f:
+#         if GPIO.input(RELAY_01_PIN)==GPIO.LOW: # negative logic
+#             f.write("ON")
+#         else:
+#             f.write("OFF")
 
 # =================================== ultrasonic update =============================================
 def ultrasonic_update():
@@ -275,6 +289,7 @@ def hand_controller():
 
 def main():  # Main program block
     gpio_init()
+    status_file_init()
 
     # forever loop start...
     while True:

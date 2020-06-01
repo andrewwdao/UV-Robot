@@ -77,6 +77,16 @@ class WebServer(object):
         if self.buttons == button + "R":
             return True
         return False
+    
+    def got_cmd(self):
+        if self.buttons:
+            return True
+        return False
+    
+    def light(self, state):
+        if self.buttons == "LIGHT "+state:
+            return True
+        return False
 
 # # ======================== for development only =====================
 # def start():
