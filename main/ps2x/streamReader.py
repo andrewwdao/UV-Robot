@@ -33,6 +33,7 @@ class StreamReader:
             while True:
                 line = stream.readline()
                 if line:
+                    print(line)
                     queues.put(line)
                 else:
                     raise UnexpectedEndOfStream
