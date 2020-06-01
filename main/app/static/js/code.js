@@ -64,6 +64,9 @@ function keyIsPressing(e) {
     
         var pressedKey = keyMap[e.keyCode];
         if (pressedKey) {
+            document.getElementById(pressedKey[K_ID]).classList.add("pressed");
+            console.log(pressedKey[K_ID]+ " pressing");
+            
             if (pressedKey[K_SIGNAL] === 'TOGGLE') {
                 if (lightPressedTime === 0 && !lightOn) {
                     lightPressedTime = new Date().getTime();
@@ -73,9 +76,7 @@ function keyIsPressing(e) {
                 }
                 return;
             }
-        
-            document.getElementById(pressedKey[K_ID]).classList.add("pressed");
-            console.log(pressedKey[K_ID]+ " pressing");
+
             socket.emit('holding', pressedKey[K_SIGNAL]);
             pressedKey[K_FUNC]();
         }
