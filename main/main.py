@@ -289,7 +289,7 @@ def hand_controller():
 
 def main():  # Main program block
     gpio_init()
-    status_file_init()
+    # status_file_init()
 
     # forever loop start...
     while True:
