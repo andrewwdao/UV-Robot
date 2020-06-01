@@ -120,6 +120,11 @@
     transition: 1s;
 }
 
+#space.pressed.active .space-cover,
+#space.active:hover .space-cover {
+    background-color: white;
+}
+
 .btn-label {
     position: absolute;
     font-size: 55%;

@@ -29,7 +29,7 @@
 document.addEventListener("keydown", keyIsPressing, false);
 document.addEventListener("keyup", keyReleased, false);
 
-const K_SIGNAL = 0, K_ID = 1, K_FUNC = 2;
+const K_SIGNAL = 0, K_ID = 1;
 const keyMap = {
     87: ['UP', 'w'],                             // W
     65: ['LEFT', 'a'],                           // A
@@ -55,35 +55,32 @@ lightPressedTime = 0;
 
 function keyIsPressing(e) {
     if (document.getElementById("app-inner")) {
-        var curTime = new Date().getTime();
-
-        if (curTime - lastTime < 100) // ms
-            return;
-
-        lastTime = curTime;
-    
         var pressedKey = keyMap[e.keyCode];
         if (pressedKey) {
-            document.getElementById(pressedKey[K_ID]).classList.add("pressed");
-            // console.log(pressedKey[K_ID]+ " pressing");
+            var curTime = new Date().getTime();
             
+            document.getElementById(pressedKey[K_ID]).classList.add("pressed");
+        
             if (pressedKey[K_SIGNAL] === 'TOGGLE') {
                 if (lightPressedTime === 0) {
                     lightPressedTime = new Date().getTime();
                 } else if ((curTime - lightPressedTime > 1000 && !lightOn) ||
-                           (curTime - lightPressedTime < 500 && lightOn)) {
+                           (curTime - lightPressedTime < 300 && lightOn)) {
                     toggleLight();
                     console.log("YOU SHOULD GET HERE");
                 } else {
                     console.log(curTime - lightPressedTime);
                     return;
                 }
-            } else if (pressedKey[K_SIGNAL] === 'SPEED') {
-                toggleSpeed();
             }
 
+            if (curTime - lastTime < 100) // ms
+                return;
+    
+            lastTime = curTime;
+
+            // console.log(pressedKey[K_ID]+ " pressing");
             socket.emit('holding', pressedKey[K_SIGNAL]);
-            // pressedKey[K_FUNC]();
         }
     }
 }
@@ -101,10 +98,6 @@ function keyReleased(e) {
             socket.emit('released', releasedKey[K_SIGNAL] + "R")
         }
     }
-}
-
-function toggleSpeed() {
-    console.log("SPEED")
 }
 
 function toggleLight() {
