@@ -104,7 +104,7 @@ function keyReleased(e) {
 }
 
 function toggleLight(status) {
-    lightOn = (status === 1);
+    lightOn = status;
     console.log(status);
     console.log("LIGHT");
 

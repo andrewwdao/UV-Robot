@@ -48,12 +48,12 @@ def handle_key_released(signal):
 @socket.on('light')
 def handle_light_toggle():
     if not GPIO.input(RELAY_01_PIN):
-        sys.stdout.write("LIGHT ON\n")
-        emit('light', True)
-        GPIO.output(RELAY_01_PIN, GPIO.HIGH)
-    else:
         sys.stdout.write("LIGHT OFF\n")
         emit('light', False)
+        GPIO.output(RELAY_01_PIN, GPIO.HIGH)
+    else:
+        sys.stdout.write("LIGHT ON\n")
+        emit('light', True)
         GPIO.output(RELAY_01_PIN, GPIO.LOW)
     sys.stdout.flush()
 
