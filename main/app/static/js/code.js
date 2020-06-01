@@ -59,48 +59,44 @@ lightOn = false;
 lightPressedTime = 0;
 
 function keyIsPressing(e) {
-    if (document.getElementById("app-inner")) {
-        var pressedKey = keyMap[e.keyCode];
-        if (pressedKey) {
-            var curTime = new Date().getTime();
+    var pressedKey = keyMap[e.keyCode];
+    if (pressedKey) {
+        var curTime = new Date().getTime();
 
-            if (curTime - lastTime < 100) // ms
-                return;
-    
-            lastTime = curTime;
+        if (curTime - lastTime < 100) // ms
+            return;
 
-            if (pressedKey[K_SIGNAL] === 'TOGGLE') {
-                if ((lightOn && lightPressedTime === 0) ||
-                    (curTime - lightPressedTime > 1000 && !lightOn && curTime - lightPressedTime < 1500)) {
-                    // toggleLight();
-                    socket.emit('light');
-                    lightPressedTime = 1600;
-                } else if (lightPressedTime === 0 && !lightOn) {
-                    lightPressedTime = new Date().getTime();
-                    document.getElementById(pressedKey[K_ID]).classList.add("pressed");
-                }
-                return;
+        lastTime = curTime;
+
+        if (pressedKey[K_SIGNAL] === 'TOGGLE') {
+            if ((lightOn && lightPressedTime === 0) ||
+                (curTime - lightPressedTime > 1000 && !lightOn && curTime - lightPressedTime < 1500)) {
+                // toggleLight();
+                socket.emit('light');
+                lightPressedTime = 1600;
+            } else if (lightPressedTime === 0 && !lightOn) {
+                lightPressedTime = new Date().getTime();
+                document.getElementById(pressedKey[K_ID]).classList.add("pressed");
             }
-
-            document.getElementById(pressedKey[K_ID]).classList.add("pressed");
-            // console.log(pressedKey[K_ID]+ " pressing");
-            socket.emit('holding', pressedKey[K_SIGNAL]);
+            return;
         }
+
+        document.getElementById(pressedKey[K_ID]).classList.add("pressed");
+        // console.log(pressedKey[K_ID]+ " pressing");
+        socket.emit('holding', pressedKey[K_SIGNAL]);
     }
 }
 
 function keyReleased(e) {
-    if (document.getElementById("app-inner")) {
-        var releasedKey = keyMap[e.keyCode];
-        if (releasedKey) {
-            if (releasedKey[K_SIGNAL] === 'TOGGLE') {
-                lightPressedTime = 0;
-            }
-
-            document.getElementById(releasedKey[K_ID]).classList.remove("pressed");
-            console.log(releasedKey[K_ID] + " released");
-            socket.emit('released', releasedKey[K_SIGNAL] + "R")
+    var releasedKey = keyMap[e.keyCode];
+    if (releasedKey) {
+        if (releasedKey[K_SIGNAL] === 'TOGGLE') {
+            lightPressedTime = 0;
         }
+
+        document.getElementById(releasedKey[K_ID]).classList.remove("pressed");
+        console.log(releasedKey[K_ID] + " released");
+        socket.emit('released', releasedKey[K_SIGNAL] + "R")
     }
 }
 
