@@ -58,16 +58,22 @@ function keyIsPressing(e) {
         var pressedKey = keyMap[e.keyCode];
         if (pressedKey) {
             var curTime = new Date().getTime();
-            
+
             document.getElementById(pressedKey[K_ID]).classList.add("pressed");
         
             if (pressedKey[K_SIGNAL] === 'TOGGLE') {
                 if (lightPressedTime === 0) {
                     lightPressedTime = new Date().getTime();
                 } else if ((curTime - lightPressedTime > 1000 && !lightOn) ||
-                           (curTime - lightPressedTime < 300 && lightOn)) {
-                    toggleLight();
-                    console.log("YOU SHOULD GET HERE");
+                           (curTime - lightPressedTime < 500 && lightOn)) {
+                    console.log("LIGHT");
+                    lightOn = !lightOn;
+                    
+                    if (lightOn) {
+                        document.getElementById("space").classList.add("active");
+                    } else {
+                        document.getElementById("space").classList.remove("active");
+                    }
                 } else {
                     console.log(curTime - lightPressedTime);
                     return;
@@ -97,17 +103,6 @@ function keyReleased(e) {
             console.log(releasedKey[K_ID] + " released");
             socket.emit('released', releasedKey[K_SIGNAL] + "R")
         }
-    }
-}
-
-function toggleLight() {
-    console.log("LIGHT");
-    lightOn = !lightOn;
-    
-    if (lightOn) {
-        document.getElementById("space").classList.add("active");
-    } else {
-        document.getElementById("space").classList.remove("active");
     }
 }
 

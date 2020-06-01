@@ -96,6 +96,11 @@
     background-color: white;
 }
 
+#space.active:hover,
+#space.active.pressed {
+    background-color: hotpink;
+}
+
 .space-txt {
     position: absolute;
     top: 50%;
@@ -114,7 +119,8 @@
     transition: .1s;
 }
 
-#space.pressed .space-cover, #space:hover .space-cover {
+#space.pressed .space-cover,
+#space:hover .space-cover {
     height: 100%;
     background-color: #527dd9;
     transition: 1s;
@@ -122,7 +128,7 @@
 
 #space.pressed.active .space-cover,
 #space.active:hover .space-cover {
-    background-color: white;
+    height: 0;
 }
 
 .btn-label {
