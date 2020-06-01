@@ -94,7 +94,6 @@ function keyReleased(e) {
         if (releasedKey) {
             if (releasedKey[K_SIGNAL] === 'TOGGLE') {
                 lightPressedTime = 0;
-                return;
             }
 
             document.getElementById(releasedKey[K_ID]).classList.remove("pressed");
