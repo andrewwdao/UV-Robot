@@ -73,8 +73,9 @@ function keyIsPressing(e) {
                 } else if ((curTime - lightPressedTime > 1000 && !lightOn) ||
                            (curTime - lightPressedTime < 200 && lightOn)) {
                     toggleLight();
+                } else {
+                    return;
                 }
-                return;
             } else if (pressedKey[K_SIGNAL] === 'SPEED') {
                 toggleSpeed();
             }
