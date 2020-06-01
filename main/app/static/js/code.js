@@ -70,10 +70,12 @@ function keyIsPressing(e) {
             if (pressedKey[K_SIGNAL] === 'TOGGLE') {
                 if (lightOn) {
                     toggleLight();
+                    lightPressedTime = 1600;
                 } else if (lightPressedTime === 0 && !lightOn) {
                     lightPressedTime = new Date().getTime();
-                } else if (lightPressedTime >= 1000 && !lightOn) {
+                } else if (lightPressedTime >= 1000 && !lightOn && lightPressedTime < 1500) {
                     toggleLight();
+                    lightPressedTime = 1600;
                 }
             }
 
