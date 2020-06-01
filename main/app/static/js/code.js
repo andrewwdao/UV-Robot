@@ -39,8 +39,8 @@ const keyMap = {
     74: ['LHAND_DOWN', 'j'],                     // J
     75: ['RHAND_UP', 'k'],                       // K
     76: ['RHAND_DOWN', 'l'],                     // L
-    81: ['SPEED', 'q', toggleSpeed],             // Q
-    32: ['TOGGLE', 'space', toggleLight],        // Space
+    81: ['SPEED', 'q',],                         // Q
+    32: ['TOGGLE', 'space',],                    // Space
 };
 
 var socket = io();
@@ -70,15 +70,17 @@ function keyIsPressing(e) {
             if (pressedKey[K_SIGNAL] === 'TOGGLE') {
                 if (lightPressedTime === 0 && !lightOn) {
                     lightPressedTime = new Date().getTime();
-                } else if ((new Date().getTime() - lightPressedTime > 1000) || lightOn) {
+                } else if ((curTime - lightPressedTime > 1000 && !lightOn) ||
+                           (curTime - lightPressedTime < 200 && lightOn)) {
                     toggleLight();
-                    lightOn = !lightOn;
                 }
                 return;
+            } else (pressedKey[K_SIGNAL] === 'SPEED') {
+                toggleSpeed();
             }
 
             socket.emit('holding', pressedKey[K_SIGNAL]);
-            pressedKey[K_FUNC]();
+            // pressedKey[K_FUNC]();
         }
     }
 }
@@ -104,6 +106,7 @@ function toggleSpeed() {
 
 function toggleLight() {
     console.log("LIGHT");
+    lightOn = !lightOn;
 }
 
 // function keyPressed(e) {

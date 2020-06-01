@@ -87,7 +87,6 @@
     transition: 0s;
     overflow: hidden;
     background-color: white;
-    transition: 1s;
 }
 
 .space-txt {
@@ -111,6 +110,7 @@
 #space.pressed .space-cover, #space:hover .space-cover {
     height: 100%;
     background-color: #527dd9;
+    transition: 1s;
 }
 
 .btn-label {
