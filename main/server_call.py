@@ -30,7 +30,7 @@ def test_connect():
     sys.stdout.flush()
 
     try:
-        with f as open("/tmp/MIS_logs/light", "r"):
+        with open("/tmp/MIS_logs/light", "r") as f:
             emit('light', f.read() == 'ON')
     except FileNotFoundError:
         sys.stdout.write("/tmp/MIS_logs/light not found!")
@@ -70,7 +70,7 @@ def handle_light_toggle():
         emit('light', state)
         f.close()
 
-        with f as open("/tmp/MIS_logs", "w"):
+        with open("/tmp/MIS_logs", "w") as f:
             if state:
                 f.write("ON")
             else:
