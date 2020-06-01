@@ -22,7 +22,7 @@ import sys
 
 RELAY_01_PIN = 4  # BCM mode
 GPIO.setmode(GPIO.BCM)
-# GPIO.setup(RELAY_01_PIN, GPIO.OUT, initial=GPIO.HIGH) # relay init
+GPIO.setup(RELAY_01_PIN, GPIO.OUT, initial=GPIO.HIGH) # relay init
 
 @socket.on('connect')
 def test_connect():
