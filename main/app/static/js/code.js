@@ -104,8 +104,8 @@ function keyReleased(e) {
     }
 }
 
-function toggleLight() {
-    lightOn = !lightOn;
+function toggleLight(status) {
+    lightOn = (status === 1);
     console.log("LIGHT");
 
     var lightToggler = document.getElementById("space");

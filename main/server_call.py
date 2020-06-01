@@ -28,6 +28,7 @@ GPIO.setup(RELAY_01_PIN, GPIO.OUT, initial=GPIO.HIGH) # relay init
 def test_connect():
     sys.stdout.write("Client connected!\n")
     sys.stdout.flush()
+    emit('light', GPIO.input(RELAY_01_PIN))
 
 # @socket.on('pressed')
 # def handle_key_pressed(signal):
@@ -46,12 +47,13 @@ def handle_key_released(signal):
 
 @socket.on('light')
 def handle_light_toggle():
-    emit('light')
     if not GPIO.input(RELAY_01_PIN):
         sys.stdout.write("LIGHT ON")
+        emit('light', True)
         GPIO.output(RELAY_01_PIN, GPIO.HIGH)
     else:
         sys.stdout.write("LIGHT OFF")
+        emit('light', False)
         GPIO.output(RELAY_01_PIN, GPIO.LOW)
     sys.stdout.flush()
 
