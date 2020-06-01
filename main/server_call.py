@@ -17,7 +17,10 @@
  --------------------------------------------------------------"""
 from app import streaming_app, socket
 from flask_socketio import emit
+import RPi.GPIO as GPIO
 import sys
+
+RELAY_01_PIN = 4  # BCM mode
 
 @socket.on('connect')
 def test_connect():
@@ -37,6 +40,17 @@ def handle_key_is_pressing(signal):
 @socket.on('released')
 def handle_key_released(signal):
     sys.stdout.write(signal + "\n")
+    sys.stdout.flush()
+
+@socket.on('light')
+def handle_light_toggle():
+    emit('light')
+    if not GPIO.input(RELAY_01_PIN):
+        sys.stdout.write("LIGHT ON")
+        GPIO.output(RELAY_01_PIN, GPIO.HIGH)
+    else:
+        sys.stdout.write("LIGHT OFF")
+        GPIO.output(RELAY_01_PIN, GPIO.LOW)
     sys.stdout.flush()
 
 if __name__ == "__main__":

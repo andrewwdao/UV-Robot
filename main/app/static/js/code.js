@@ -71,8 +71,8 @@ function keyIsPressing(e) {
             if (pressedKey[K_SIGNAL] === 'TOGGLE') {
                 if ((lightOn && lightPressedTime === 0) ||
                     (curTime - lightPressedTime > 1000 && !lightOn && curTime - lightPressedTime < 1500)) {
-                    toggleLight();
-                    // socket.emit('light');
+                    // toggleLight();
+                    socket.emit('light');
                     lightPressedTime = 1600;
                 } else if (lightPressedTime === 0 && !lightOn) {
                     lightPressedTime = new Date().getTime();
@@ -94,6 +94,7 @@ function keyReleased(e) {
         if (releasedKey) {
             if (releasedKey[K_SIGNAL] === 'TOGGLE') {
                 lightPressedTime = 0;
+                return;
             }
 
             document.getElementById(releasedKey[K_ID]).classList.remove("pressed");
