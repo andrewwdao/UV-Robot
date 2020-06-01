@@ -51,6 +51,7 @@ def handle_key_released(signal):
 
 @socket.on('light')
 def handle_light_toggle():
+    global LOCAL_STATE
     if LOCAL_STATE:
         sys.stdout.write("LIGHT ON\n")
         emit('light', True)
