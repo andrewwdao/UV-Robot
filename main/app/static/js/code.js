@@ -49,8 +49,8 @@ socket.on('connect', () => {
     console.log("Server connected");
 });
 
-socket.on('light', () => {
-    toggleLight();
+socket.on('light', (status) => {
+    toggleLight(status);
 });
 
 lastTime = new Date().getTime();
@@ -106,6 +106,7 @@ function keyReleased(e) {
 
 function toggleLight(status) {
     lightOn = (status === 1);
+    console.log(status);
     console.log("LIGHT");
 
     var lightToggler = document.getElementById("space");
