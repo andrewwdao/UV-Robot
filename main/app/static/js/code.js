@@ -71,15 +71,13 @@ function keyIsPressing(e) {
                 } else if (lightPressedTime === 0 && !lightOn) {
                     lightPressedTime = new Date().getTime();
                     document.getElementById(pressedKey[K_ID]).classList.add("pressed");
-                    return;
                 } else if (curTime - lightPressedTime > 1000 && !lightOn && curTime - lightPressedTime < 1500) {
                     toggleLight();
                     lightPressedTime = 1600;
-                } else {
-                    return;
                 }
+                return;
             }
-            
+
             document.getElementById(pressedKey[K_ID]).classList.add("pressed");
             // console.log(pressedKey[K_ID]+ " pressing");
             socket.emit('holding', pressedKey[K_SIGNAL]);
