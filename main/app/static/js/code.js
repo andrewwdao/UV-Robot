@@ -1,7 +1,7 @@
 // ref: https://www.w3schools.com/jsref/dom_obj_event.asp
 // document.addEventListener("keypress", keyPressed, false);
 document.addEventListener("keydown", keyIsPressing, false);
-// document.addEventListener("keyup", keyReleased, false);
+document.addEventListener("keyup", keyReleased, false);
 
 const K_SIGNAL = 0, K_ID = 1;
 const keyMap = {
@@ -93,17 +93,17 @@ function keyIsPressing(e) {
     }
 }
 
-// function keyReleased(e) {
-//     var releasedKey = keyMap[e.keyCode];
-//     if (releasedKey) {
-//         if (releasedKey[K_SIGNAL] === 'TOGGLE') {
-//             lightPressedTime = 0;
-//         }
-//         document.getElementById(releasedKey[K_ID]).classList.remove("pressed");
-//         console.log(releasedKey[K_ID] + " released");
-//         socket.emit('released', releasedKey[K_SIGNAL] + "R")
-//     }
-// }
+function keyReleased(e) {
+    var releasedKey = keyMap[e.keyCode];
+    if (releasedKey) {
+        if (releasedKey[K_SIGNAL] === 'TOGGLE') {
+            lightPressedTime = 0;
+        }
+        document.getElementById(releasedKey[K_ID]).classList.remove("pressed");
+        console.log(releasedKey[K_ID] + " released");
+        // socket.emit('released', releasedKey[K_SIGNAL] + "R")
+    }
+}
 
 // function toggleLight(status) {
 //     lightOn = status;

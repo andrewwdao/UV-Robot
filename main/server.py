@@ -71,11 +71,11 @@ class WebServer(object):
         return self.buttons == button
     
     def pressed(self, button): # will be true only once when button is pressed
-        return self.buttonChanged() & self.isPressing(button)
+        return self.buttonChanged() and self.isPressing(button)
 
     # released must be place independently, not hybrid under a pressing method!  
     def released(self, button): # will be true only once when button is released
-        return self.buttonChanged() & (self.last_buttons == button)
+        return self.buttonChanged() and (self.last_buttons == button)
     
     # def isPressing(self):
     #     if self.buttons:
