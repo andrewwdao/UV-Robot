@@ -8,7 +8,7 @@
  * This has been modified to force admin (all user) to re-login
  * after 7s of closing browser tab
  --------------------------------------------------------------"""
-from app import streaming_app
+from app import control_app
 import os
 import time
 import threading
@@ -111,7 +111,7 @@ class BaseCamera(object):
             # the last 7 seconds then stop the thread
             if time.time() - BaseCamera.last_access > 7:
                 frames_iterator.close()
-                streaming_app.secret_key = os.urandom(32) # this is a workaround to reset all sessions to force admin to re-login, this will delete all logged in users. ref: https://stackoverflow.com/questions/14737531/how-to-i-delete-all-flask-sessions
+                control_app.secret_key = os.urandom(32) # this is a workaround to reset all sessions to force admin to re-login, this will delete all logged in users. ref: https://stackoverflow.com/questions/14737531/how-to-i-delete-all-flask-sessions
                 print('Admin need to re-login from now on...')
                 print('Stopping camera thread due to inactivity.')
                 break

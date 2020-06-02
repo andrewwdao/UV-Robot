@@ -48,7 +48,7 @@ cd /home/$(who am i | awk '{print $1}')/system/main
 # provide priveledge for setup itself
 chmod +x ../setup.sh
 
-# setup streaming server
+# setup control server
 chmod +x server_setup.sh
 ./server_setup.sh ignore
 # setup motor

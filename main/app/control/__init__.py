@@ -10,6 +10,6 @@
  --------------------------------------------------------------"""
 from flask import Blueprint
 
-bp = Blueprint('streaming', __name__)
+bp = Blueprint('control', __name__)
 
-from app.streaming import forms, routes
+from app.control import forms, routes

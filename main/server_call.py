@@ -5,17 +5,17 @@
   (c) Miguel Grinberg 2018
   version 1.00 - 28/04/2020
  --------------------------------------------------------------
- * Server created for the purpose of streaming video
+ * Server created for the purpose of control video
  * Make the server a fully functional package
  *
  * ref:
- * - https://blog.miguelgrinberg.com/post/video-streaming-with-flask
- * - https://blog.miguelgrinberg.com/post/flask-video-streaming-revisited
+ * - https://blog.miguelgrinberg.com/post/video-control-with-flask
+ * - https://blog.miguelgrinberg.com/post/flask-video-control-revisited
  * - https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iv-database
  * - https://stackoverflow.com/questions/18277048/gevent-pywsgi-graceful-shutdown
  
  --------------------------------------------------------------"""
-from app import streaming_app, socket
+from app import control_app, socket
 from flask_socketio import emit
 import sys
 
@@ -76,5 +76,5 @@ def handle_speed_toggle():
 
 
 if __name__ == "__main__":
-    # streaming_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app
-    socket.run(streaming_app,host='0.0.0.0', port=8003)
+    # control_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app
+    socket.run(control_app,host='0.0.0.0', port=8003)

@@ -1,5 +1,5 @@
 """------------------------------------------------------------*-
-  Route module for the streaming Server.
+  Route module for the control Server.
   Tested on: Raspberry Pi 3 B+
   (c) Minh-An Dao 2020
   (c) Miguel Grinberg 2018
@@ -10,10 +10,10 @@
  --------------------------------------------------------------"""
 from flask import render_template, flash, redirect, url_for, request, Response, session
 from flask_login import current_user, login_user, login_required, logout_user
-from app import streaming_app, db
-from app.streaming.forms import LoginForm
+from app import control_app, db
+from app.control.forms import LoginForm
 from app.models import User
-from app.camera_pi import Camera # Raspberry Pi camera module (requires picamera package)
+# from app.camera_pi import Camera # Raspberry Pi camera module (requires picamera package)
 # import os
 # import signal
 # import subprocess as subpro
@@ -37,16 +37,16 @@ from datetime import timedelta
 # ===================================================================
 
 
-def gen(camera):
-    """Video streaming generator function."""
-    while True:
-        frame = camera.get_frame()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+# def gen(camera):
+#     """Video control generator function."""
+#     while True:
+#         frame = camera.get_frame()
+#         yield (b'--frame\r\n'
+#                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
-@streaming_app.route('/', methods=['GET', 'POST'])
-@streaming_app.route('/index', methods=['GET', 'POST'])
+@control_app.route('/', methods=['GET', 'POST'])
+@control_app.route('/index', methods=['GET', 'POST'])
 @login_required
 # @fresh_login_required
 def index():
@@ -56,20 +56,20 @@ def index():
         'main_title': 'Disinfection Robot Controller',
     }
 
-    """Video streaming home page."""
-    return render_template('streaming/index.html', **templateData)
+    """Video control home page."""
+    return render_template('control/index.html', **templateData)
 
 
-@streaming_app.route('/video_feed')
-@login_required
-# @fresh_login_required
-def video_feed():
-    """Video streaming route. Put this in the src attribute of an img tag."""
-    return Response(gen(Camera()),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
+# @control_app.route('/video_feed')
+# @login_required
+# # @fresh_login_required
+# def video_feed():
+#     """Video control route. Put this in the src attribute of an img tag."""
+#     return Response(gen(Camera()),
+#                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
-@streaming_app.route('/login', methods=['GET', 'POST'])
+@control_app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
@@ -90,14 +90,14 @@ def login():
         'main_func': 'Login',
         'form': form
     }
-    return render_template('streaming/login.html', **templateData)
+    return render_template('control/login.html', **templateData)
 
 
-@streaming_app.route('/about')
+@control_app.route('/about')
 def about():
     return render_template('about.html')
 
-@streaming_app.route('/logout')
+@control_app.route('/logout')
 @login_required
 def logout():
     logout_user()

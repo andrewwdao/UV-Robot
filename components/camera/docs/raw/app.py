@@ -5,7 +5,7 @@
   (c) Miguel Grinberg 2011-2019
   version 1.00 - 11/04/2020
  --------------------------------------------------------------
- *  Server created for the purpose of camera streaming
+ *  Server created for the purpose of camera control
  *
  --------------------------------------------------------------"""
 from camera_pi import Camera # Raspberry Pi camera module (requires picamera package)
@@ -18,12 +18,12 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    """Video streaming home page."""
+    """Video control home page."""
     return render_template('index.html')
 
 
 def gen(camera):
-    """Video streaming generator function."""
+    """Video control generator function."""
     while True:
         frame = camera.get_frame()
         yield (b'--frame\r\n'
@@ -32,7 +32,7 @@ def gen(camera):
 
 @app.route('/video_feed')
 def video_feed():
-    """Video streaming route. Put this in the src attribute of an img tag."""
+    """Video control route. Put this in the src attribute of an img tag."""
     return Response(gen(Camera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 

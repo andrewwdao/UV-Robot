@@ -5,12 +5,12 @@
   (c) Miguel Grinberg 2018
   version 1.00 - 28/04/2020
  --------------------------------------------------------------
- * Server created for the purpose of streaming video
+ * Server created for the purpose of control video
  * Make the server a fully functional package
  *
  * ref:
- * - https://blog.miguelgrinberg.com/post/video-streaming-with-flask
- * - https://blog.miguelgrinberg.com/post/flask-video-streaming-revisited
+ * - https://blog.miguelgrinberg.com/post/video-control-with-flask
+ * - https://blog.miguelgrinberg.com/post/flask-video-control-revisited
  * - https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iv-database
  * - https://stackoverflow.com/questions/18277048/gevent-pywsgi-graceful-shutdown
  
@@ -74,10 +74,6 @@ class WebServer(object):
 
     # released must be place independently, not hybrid under a pressing method!  
     def released(self, button): # will be true only once when button is released
-        print('debugging')
-        print(self.buttons, self.last_buttons)
-        print(self.buttonChanged(), self.last_buttons == button)
-        print()
         return self.buttonChanged() and (self.last_buttons == button)
     
     # def isPressing(self):
@@ -110,8 +106,8 @@ class WebServer(object):
 
 # # ======================== for development only =====================
 # def start():
-#     # streaming_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app
-#     socket.run(streaming_app,host='0.0.0.0', port=7497)
+#     # control_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app
+#     socket.run(control_app,host='0.0.0.0', port=7497)
 # # ===================================================================
 
 # ========================== for production =========================
@@ -121,13 +117,13 @@ class WebServer(object):
 #         self.pid = os.getpid()
         
 #     def run(self):
-#         self.server = WSGIServer(('0.0.0.0', 80), streaming_app)
+#         self.server = WSGIServer(('0.0.0.0', 80), control_app)
 #         self.gevent_signal = gevent.hub.signal(signal.SIGTERM, self.shutdown)
 #         self.server.serve_forever()
 
 #     # ======================== for development only =====================
 #     # def run(self):
-#     #     streaming_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app
+#     #     control_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app
 #     # ===================================================================
 
 #     # call this is enough to kill the server, if you need to have a shutdown button on the web, then you need to open routes.py

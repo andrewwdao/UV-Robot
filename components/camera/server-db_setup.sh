@@ -7,7 +7,7 @@ if [ 'root' != $( whoami ) ] ; then
   exit 1;
 fi
 
-echo "This will set up the admin database for Raspberry Pi's streaming server"
+echo "This will set up the admin database for Raspberry Pi's control server"
 
 cd app/
 

@@ -5,12 +5,12 @@
   (c) Miguel Grinberg 2018
   version 1.00 - 28/04/2020
  --------------------------------------------------------------
- * Server created for the purpose of streaming video
+ * Server created for the purpose of control video
  * Make the server a fully functional package
  *
  * ref:
- * - https://blog.miguelgrinberg.com/post/video-streaming-with-flask
- * - https://blog.miguelgrinberg.com/post/flask-video-streaming-revisited
+ * - https://blog.miguelgrinberg.com/post/video-control-with-flask
+ * - https://blog.miguelgrinberg.com/post/flask-video-control-revisited
  * - https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iv-database
  
  --------------------------------------------------------------"""
