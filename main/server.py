@@ -48,8 +48,8 @@ class WebServer(object):
 
     def update(self):
         output = self.output.readline(0.05)  # 0.05 secs = 10ms to let the shell output the result
+        self.last_buttons = self.buttons
         if output:  # turn it into string if it is not a null
-            self.last_buttons = self.buttons
             self.buttons = output.strip().decode("utf-8")
             return
         self.buttons = None
