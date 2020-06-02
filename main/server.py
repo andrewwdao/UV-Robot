@@ -51,7 +51,6 @@ class WebServer(object):
         if output:  # turn it into string if it is not a null
             self.last_buttons = self.buttons
             self.buttons = output.strip().decode("utf-8")
-            print(self.buttons)
             return
         self.buttons = None
         return
@@ -75,6 +74,10 @@ class WebServer(object):
 
     # released must be place independently, not hybrid under a pressing method!  
     def released(self, button): # will be true only once when button is released
+        print('debugging')
+        print(self.buttons, self.last_buttons)
+        print(self.buttonChanged(), self.last_buttons == button)
+        print()
         return self.buttonChanged() and (self.last_buttons == button)
     
     # def isPressing(self):
