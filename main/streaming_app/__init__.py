@@ -16,10 +16,10 @@
  --------------------------------------------------------------"""
 from importlib import import_module
 from flask import Flask, render_template, Response
-from streaming_app.app.config import Config
+from streaming_app.config import Config
 from streaming_app.camera_pi import Camera # Raspberry Pi camera module (requires picamera package)
 
-@streaming_app.route('/')
+@stream_app.route('/')
 def index():
     """Video streaming home page."""
     return render_template('index.html')
@@ -33,7 +33,7 @@ def gen(camera):
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
-@streaming_app.route('/video_feed')
+@stream_app.route('/video_feed')
 def video_feed():
     """Video streaming route. Put this in the src attribute of an img tag."""
     return Response(gen(Camera()),
