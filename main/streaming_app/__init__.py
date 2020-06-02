@@ -19,6 +19,9 @@ from flask import Flask, render_template, Response
 from streaming_app.config import Config
 from streaming_app.camera_pi import Camera # Raspberry Pi camera module (requires picamera package)
 
+stream_app = Flask(__name__)
+stream_app.config.from_object(Config)
+
 @stream_app.route('/')
 def index():
     """Video streaming home page."""
@@ -38,6 +41,3 @@ def video_feed():
     """Video streaming route. Put this in the src attribute of an img tag."""
     return Response(gen(Camera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
-
-stream_app = Flask(__name__)
-stream_app.config.from_object(Config)
