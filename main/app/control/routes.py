@@ -42,7 +42,7 @@ def index():
     templateData = {
         'server_title': 'MIS-CTU UV Robot', # title on browser
         'main_title': 'Disinfection Robot Controller',
-        'camera_link': 'http://' + sp.check_output(["hostname", "-I"]).decode("utf-8")[:-2] + ':720/video_feed' # local ip address
+        'camera_link': 'http://' + sp.check_output(["hostname", "-I"]).decode("utf-8")[:14] + ':720/video_feed' # local ip address - 13 character
     }
 
     """Video control home page."""
