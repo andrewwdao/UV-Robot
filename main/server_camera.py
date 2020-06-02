@@ -15,7 +15,7 @@
  * - https://stackoverflow.com/questions/18277048/gevent-pywsgi-graceful-shutdown
  
  --------------------------------------------------------------"""
-from streaming_app import streaming_app
+from streaming_app import stream_app
 from gevent.pywsgi import WSGIServer
 import gevent
 import threading
@@ -32,7 +32,7 @@ class CameraServer(threading.Thread):
         super().__init__()
         
     def run(self):
-        self.server = WSGIServer(('0.0.0.0', 720), streaming_app)
+        self.server = WSGIServer(('0.0.0.0', 720), stream_app)
         self.gevent_signal = gevent.hub.signal(signal.SIGTERM, self.shutdown)
         self.server.serve_forever()
 

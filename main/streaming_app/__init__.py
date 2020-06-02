@@ -39,5 +39,5 @@ def video_feed():
     return Response(gen(Camera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-streaming_app = Flask(__name__)
-streaming_app.config.from_object(Config)
+stream_app = Flask(__name__)
+stream_app.config.from_object(Config)
