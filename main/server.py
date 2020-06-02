@@ -15,15 +15,11 @@
  * - https://stackoverflow.com/questions/18277048/gevent-pywsgi-graceful-shutdown
  
  --------------------------------------------------------------"""
-# from gevent.pywsgi import WSGIServer
-# import gevent
 import subprocess as sp
 from ps2x.streamReader import StreamReader
+from server_camera import CameraServer
 import sys
 import time
-# import threading
-# import signal
-# import os
 
 class WebServer(object):
     """
@@ -31,7 +27,7 @@ class WebServer(object):
 
     """
     def __init__(self):
-        self.TARGET = 'server_call.py' # absolute directory
+        self.TARGET = 'server_control.py' # absolute directory
         try:
             self.svobj = sp.Popen(['sudo','python3',self.TARGET],
                                                     shell=False,
@@ -39,8 +35,11 @@ class WebServer(object):
         except Exception as e:
             print(e)
             raise ValueError("Something went wrong on the server side")
-        
         self.output  = StreamReader(self.svobj.stdout)
+
+        self.camera = CameraServer()
+        self.camera.start() #start camera server
+
         print("Web server ready!")
         # value for the buttons and sticks
         self.buttons = None # all button released
@@ -58,6 +57,7 @@ class WebServer(object):
     def shutdown(self):
         # check if process terminated or not
         # A None value indicates that the process hasn't terminated yet.
+        self.camera.shutdown()
         if self.svobj.poll() is None:
             self.svobj.terminate()
             self.svobj.kill()
@@ -103,35 +103,3 @@ class WebServer(object):
     
     # def set_highspeed(self):
     #     self.pressed("HIGHSPEED")
-
-# # ======================== for development only =====================
-# def start():
-#     # control_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app
-#     socket.run(control_app,host='0.0.0.0', port=7497)
-# # ===================================================================
-
-# ========================== for production =========================
-# class WebServer(threading.Thread):
-#     def __init__(self):
-#         super().__init__()
-#         self.pid = os.getpid()
-        
-#     def run(self):
-#         self.server = WSGIServer(('0.0.0.0', 80), control_app)
-#         self.gevent_signal = gevent.hub.signal(signal.SIGTERM, self.shutdown)
-#         self.server.serve_forever()
-
-#     # ======================== for development only =====================
-#     # def run(self):
-#     #     control_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app
-#     # ===================================================================
-
-#     # call this is enough to kill the server, if you need to have a shutdown button on the web, then you need to open routes.py
-#     def shutdown(self): # SIGINT or SIGTERM doesn't really matter since what shutdown server stays here
-#         print(f'Shutting down server...\n')
-#         self.server.stop()
-#         self.server.close()
-#         self.gevent_signal.cancel()
-        
-
-    # def start(self): --> existed already from parent 
