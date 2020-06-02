@@ -13,11 +13,8 @@ from flask_login import current_user, login_user, login_required, logout_user
 from app import control_app, db
 from app.control.forms import LoginForm
 from app.models import User
-# from app.camera_pi import Camera # Raspberry Pi camera module (requires picamera package)
-# import os
-# import signal
-# import subprocess as subpro
 from datetime import timedelta
+import subprocess as sp
 
 # shutdown production server
 # def shutdownServer():
@@ -36,15 +33,6 @@ from datetime import timedelta
 #     func()
 # ===================================================================
 
-
-# def gen(camera):
-#     """Video control generator function."""
-#     while True:
-#         frame = camera.get_frame()
-#         yield (b'--frame\r\n'
-#                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-
 @control_app.route('/', methods=['GET', 'POST'])
 @control_app.route('/index', methods=['GET', 'POST'])
 @login_required
@@ -54,19 +42,11 @@ def index():
     templateData = {
         'server_title': 'MIS-CTU UV Robot', # title on browser
         'main_title': 'Disinfection Robot Controller',
+        'camera_link': 'http://' + sp.check_output(["hostname", "-I"]).decode("utf-8")[:-2] + ':720/video_feed' # local ip address
     }
 
     """Video control home page."""
     return render_template('control/index.html', **templateData)
-
-
-# @control_app.route('/video_feed')
-# @login_required
-# # @fresh_login_required
-# def video_feed():
-#     """Video control route. Put this in the src attribute of an img tag."""
-#     return Response(gen(Camera()),
-#                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @control_app.route('/login', methods=['GET', 'POST'])
