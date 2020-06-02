@@ -1,7 +1,7 @@
 // ref: https://www.w3schools.com/jsref/dom_obj_event.asp
 // document.addEventListener("keypress", keyPressed, false);
 document.addEventListener("keydown", keyIsPressing, false);
-document.addEventListener("keyup", keyReleased, false);
+// document.addEventListener("keyup", keyReleased, false);
 
 const K_SIGNAL = 0, K_ID = 1;
 const keyMap = {
@@ -9,10 +9,10 @@ const keyMap = {
     65: ['LEFT', 'a', false],                           // A
     68: ['RIGHT', 'd', false],                          // D
     83: ['DOWN', 's', false],                           // S
-    72: ['LHAND_UP', 'h', false],                       // H
-    74: ['LHAND_DOWN', 'j', false],                     // J
-    75: ['RHAND_UP', 'k', false],                       // K
-    76: ['RHAND_DOWN', 'l', false],                     // L
+    72: ['L_UP', 'h', false],                           // H
+    74: ['L_DOWN', 'j', false],                         // J
+    75: ['R_UP', 'k', false],                           // K
+    76: ['R_DOWN', 'l', false],                         // L
     81: ['SPEED', 'q',, false],                         // Q
     32: ['TOGGLE', 'space',, false],                    // Space
 };
@@ -29,7 +29,6 @@ socket.on('connect', () => {
 
 socket.on('light', (status) => {
     lightOn = status;
-    // console.log("LIGHT " + status);
 
     lightToggler = document.getElementById("space");
     if (lightOn === 'ON') {
@@ -73,7 +72,6 @@ function keyIsPressing(e) {
         if (pressedKey[K_SIGNAL] === 'TOGGLE') {
             if ((lightOn && lightPressedTime === 0) ||
                 (curTime - lightPressedTime > 1000 && !lightOn && curTime - lightPressedTime < 1500)) {
-                // toggleLight();
                 socket.emit('light');
                 lightPressedTime = 1600;
             } else if (lightPressedTime === 0 && !lightOn) {
@@ -86,26 +84,26 @@ function keyIsPressing(e) {
         if (pressedKey[K_SIGNAL] === 'SPEED') {
             socket.emit('speed');
         } else {
-            socket.emit('holding', pressedKey[K_SIGNAL]);
+            socket.emit('pressed', pressedKey[K_SIGNAL]);
         }
         
         document.getElementById(pressedKey[K_ID]).classList.add("pressed");
-        console.log(pressedKey[K_ID]+ " pressing");
+        console.log(pressedKey[K_ID]);
         
     }
 }
 
-function keyReleased(e) {
-    var releasedKey = keyMap[e.keyCode];
-    if (releasedKey) {
-        if (releasedKey[K_SIGNAL] === 'TOGGLE') {
-            lightPressedTime = 0;
-        }
-        document.getElementById(releasedKey[K_ID]).classList.remove("pressed");
-        console.log(releasedKey[K_ID] + " released");
-        socket.emit('released', releasedKey[K_SIGNAL] + "R")
-    }
-}
+// function keyReleased(e) {
+//     var releasedKey = keyMap[e.keyCode];
+//     if (releasedKey) {
+//         if (releasedKey[K_SIGNAL] === 'TOGGLE') {
+//             lightPressedTime = 0;
+//         }
+//         document.getElementById(releasedKey[K_ID]).classList.remove("pressed");
+//         console.log(releasedKey[K_ID] + " released");
+//         socket.emit('released', releasedKey[K_SIGNAL] + "R")
+//     }
+// }
 
 // function toggleLight(status) {
 //     lightOn = status;

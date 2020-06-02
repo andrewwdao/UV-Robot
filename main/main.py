@@ -60,14 +60,14 @@ server = WebServer()
 def cmd_update():
     global SQ_watchdog, SQ_FLAG
 
-    if server.got_cmd():
-        if server.lighton():
+    if server.buttonChanged():
+        if server.pressed("LIGHT ON"):
             GPIO.output(RELAY_01_PIN, GPIO.LOW) # turn on the relay
-        elif server.lightoff():
+        elif server.pressed("LIGHT OFF"):
             GPIO.output(RELAY_01_PIN, GPIO.HIGH) # turn off the relay
-        elif server.set_lowspeed():
+        elif server.pressed("LOWSPEED"):
             motor.MAX_PWM = LOW_SPEED
-        elif server.set_highspeed():
+        elif server.pressed("HIGHSPEED"):
             motor.MAX_PWM = HIGH_SPEED
 
     # ------------ Confirm release buttons ---------------------
@@ -107,26 +107,30 @@ def motor_controller():
     global DANGER_FLAG, FORWARD_FLAG, STOP_millis, U_watchdog, D_watchdog, L_watchdog, R_watchdog, A_watchdog
     
     # ================== Digital control ==================
-    if ps2.arrowPressing():
+    if ps2.arrowPressing() or server.buttonChanged():
         # --- UP
-        if ps2.isPressing(ps2.UP) & ((millis() - U_watchdog) > ACCEL):
+        if ((ps2.isPressing(ps2.UP) or server.isPressing('UP'))
+         & ((millis() - U_watchdog) > ACCEL)):
             print('UP pressed')
             motor.move_fw(PWM_STEP) # increasing algorithm integrated
             U_watchdog = millis() # for recalculating interval
             FORWARD_FLAG = True
         # --- DOWN
-        if ps2.isPressing(ps2.DOWN) & ((millis() - D_watchdog) > ACCEL):
+        if ((ps2.isPressing(ps2.DOWN) or server.isPressing('DOWN'))
+         & ((millis() - D_watchdog) > ACCEL)):
             print('DOWN pressed')
             motor.move_bw(PWM_STEP) # increasing algorithm integrated
             D_watchdog = millis() # for recalculating interval
             FORWARD_FLAG = False
         # --- LEFT
-        if ps2.isPressing(ps2.LEFT) & ((millis() - L_watchdog) > ACCEL):
+        if ((ps2.isPressing(ps2.LEFT) or server.isPressing('LEFT'))
+         & ((millis() - L_watchdog) > ACCEL)):
             print('LEFT pressed')
             motor.turn_left(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
             L_watchdog = millis() # for recalculating interval
         # --- RIGHT
-        if ps2.isPressing(ps2.RIGHT) & ((millis() - R_watchdog) > ACCEL):
+        if ((ps2.isPressing(ps2.RIGHT) or server.isPressing('RIGHT'))
+         & ((millis() - R_watchdog) > ACCEL)):
             print('RIGHT pressed')
             motor.turn_right(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
             R_watchdog = millis() # for recalculating interval
@@ -234,8 +238,8 @@ def hand_controller():
     # ------------ Confirm release buttons ---------------------
     if ((ps2.released(ps2.L1) or
         ps2.released(ps2.L2) or
-        server.isReleased("LHAND_UP") or
-        server.isReleased("LHAND_DOWN") or
+        server.released("L_UP") or
+        server.released("L_DOWN") or
         GPIO.input(L_LIMIT_UP_PIN)==GPIO.LOW or 
         GPIO.input(L_LIMIT_DOWN_PIN)==GPIO.LOW) and LR_PRESS_FLAG):
         print('Left Hand Released')
@@ -243,8 +247,8 @@ def hand_controller():
         motor.Lhand_stop() # motor stop
     if ((ps2.released(ps2.R1) or
         ps2.released(ps2.R2) or
-        server.isReleased("RHAND_UP") or
-        server.isReleased("RHAND_DOWN") or
+        server.released("R_UP") or
+        server.released("R_DOWN") or
         GPIO.input(R_LIMIT_UP_PIN)==GPIO.LOW or 
         GPIO.input(R_LIMIT_DOWN_PIN)==GPIO.LOW) and LR_PRESS_FLAG):
         print('Right Hand Released')
@@ -252,29 +256,29 @@ def hand_controller():
         motor.Rhand_stop() # motor stop
 
     # ------------- Confirm pressing buttons -------------------
-    if ps2.LRpressing() or server.got_cmd():
+    if ps2.LRpressing() or server.buttonChanged():
         LR_PRESS_FLAG = True
         # --- L1 pressed - Lhand move up
-        if ((ps2.pressed(ps2.L1) or server.isPressed('LHAND_UP')) and 
+        if ((ps2.pressed(ps2.L1) or server.pressed('L_UP')) and 
             GPIO.input(L_LIMIT_UP_PIN)==GPIO.HIGH):
             print('L1 pressed - Lhand move up')
             motor.Lhand_up() # motor move up
             return
         # --- L2 pressed - Lhand move down
-        elif ((ps2.pressed(ps2.L2) or server.isPressed('LHAND_DOWN')) and 
+        elif ((ps2.pressed(ps2.L2) or server.pressed('L_DOWN')) and 
             GPIO.input(L_LIMIT_DOWN_PIN)==GPIO.HIGH and L_UL_FLAG):
             print('L2 pressed - Lhand move down')
             motor.Lhand_down() # motor move down
             return
         
         # --- R1 pressed - Rhand move up
-        if ((ps2.pressed(ps2.R1) or server.isPressed('RHAND_UP')) and
+        if ((ps2.pressed(ps2.R1) or server.pressed('R_UP')) and
             GPIO.input(R_LIMIT_UP_PIN)==GPIO.HIGH):
             print('R1 pressed - Rhand move up')
             motor.Rhand_up() # motor move up
             return
         # --- R2 pressed - Rhand move down
-        elif ((ps2.pressed(ps2.R2) or server.isPressed('RHAND_DOWN')) and
+        elif ((ps2.pressed(ps2.R2) or server.pressed('R_DOWN')) and
             GPIO.input(R_LIMIT_DOWN_PIN)==GPIO.HIGH and R_UL_FLAG):
             print('R2 pressed - Rhand move down')
             motor.Rhand_down() # motor move down
@@ -285,8 +289,7 @@ def hand_controller():
 
 def main():  # Main program block
     gpio_init()
-    # status_file_init()
-
+    
     # forever loop start...
     while True:
         ps2.update()

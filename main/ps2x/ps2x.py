@@ -141,8 +141,8 @@ class PS2X(object):
     
     def update(self):
         output = self.output.readline(0.05)  # 0.05 secs = 50ms to let the shell output the result
-        sys.stdout.flush()
-        if output is not None:  # turn it into string if it is not a null
+        # sys.stdout.flush()
+        if output:  # turn it into string if it is not a null
             raw_data = output.strip().decode("utf-8")
             data = list(raw_data.split(" "))
             if (len(data) is 3) and (data[0] == "Data:"): # correct frame

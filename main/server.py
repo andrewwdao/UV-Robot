@@ -44,11 +44,12 @@ class WebServer(object):
         print("Web server ready!")
         # value for the buttons and sticks
         self.buttons = None # all button released
-        # self.last_buttons = "." # all button released
+        self.last_buttons = None # all button released
 
     def update(self):
         output = self.output.readline(0.05)  # 0.05 secs = 10ms to let the shell output the result
         if output:  # turn it into string if it is not a null
+            self.last_buttons = self.buttons
             self.buttons = output.strip().decode("utf-8")
             print(self.buttons)
             return
@@ -63,45 +64,46 @@ class WebServer(object):
             self.svobj.kill()
             print('Web Server terminated!')
     
-    def isPressed(self, button):
-        if self.buttons == button:
-            return True
-        return False
+    def buttonChanged(self): # will be TRUE if any button changes state (on to off, or off to on)
+        return self.last_buttons != self.buttons
+    
+    def isPressing(self, button): # will be TRUE as long as a specific button is pressed
+        return self.buttons == button
+    
+    def pressed(self, button): # will be true only once when button is pressed
+        return self.buttonChanged() & self.isPressing(button)
+
+    # released must be place independently, not hybrid under a pressing method!  
+    def released(self, button): # will be true only once when button is released
+        return self.buttonChanged() & (self.last_buttons == button)
     
     # def isPressing(self):
     #     if self.buttons:
     #         return True
     #     return False
     
-    def isReleased(self, button):
-        if self.buttons == button + "R":
-            return True
-        return False
+    # def isReleased(self, button):
+    #     if self.buttons == button + "R":
+    #         return True
+    #     return False
     
-    def got_cmd(self):
-        if self.buttons:
-            return True
-        return False
+    # def got_cmd(self):
+    #     if self.buttons:
+    #         return True
+    #     return False
     
-    def lighton(self):
-        if self.buttons == "LIGHT ON":
-            return True
-        return False
+    # def lighton(self):
+    #     self.pressed("LIGHT ON")
+            
     
-    def lightoff(self):
-        if self.buttons == "LIGHT OFF":
-            return True
-        return False
+    # def lightoff(self):
+    #     self.pressed("LIGHT OFF")
 
-    def set_lowspeed(self):
-        if self.buttons == "LOWSPEED":
-            return True
-        return False
+    # def set_lowspeed(self):
+    #     self.pressed("LOWSPEED")
     
-    def set_highspeed(self):
-        if self.buttons == "HIGHSPEED":
-            return True
-        return False
+    # def set_highspeed(self):
+    #     self.pressed("HIGHSPEED")
 
 # # ======================== for development only =====================
 # def start():

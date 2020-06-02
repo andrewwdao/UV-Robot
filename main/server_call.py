@@ -23,10 +23,10 @@ import sys
 LIGHT_STATE = False
 SPEED_STATE = False
 
-@socket.on('connect')
-def test_connect():
-    sys.stdout.write("Client connected!\n")
-    sys.stdout.flush()
+# @socket.on('connect')
+# def test_connect():
+    # sys.stdout.write("Client connected!\n")
+    # sys.stdout.flush()
 
     # try:
     #     with open(L_DIR, "r") as f:
@@ -40,15 +40,15 @@ def test_connect():
 #     sys.stdout.write(signal + "\n")
     # sys.stdout.flush()
 
-@socket.on('holding')
+@socket.on('pressed')
 def handle_key_is_pressing(signal):
     sys.stdout.write(signal + "\n")
     sys.stdout.flush()
 
-@socket.on('released')
-def handle_key_released(signal):
-    sys.stdout.write(signal + "\n")
-    sys.stdout.flush()
+# @socket.on('released')
+# def handle_key_released(signal):
+#     sys.stdout.write(signal + "\n")
+#     sys.stdout.flush()
 
 @socket.on('light')
 def handle_light_toggle():
