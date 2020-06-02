@@ -15,10 +15,9 @@
  
  --------------------------------------------------------------"""
 from importlib import import_module
-from app.config import Config
 from flask import Flask, render_template, Response
-from camera_pi import Camera # Raspberry Pi camera module (requires picamera package)
-import os
+from streaming_app.app.config import Config
+from streaming_app.camera_pi import Camera # Raspberry Pi camera module (requires picamera package)
 
 @streaming_app.route('/')
 def index():
