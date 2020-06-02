@@ -68,10 +68,10 @@ class WebServer(object):
             return True
         return False
     
-    def isPressing(self):
-        if self.buttons:
-            return True
-        return False
+    # def isPressing(self):
+    #     if self.buttons:
+    #         return True
+    #     return False
     
     def isReleased(self, button):
         if self.buttons == button + "R":
@@ -90,6 +90,16 @@ class WebServer(object):
     
     def lightoff(self):
         if self.buttons == "LIGHT OFF":
+            return True
+        return False
+
+    def set_lowspeed(self):
+        if self.buttons == "LOWSPEED":
+            return True
+        return False
+    
+    def set_highspeed(self):
+        if self.buttons == "HIGHSPEED":
             return True
         return False
 

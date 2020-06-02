@@ -20,7 +20,8 @@ from flask_socketio import emit
 import sys
 
 # L_DIR = "/tmp/MIS_logs/light"
-LOCAL_STATE = False
+LIGHT_STATE = False
+SPEED_STATE = False
 
 @socket.on('connect')
 def test_connect():
@@ -51,35 +52,28 @@ def handle_key_released(signal):
 
 @socket.on('light')
 def handle_light_toggle():
-    global LOCAL_STATE
-    if LOCAL_STATE:
+    global LIGHT_STATE
+    if LIGHT_STATE:
         sys.stdout.write("LIGHT ON\n")
-        emit('light', True)
-        # GPIO.output(RELAY_01_PIN, GPIO.LOW)
+        emit('light', 'ON')
     else:
         sys.stdout.write("LIGHT OFF\n")
-        emit('light', False)
-        # GPIO.output(RELAY_01_PIN, GPIO.HIGH)
-    LOCAL_STATE = ~LOCAL_STATE
+        emit('light', 'OFF')
+    LIGHT_STATE = ~LIGHT_STATE
     sys.stdout.flush()
-    # try:
-    #     f = open(L_DIR, "r")
-    #     state = (f.read() != 'ON')
-    #     emit('light', state)
-    #     f.close()
 
-    #     with open(L_DIR, "w") as f:
-    #         if state:
-    #             f.write("ON")
-    #             sys.stdout.write("LIGHT ON\n")
-    #         else:
-    #             f.write("OFF")
-    #             sys.stdout.write("LIGHT OFF\n")
-    #         sys.stdout.flush()
+@socket.on('speed')
+def handle_speed_toggle():
+    global SPEED_STATE
+    if SPEED_STATE:
+        sys.stdout.write("HIGHSPEED\n")
+        emit('speed', 'HIGH')
+    else:
+        sys.stdout.write("LOWSPEED\n")
+        emit('speed', 'LOW')
+    SPEED_STATE = ~SPEED_STATE
+    sys.stdout.flush()
 
-    # except FileNotFoundError:
-    #     sys.stdout.write(L_DIR + " not found!")
-    #     sys.stdout.flush()
 
 if __name__ == "__main__":
     # streaming_app.run(host='0.0.0.0', port=7497, debug=False)  # run collecting app

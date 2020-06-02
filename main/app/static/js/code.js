@@ -22,6 +22,7 @@ lastTime = new Date().getTime();
 lightOn = false;
 lightPressedTime = 0;
 
+// ----------------------- client signal listener --------------------------
 socket.on('connect', () => {
     console.log("Server connected");
 });
@@ -31,17 +32,33 @@ socket.on('light', (status) => {
     // console.log("LIGHT " + status);
 
     lightToggler = document.getElementById("space");
-    if (lightOn) {
-        console.log("LIGHT ON");
+    if (lightOn === 'ON') {
+        console.log("light on");
         lightToggler.classList.add("active");
     } else {
-        console.log("LIGHT OFF");
+        console.log("light off");
         lightToggler.classList.remove("active");
     }
 
     lightToggler.classList.remove("pressed");
 });
 
+socket.on('speed', (status) => {
+    speedState = status;
+
+    speedToggler = document.getElementById("q");
+    if (speedState === 'HIGH') {
+        console.log("high speed mode");
+        speedToggler.classList.add("active");
+    } else {
+        console.log("low speed mode");
+        speedToggler.classList.remove("active");
+    }
+
+    speedToggler.classList.remove("pressed");
+});
+
+// ----------------------- client signal emitter ----------------------------
 function keyIsPressing(e) {
     var pressedKey = keyMap[e.keyCode];
     if (pressedKey) {
@@ -52,6 +69,7 @@ function keyIsPressing(e) {
 
         lastTime = curTime;
 
+        // ----------------------- toggle light function ------------------------
         if (pressedKey[K_SIGNAL] === 'TOGGLE') {
             if ((lightOn && lightPressedTime === 0) ||
                 (curTime - lightPressedTime > 1000 && !lightOn && curTime - lightPressedTime < 1500)) {
@@ -64,10 +82,16 @@ function keyIsPressing(e) {
             }
             return;
         }
-
+        // ----------------------- toggle speed function ------------------------
+        if (pressedKey[K_SIGNAL] === 'SPEED') {
+            socket.emit('speed');
+        } else {
+            socket.emit('holding', pressedKey[K_SIGNAL]);
+        }
+        
         document.getElementById(pressedKey[K_ID]).classList.add("pressed");
         console.log(pressedKey[K_ID]+ " pressing");
-        socket.emit('holding', pressedKey[K_SIGNAL]);
+        
     }
 }
 

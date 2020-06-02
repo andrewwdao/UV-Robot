@@ -65,6 +65,10 @@ def cmd_update():
             GPIO.output(RELAY_01_PIN, GPIO.LOW) # turn on the relay
         elif server.lightoff():
             GPIO.output(RELAY_01_PIN, GPIO.HIGH) # turn off the relay
+        elif server.set_lowspeed():
+            motor.MAX_PWM = LOW_SPEED
+        elif server.set_highspeed():
+            motor.MAX_PWM = HIGH_SPEED
 
     # ------------ Confirm release buttons ---------------------
     if ps2.released(ps2.SQUARE):
@@ -202,14 +206,6 @@ def gpio_init():
     GPIO.setup(L_LIMIT_DOWN_PIN, GPIO.IN, pull_up_down = GPIO.PUD_UP) # pulling up
     GPIO.setup(R_LIMIT_UP_PIN, GPIO.IN, pull_up_down = GPIO.PUD_UP) # pulling up
     GPIO.setup(R_LIMIT_DOWN_PIN, GPIO.IN, pull_up_down = GPIO.PUD_UP) # pulling up
-    
-# # other functions integrated inside cmd_update
-# def status_file_init():
-#     with open(L_DIR, "w") as f:
-#         if GPIO.input(RELAY_01_PIN)==GPIO.LOW: # negative logic
-#             f.write("ON")
-#         else:
-#             f.write("OFF")
 
 # =================================== ultrasonic update =============================================
 def ultrasonic_update():
@@ -256,7 +252,7 @@ def hand_controller():
         motor.Rhand_stop() # motor stop
 
     # ------------- Confirm pressing buttons -------------------
-    if ps2.LRpressing() or server.isPressing():
+    if ps2.LRpressing() or server.got_cmd():
         LR_PRESS_FLAG = True
         # --- L1 pressed - Lhand move up
         if ((ps2.pressed(ps2.L1) or server.isPressed('LHAND_UP')) and 
