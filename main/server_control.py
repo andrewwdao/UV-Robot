@@ -23,10 +23,17 @@ import sys
 LIGHT_STATE = False
 SPEED_STATE = False
 
-# @socket.on('connect')
-# def test_connect():
-    # sys.stdout.write("Client connected!\n")
-    # sys.stdout.flush()
+@socket.on('connect')
+def test_connect():
+    global LIGHT_STATE
+
+    sys.stdout.write("Client connected!\n")
+    sys.stdout.flush()
+
+    if LIGHT_STATE:
+        emit('light', 'ON')
+    else:
+        emit('light', 'OFF')
 
     # try:
     #     with open(L_DIR, "r") as f:
