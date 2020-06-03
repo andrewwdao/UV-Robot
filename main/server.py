@@ -1,14 +1,17 @@
 """------------------------------------------------------------*-
-  Application server module for Flask server
+  Full application server module for UV Robot
   Tested on: Raspberry Pi 3 B+
   (c) Minh-An Dao 2020
+  (c) Anh-Khoi Tran 2020
   (c) Miguel Grinberg 2018
-  version 1.00 - 28/04/2020
+  version 1.00 - 03/06/2020
  --------------------------------------------------------------
- * Server created for the purpose of control video
+ * Server created for the purpose of control and monitor the robot from webserver
  * Make the server a fully functional package
  *
  * ref:
+ * - https://blog.miguelgrinberg.com/post/easy-websockets-with-flask-and-gevent
+ * - https://blog.miguelgrinberg.com/post/flask-socketio-and-the-user-session
  * - https://blog.miguelgrinberg.com/post/video-control-with-flask
  * - https://blog.miguelgrinberg.com/post/flask-video-control-revisited
  * - https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iv-database
@@ -103,31 +106,3 @@ class WebServer(object):
     # released must be place independently, not hybrid under a pressing method!  
     def released(self, button): # will be true only once when button is released
         return self.buttonChanged() and (self.last_buttons == button)
-    
-    # def isPressing(self):
-    #     if self.buttons:
-    #         return True
-    #     return False
-    
-    # def isReleased(self, button):
-    #     if self.buttons == button + "R":
-    #         return True
-    #     return False
-    
-    # def got_cmd(self):
-    #     if self.buttons:
-    #         return True
-    #     return False
-    
-    # def lighton(self):
-    #     self.pressed("LIGHT ON")
-            
-    
-    # def lightoff(self):
-    #     self.pressed("LIGHT OFF")
-
-    # def set_lowspeed(self):
-    #     self.pressed("LOWSPEED")
-    
-    # def set_highspeed(self):
-    #     self.pressed("HIGHSPEED")

@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
 """------------------------------------------------------------*-
-  Application server module for Flask server
+  Controller server module for UV Robot
   Tested on: Raspberry Pi 3 B+
   (c) Minh-An Dao 2020
+  (c) Anh-Khoi Tran 2020
   (c) Miguel Grinberg 2018
   version 1.00 - 28/04/2020
  --------------------------------------------------------------
- * Server created for the purpose of control video
+ * Server created for the purpose of control the robot from webserver
  * Make the server a fully functional package
  *
  * ref:
- * - https://blog.miguelgrinberg.com/post/video-control-with-flask
- * - https://blog.miguelgrinberg.com/post/flask-video-control-revisited
- * - https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iv-database
- * - https://stackoverflow.com/questions/18277048/gevent-pywsgi-graceful-shutdown
+ * - https://blog.miguelgrinberg.com/post/easy-websockets-with-flask-and-gevent
+ * - https://blog.miguelgrinberg.com/post/flask-socketio-and-the-user-session
  
  --------------------------------------------------------------"""
 from app import control_app, socket
@@ -41,18 +40,6 @@ def test_connect():
         emit('speed', 'HI')
     else:
         emit('speed', 'LO')
-
-    # try:
-    #     with open(L_DIR, "r") as f:
-    #         emit('light', f.read() == 'ON')
-    # except FileNotFoundError:
-    #     sys.stdout.write(L_DIR + " not found!")
-    #     sys.stdout.flush()
-
-# @socket.on('pressed')
-# def handle_key_pressed(signal):
-#     sys.stdout.write(signal + "\n")
-    # sys.stdout.flush()
 
 @socket.on('pressed')
 def handle_key_is_pressing(signal):

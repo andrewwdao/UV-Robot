@@ -22,10 +22,10 @@ from streaming_app.camera_pi import Camera # Raspberry Pi camera module (require
 stream_app = Flask(__name__)
 stream_app.config.from_object(Config)
 
-@stream_app.route('/')
-def index():
-    """Video streaming home page."""
-    return render_template('index.html')
+# @stream_app.route('/')
+# def index():
+#     """Video streaming home page."""
+#     return render_template('index.html')
 
 
 def gen(camera):
