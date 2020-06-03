@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """------------------------------------------------------------*-
   Application server module for Flask server
   Tested on: Raspberry Pi 3 B+
@@ -34,12 +35,12 @@ def test_connect():
     if LIGHT_STATE:
         emit('light', 'ON')
     else:
-        emit('light', 'OFF')
+        emit('light', 'OF')
 
     if SPEED_STATE:
-        emit('speed', 'HIGH')
+        emit('speed', 'HI')
     else:
-        emit('speed', 'LOW')
+        emit('speed', 'LO')
 
     # try:
     #     with open(L_DIR, "r") as f:
@@ -70,11 +71,11 @@ def handle_light_toggle():
     LIGHT_STATE = ~LIGHT_STATE
 
     if LIGHT_STATE:
-        sys.stdout.write("LIGHT ON\n")
+        sys.stdout.write("LO\n") # LIGHT ON
         emit('light', 'ON')
     else:
-        sys.stdout.write("LIGHT OFF\n")
-        emit('light', 'OFF')
+        sys.stdout.write("LF\n") # LIGHT OFF
+        emit('light', 'OF')
     sys.stdout.flush()
 
 @socket.on('speed')
@@ -82,13 +83,13 @@ def handle_speed_toggle():
     global SPEED_STATE
     
     SPEED_STATE = ~SPEED_STATE
-    
+
     if SPEED_STATE:
-        sys.stdout.write("HIGHSPEED\n")
-        emit('speed', 'HIGH')
+        sys.stdout.write("HS\n") # HIGHSPEED
+        emit('speed', 'HI')
     else:
-        sys.stdout.write("LOWSPEED\n")
-        emit('speed', 'LOW')
+        sys.stdout.write("LS\n") # LOWSPEED
+        emit('speed', 'LO')
 
     sys.stdout.flush()
 

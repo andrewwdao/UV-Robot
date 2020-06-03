@@ -40,13 +40,31 @@ class WebServer(object):
         self.camera = CameraServer()
         self.camera.start() #start camera server
 
-        print("Web server ready!")
+        # Button constants
+        self.UP         = 'UP'
+        self.DOWN       = 'DO'
+        self.LEFT       = 'LE'
+        self.RIGHT      = 'RI'
+        self.LHAND_UP   = 'LU'
+        self.LHAND_DOWN = 'LD'
+        self.RHAND_UP   = 'RU'
+        self.RHAND_DOWN = 'RD'
+        self.SPEED      = 'SP'
+        self.TOGGLE     = 'TG'
+        self.LIGHT_ON   = 'LO'
+        self.LIGHT_OFF  = 'LF'
+        self.HIGHSPEED  = 'HS'
+        self.LOWSPEED   = 'LS'
+
         # value for the buttons and sticks
         self.buttons = None # all button released
         self.last_buttons = None # all button released
 
+        print("Web server ready!")
+
     def update(self):
-        output = self.output.readline(0.05)  # 0.05 secs = 10ms to let the shell output the result
+        output = self.output.readline(0.08)  # 0.08 secs = 80ms to let the shell output the result
+        sys.stdout.flush()
         self.last_buttons = self.buttons
         if output:  # turn it into string if it is not a null
             self.buttons = output.strip().decode("utf-8")
