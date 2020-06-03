@@ -26,6 +26,7 @@ SPEED_STATE = False
 @socket.on('connect')
 def test_connect():
     global LIGHT_STATE
+    global SPEED_STATE
 
     sys.stdout.write("Client connected!\n")
     sys.stdout.flush()
@@ -34,6 +35,11 @@ def test_connect():
         emit('light', 'ON')
     else:
         emit('light', 'OFF')
+
+    if SPEED_STATE:
+        emit('speed', 'HIGH')
+    else:
+        emit('speed', 'LOW')
 
     # try:
     #     with open(L_DIR, "r") as f:
