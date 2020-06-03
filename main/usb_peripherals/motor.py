@@ -129,6 +129,7 @@ class MotorUART_PWM(object):
         self.__send(cmd) # format and send to the driver
 
     def Lhand_stop(self):
+        time.sleep(0.001) # stablize time
         cmd = "{N3 P0}" # Stop left hand motor
         self.__send(cmd) # format and send to the driver
     
@@ -143,6 +144,7 @@ class MotorUART_PWM(object):
         self.__send(cmd) # format and send to the driver
 
     def Rhand_stop(self):
+        time.sleep(0.001) # stablize time
         cmd = "{N4 P0}" # Stop left hand motor
         self.__send(cmd) # format and send to the driver
 
