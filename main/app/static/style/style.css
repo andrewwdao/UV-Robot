@@ -45,6 +45,10 @@ p {
 }
 #pwrdby {
     font-size:10px;
+    position: absolute;
+    bottom: 2%;
+    margin:auto;
+    width: 100%;
 }
 #credits {
     text-align: left;

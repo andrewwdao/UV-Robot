@@ -6,8 +6,8 @@
     position: fixed;
     top: 70%;
     background-color: #dbdbdb;
-    height:26%;
-    width: 90%;
+    height:23vh;
+    width: 90vw;
     max-width: 900px;
     border-radius: 20px;
     align-self: center;
@@ -23,7 +23,6 @@
     font-weight: bold;
     position: absolute;
     text-align: center;
-    width: 8%;
     transition: .4s;
 }
 
@@ -55,48 +54,48 @@
 }
 
 #w {
-    margin-top: 3%;
+    margin-top: 1.5vh;
     margin-left: 24%;
 }
 
 #a {
-    margin-top: 11%;
+    margin-top: 12vh;
     margin-left: 15%;
 }
 
 #s {
-    margin-top: 11%;
+    margin-top: 12vh;
     margin-left: 24%;
 }
 
 #d {
-    margin-top: 11%;
+    margin-top: 12vh;
     margin-left: 33%;
 }
 
 #h {
-    margin-top: 11%;
+    margin-top: 12vh;
     margin-left: 46%;
 }
 
 #j {
-    margin-top: 11%;
+    margin-top: 12vh;
     margin-left: 55%;
 }
 
 #k {
-    margin-top: 11%;
+    margin-top: 12vh;
     margin-left: 64%;
 }
 
 #l {
-    margin-top: 11%;
+    margin-top: 12vh;
     margin-left: 73%;
 }
 
 #q {
-    margin-top: 3%;
-    margin-left: 3%;
+    margin-top: 1.5vh;
+    margin-left: 1.5vh;
 }
 
 #q .speed-high {
@@ -110,7 +109,7 @@
 #space {
     width: 10%; 
     height: 70%;
-    margin-top: 3%;
+    margin-top: 3vh;
     margin-left: 86%;
     text-align: center;
     transition: .4s;

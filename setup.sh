@@ -38,6 +38,9 @@ cd /home/$(who am i | awk '{print $1}')/ # return to home folder -- cannot use $
 if [ -d "./system" ] ; then  # check if the directory exist or not
 	rm -rf ./system
 fi
+if [ -d "./UV-Robot" ] ; then  # check if the directory exist or not
+	rm -rf ./UV-Robot
+fi
 git clone https://github.com/minhan74/UV-Robot.git
 # change name
 mv UV-Robot/ system/
@@ -82,8 +85,8 @@ DefaultDependencies=true
 [Service]
 Type=simple
 # This will release the same result: ExecStart = /usr/bin/sudo python3 -u main.py
-# 									 ExecStart=sudo python3 -u main.py
-ExecStart=./main.py
+#                                    ExecStart=sudo python3 -u main.py
+ExecStart=sudo ./main.py
 WorkingDirectory=/home/$(who am i | awk '{print $1}')/system/main
 StandardOutput=inherit
 StandardError=inherit
