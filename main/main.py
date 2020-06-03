@@ -262,26 +262,22 @@ def hand_controller():
             GPIO.input(L_LIMIT_UP_PIN)==GPIO.HIGH):
             print('L1 pressed - Lhand move up')
             motor.Lhand_up() # motor move up
-            return
         # --- L2 pressed - Lhand move down
         elif ((ps2.pressed(ps2.L2) or sv.pressed(sv.LHAND_DOWN)) and 
             GPIO.input(L_LIMIT_DOWN_PIN)==GPIO.HIGH and L_UL_FLAG):
             print('L2 pressed - Lhand move down')
             motor.Lhand_down() # motor move down
-            return
         
         # --- R1 pressed - Rhand move up
         if ((ps2.pressed(ps2.R1) or sv.pressed(sv.RHAND_UP)) and
             GPIO.input(R_LIMIT_UP_PIN)==GPIO.HIGH):
             print('R1 pressed - Rhand move up')
             motor.Rhand_up() # motor move up
-            return
         # --- R2 pressed - Rhand move down
         elif ((ps2.pressed(ps2.R2) or sv.pressed(sv.RHAND_DOWN)) and
             GPIO.input(R_LIMIT_DOWN_PIN)==GPIO.HIGH and R_UL_FLAG):
             print('R2 pressed - Rhand move down')
             motor.Rhand_down() # motor move down
-            return
 
 # =================================================================================================
 
