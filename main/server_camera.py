@@ -1,5 +1,5 @@
 """------------------------------------------------------------*-
-  Application server module for Flask server
+  Camera server module for Flask server
   Tested on: Raspberry Pi 3 B+
   (c) Minh-An Dao 2020
   (c) Miguel Grinberg 2018

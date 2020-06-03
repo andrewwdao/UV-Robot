@@ -32,8 +32,10 @@ pip3 install flask-sqlalchemy
 pip3 install flask-migrate
 pip3 install flask-bootstrap
 pip3 install flask-login
+pip3 install flask-socketio
 # Gevent networking platform to deploy production server - https://pypi.org/project/gevent/#downloads
 pip3 install gevent
+pip3 install gevent-websocket
 
 # setup server database for admin login
 chmod +x server-db_setup.sh
