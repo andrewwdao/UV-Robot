@@ -19,7 +19,7 @@ const keyMap = {
 
 var socket = io();
 lastTime = new Date().getTime();
-lightOn = false;
+lightOn = 'OFF';
 lightPressedTime = 0;
 
 // ----------------------- client signal listener --------------------------
@@ -63,18 +63,18 @@ function keyIsPressing(e) {
     if (pressedKey) {
         var curTime = new Date().getTime();
 
-        if (curTime - lastTime < 10) // ms
+        if (curTime - lastTime < 40) // ms
             return;
 
         lastTime = curTime;
 
         // ----------------------- toggle light function ------------------------
         if (pressedKey[K_SIGNAL] === 'TOGGLE') {
-            if ((lightOn && lightPressedTime === 0) ||
-                (curTime - lightPressedTime > 1000 && !lightOn && curTime - lightPressedTime < 1500)) {
+            if ((lightOn === 'ON' && lightPressedTime === 0) ||
+                (curTime - lightPressedTime > 1000 && lightOn === 'OFF' && curTime - lightPressedTime < 1500)) {
                 socket.emit('light');
                 lightPressedTime = 1600;
-            } else if (lightPressedTime === 0 && !lightOn) {
+            } else if (lightPressedTime === 0 && lightOn === 'OFF') {
                 lightPressedTime = new Date().getTime();
                 document.getElementById(pressedKey[K_ID]).classList.add("pressed");
             }

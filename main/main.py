@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """------------------------------------------------------------*-
   Main process for UVRobot
   Tested on: Raspberry Pi 3 B+
