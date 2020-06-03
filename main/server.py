@@ -16,7 +16,7 @@
  
  --------------------------------------------------------------"""
 import subprocess as sp
-# from ps2x.streamReader import StreamReader
+from ps2x.streamReader import StreamReader
 from server_camera import CameraServer
 import sys
 import time
@@ -35,7 +35,7 @@ class WebServer(object):
         except Exception as e:
             print(e)
             raise ValueError("Something went wrong on the server side")
-        # self.output  = StreamReader(self.svobj.stdout)
+        self.output  = StreamReader(self.svobj.stdout)
 
         self.camera = CameraServer()
         self.camera.start() #start camera server
@@ -63,9 +63,9 @@ class WebServer(object):
         print("Web server ready!")
 
     def update(self):
-        # output = self.output.readline(0.05)  # 0.08 secs = 80ms to let the shell output the result
+        output = self.output.readline(0.04)  # 0.04 secs = 40ms to let the shell output the result
         # sys.stdout.flush()
-        output = self.svobj.stdout.readline()
+        # output = self.svobj.stdout.readline() # this will hang the system
         self.last_buttons = self.buttons
         if output:  # turn it into string if it is not a null
             self.buttons = output.strip().decode("utf-8")
