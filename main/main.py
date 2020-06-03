@@ -59,7 +59,7 @@ sv = WebServer()
 def cmd_update():
     global SQ_watchdog, SQ_FLAG
 
-    if sv.buttonChanged():
+    if sv.buttonPressing():
         if sv.pressed(sv.LIGHT_ON):
             GPIO.output(RELAY_01_PIN, GPIO.LOW) # turn on the relay
         elif sv.pressed(sv.LIGHT_OFF):
@@ -106,7 +106,7 @@ def motor_controller():
     global DANGER_FLAG, FORWARD_FLAG, STOP_millis, U_watchdog, D_watchdog, L_watchdog, R_watchdog, A_watchdog
     
     # ================== Digital control ==================
-    if ps2.arrowPressing() or sv.buttonChanged():
+    if ps2.arrowPressing() or sv.arrowPressing():
         # --- UP
         if ((ps2.isPressing(ps2.UP) or sv.isPressing(sv.UP))
          & ((millis() - U_watchdog) > ACCEL)):
@@ -255,7 +255,7 @@ def hand_controller():
         motor.Rhand_stop() # motor stop
 
     # ------------- Confirm pressing buttons -------------------
-    if ps2.LRpressing() or sv.buttonChanged():
+    if ps2.LRpressing() or sv.LRpressing():
         LR_PRESS_FLAG = True
         # --- L1 pressed - Lhand move up
         if ((ps2.pressed(ps2.L1) or sv.pressed(sv.LHAND_UP)) and 
@@ -322,4 +322,3 @@ if __name__ == '__main__':
         # turn on ro
         sp.call(['sudo','mount','-o','remount,ro','/'], shell=False)
         sp.call(['sudo','mount','-o','remount,ro','/boot'], shell=False)
-        

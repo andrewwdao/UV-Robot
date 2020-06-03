@@ -63,7 +63,7 @@ class WebServer(object):
         print("Web server ready!")
 
     def update(self):
-        output = self.output.readline(0.03)  # 0.08 secs = 80ms to let the shell output the result
+        output = self.output.readline(0.05)  # 0.08 secs = 80ms to let the shell output the result
         sys.stdout.flush()
         self.last_buttons = self.buttons
         if output:  # turn it into string if it is not a null
@@ -83,6 +83,15 @@ class WebServer(object):
     
     def buttonChanged(self): # will be TRUE if any button changes state (on to off, or off to on)
         return self.last_buttons != self.buttons
+    
+    def buttonPressing(self): # will be TRUE as long as ANY button is pressed
+        return self.buttons != None
+    
+    def arrowPressing(self): # will be TRUE as long as arrow buttons (UP, DOWN, RIGHT, LEFT) are pressed
+        return self.buttons in [self.UP,self.DOWN,self.LEFT,self.RIGHT]
+    
+    def LRpressing(self): # will be TRUE as long as left right hand controlling buttons are pressed
+        return self.buttons in [self.LHAND_UP,self.LHAND_DOWN,self.RHAND_UP,self.RHAND_DOWN]
     
     def isPressing(self, button): # will be TRUE as long as a specific button is pressed
         return self.buttons == button
