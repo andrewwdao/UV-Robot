@@ -66,25 +66,30 @@ def handle_key_is_pressing(signal):
 @socket.on('light')
 def handle_light_toggle():
     global LIGHT_STATE
+    
+    LIGHT_STATE = ~LIGHT_STATE
+
     if LIGHT_STATE:
         sys.stdout.write("LIGHT ON\n")
         emit('light', 'ON')
     else:
         sys.stdout.write("LIGHT OFF\n")
         emit('light', 'OFF')
-    LIGHT_STATE = ~LIGHT_STATE
     sys.stdout.flush()
 
 @socket.on('speed')
 def handle_speed_toggle():
     global SPEED_STATE
+    
+    SPEED_STATE = ~SPEED_STATE
+    
     if SPEED_STATE:
         sys.stdout.write("HIGHSPEED\n")
         emit('speed', 'HIGH')
     else:
         sys.stdout.write("LOWSPEED\n")
         emit('speed', 'LOW')
-    SPEED_STATE = ~SPEED_STATE
+
     sys.stdout.flush()
 
 
