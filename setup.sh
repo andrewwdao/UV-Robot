@@ -45,8 +45,9 @@ mv UV-Robot/ system/
 
 # ---------------- setup all the prequisites
 cd /home/$(who am i | awk '{print $1}')/system/main
-# provide priveledge for setup itself
+# provide priveledge for setup itself and main
 chmod +x ../setup.sh
+chmod +x main.py
 
 # setup control server
 chmod +x server_setup.sh
@@ -81,7 +82,8 @@ DefaultDependencies=true
 [Service]
 Type=simple
 # This will release the same result: ExecStart = /usr/bin/sudo python3 -u main.py
-ExecStart=sudo python3 -u main.py
+# 									 ExecStart=sudo python3 -u main.py
+ExecStart=./main.py
 WorkingDirectory=/home/$(who am i | awk '{print $1}')/system/main
 StandardOutput=inherit
 StandardError=inherit
