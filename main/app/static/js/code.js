@@ -64,7 +64,7 @@ function keyIsPressing(e) {
     if (pressedKey) {
         var curTime = new Date().getTime();
 
-        if (curTime - lastTime < 10) // ms
+        if (curTime - lastTime < 40) // ms
             return;
 
         lastTime = curTime;
