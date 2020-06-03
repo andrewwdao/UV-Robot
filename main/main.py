@@ -277,7 +277,7 @@ def hand_controller():
             motor.Rhand_up() # motor move up
             return
         # --- R2 pressed - Rhand move down
-        elif ((ps2.pressed(ps2.R2) or server.pressed(RHAND_DOWN)) and
+        elif ((ps2.pressed(ps2.R2) or server.pressed(server.RHAND_DOWN)) and
             GPIO.input(R_LIMIT_DOWN_PIN)==GPIO.HIGH and R_UL_FLAG):
             print('R2 pressed - Rhand move down')
             motor.Rhand_down() # motor move down
