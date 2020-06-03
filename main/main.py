@@ -53,20 +53,20 @@ R_UL_FLAG = False # will be automatically updated to true
 
 
 # server initialize
-server = WebServer()
+sv = WebServer()
 
 # =================================== admin command =============================================
 def cmd_update():
     global SQ_watchdog, SQ_FLAG
 
-    if server.buttonChanged():
-        if server.pressed(server.LIGHT_ON):
+    if sv.buttonChanged():
+        if sv.pressed(sv.LIGHT_ON):
             GPIO.output(RELAY_01_PIN, GPIO.LOW) # turn on the relay
-        elif server.pressed(server.LIGHT_OFF):
+        elif sv.pressed(sv.LIGHT_OFF):
             GPIO.output(RELAY_01_PIN, GPIO.HIGH) # turn off the relay
-        elif server.pressed(server.LOWSPEED):
+        elif sv.pressed(sv.LOWSPEED):
             motor.MAX_PWM = LOW_SPEED
-        elif server.pressed(server.HIGHSPEED):
+        elif sv.pressed(sv.HIGHSPEED):
             motor.MAX_PWM = HIGH_SPEED
 
     # ------------ Confirm release buttons ---------------------
@@ -106,29 +106,29 @@ def motor_controller():
     global DANGER_FLAG, FORWARD_FLAG, STOP_millis, U_watchdog, D_watchdog, L_watchdog, R_watchdog, A_watchdog
     
     # ================== Digital control ==================
-    if ps2.arrowPressing() or server.buttonChanged():
+    if ps2.arrowPressing() or sv.buttonChanged():
         # --- UP
-        if ((ps2.isPressing(ps2.UP) or server.isPressing(server.UP))
+        if ((ps2.isPressing(ps2.UP) or sv.isPressing(sv.UP))
          & ((millis() - U_watchdog) > ACCEL)):
             print('UP pressed')
             motor.move_fw(PWM_STEP) # increasing algorithm integrated
             U_watchdog = millis() # for recalculating interval
             FORWARD_FLAG = True
         # --- DOWN
-        if ((ps2.isPressing(ps2.DOWN) or server.isPressing(server.DOWN))
+        if ((ps2.isPressing(ps2.DOWN) or sv.isPressing(sv.DOWN))
          & ((millis() - D_watchdog) > ACCEL)):
             print('DOWN pressed')
             motor.move_bw(PWM_STEP) # increasing algorithm integrated
             D_watchdog = millis() # for recalculating interval
             FORWARD_FLAG = False
         # --- LEFT
-        if ((ps2.isPressing(ps2.LEFT) or server.isPressing(server.LEFT))
+        if ((ps2.isPressing(ps2.LEFT) or sv.isPressing(sv.LEFT))
          & ((millis() - L_watchdog) > ACCEL)):
             print('LEFT pressed')
             motor.turn_left(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
             L_watchdog = millis() # for recalculating interval
         # --- RIGHT
-        if ((ps2.isPressing(ps2.RIGHT) or server.isPressing(server.RIGHT))
+        if ((ps2.isPressing(ps2.RIGHT) or sv.isPressing(sv.RIGHT))
          & ((millis() - R_watchdog) > ACCEL)):
             print('RIGHT pressed')
             motor.turn_right(FORWARD_FLAG,PWM_STEP) # increasing algorithm integrated
@@ -237,8 +237,8 @@ def hand_controller():
     # ------------ Confirm release buttons ---------------------
     if ((ps2.released(ps2.L1) or
         ps2.released(ps2.L2) or
-        server.released(server.LHAND_UP) or
-        server.released(server.LHAND_DOWN) or
+        sv.released(sv.LHAND_UP) or
+        sv.released(sv.LHAND_DOWN) or
         GPIO.input(L_LIMIT_UP_PIN)==GPIO.LOW or 
         GPIO.input(L_LIMIT_DOWN_PIN)==GPIO.LOW) and LR_PRESS_FLAG):
         print('Left Hand Released')
@@ -246,8 +246,8 @@ def hand_controller():
         motor.Lhand_stop() # motor stop
     if ((ps2.released(ps2.R1) or
         ps2.released(ps2.R2) or
-        server.released(server.RHAND_UP) or
-        server.released(server.RHAND_DOWN) or
+        sv.released(sv.RHAND_UP) or
+        sv.released(sv.RHAND_DOWN) or
         GPIO.input(R_LIMIT_UP_PIN)==GPIO.LOW or 
         GPIO.input(R_LIMIT_DOWN_PIN)==GPIO.LOW) and LR_PRESS_FLAG):
         print('Right Hand Released')
@@ -255,29 +255,29 @@ def hand_controller():
         motor.Rhand_stop() # motor stop
 
     # ------------- Confirm pressing buttons -------------------
-    if ps2.LRpressing() or server.buttonChanged():
+    if ps2.LRpressing() or sv.buttonChanged():
         LR_PRESS_FLAG = True
         # --- L1 pressed - Lhand move up
-        if ((ps2.pressed(ps2.L1) or server.pressed(server.LHAND_UP)) and 
+        if ((ps2.pressed(ps2.L1) or sv.pressed(sv.LHAND_UP)) and 
             GPIO.input(L_LIMIT_UP_PIN)==GPIO.HIGH):
             print('L1 pressed - Lhand move up')
             motor.Lhand_up() # motor move up
             return
         # --- L2 pressed - Lhand move down
-        elif ((ps2.pressed(ps2.L2) or server.pressed(server.LHAND_DOWN)) and 
+        elif ((ps2.pressed(ps2.L2) or sv.pressed(sv.LHAND_DOWN)) and 
             GPIO.input(L_LIMIT_DOWN_PIN)==GPIO.HIGH and L_UL_FLAG):
             print('L2 pressed - Lhand move down')
             motor.Lhand_down() # motor move down
             return
         
         # --- R1 pressed - Rhand move up
-        if ((ps2.pressed(ps2.R1) or server.pressed(server.RHAND_UP)) and
+        if ((ps2.pressed(ps2.R1) or sv.pressed(sv.RHAND_UP)) and
             GPIO.input(R_LIMIT_UP_PIN)==GPIO.HIGH):
             print('R1 pressed - Rhand move up')
             motor.Rhand_up() # motor move up
             return
         # --- R2 pressed - Rhand move down
-        elif ((ps2.pressed(ps2.R2) or server.pressed(server.RHAND_DOWN)) and
+        elif ((ps2.pressed(ps2.R2) or sv.pressed(sv.RHAND_DOWN)) and
             GPIO.input(R_LIMIT_DOWN_PIN)==GPIO.HIGH and R_UL_FLAG):
             print('R2 pressed - Rhand move down')
             motor.Rhand_down() # motor move down
@@ -292,7 +292,7 @@ def main():  # Main program block
     # forever loop start...
     while True:
         ps2.update()
-        server.update()
+        sv.update()
         ultrasonic_update()
 
         cmd_update()
@@ -308,7 +308,7 @@ if __name__ == '__main__':
         GPIO.cleanup()
         ps2.clean()
         motor.clean()
-        server.shutdown()
+        sv.shutdown()
         # turn on ro
         sp.call(['sudo','mount','-o','remount,ro','/'], shell=False)
         sp.call(['sudo','mount','-o','remount,ro','/boot'], shell=False)
@@ -318,7 +318,7 @@ if __name__ == '__main__':
         GPIO.cleanup()
         ps2.clean()
         motor.clean()
-        server.shutdown()
+        sv.shutdown()
         # turn on ro
         sp.call(['sudo','mount','-o','remount,ro','/'], shell=False)
         sp.call(['sudo','mount','-o','remount,ro','/boot'], shell=False)

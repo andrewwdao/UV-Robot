@@ -63,7 +63,7 @@ class WebServer(object):
         print("Web server ready!")
 
     def update(self):
-        output = self.output.readline(0.08)  # 0.08 secs = 80ms to let the shell output the result
+        output = self.output.readline(0.03)  # 0.08 secs = 80ms to let the shell output the result
         sys.stdout.flush()
         self.last_buttons = self.buttons
         if output:  # turn it into string if it is not a null
