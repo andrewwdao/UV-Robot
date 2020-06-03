@@ -7,6 +7,7 @@ if [ 'root' != $( whoami ) ] ; then
   exit 1;
 fi
 
+echo  "Running this will install the prequisites for the MIS-CTU UV Disinfection Robot"
 echo -n "Confirm to install? [Y/N]"
 
 read input
