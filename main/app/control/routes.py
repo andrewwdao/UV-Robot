@@ -33,7 +33,7 @@ import subprocess as sp
 #     func()
 # ===================================================================
 
-link_camera = 'http://' + str(sp.check_output(["hostname", "-I"]).decode("utf-8"))[:13] + ':720/video_feed' # local ip address - 13 character
+link_camera = 'http://' + str(sp.check_output(["hostname", "-I"]).decode("utf-8"))[:-2] + ':720/video_feed' # local ip address - 13 character
 
 @control_app.route('/', methods=['GET', 'POST'])
 @control_app.route('/index', methods=['GET', 'POST'])

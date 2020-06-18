@@ -79,7 +79,8 @@ chmod +x ./readonly/setup.sh
 # UVrobot.service
 echo "[Unit]
 Description=MIS-CTU UV disinfection robot service
-After=multi-user.target
+Wants=network-online.target
+After=multi-user.target network-online.target
 DefaultDependencies=true
 
 
