@@ -71,7 +71,7 @@ Develop by the MIS-CTU team during the Covid-19 pandemic.
 - Mr. Trieu-Dang Tran was responsible for supporting in hardware building.
 - Mr. Minh-An Dao was responsible for embedded software developing.
 
- (c) 2020 Minh-Luan Nguyen <nmluan1998@gmail.com> - Minh-Tri Ha <nhut1202@gmail.com> - Anh-Khoi Tran <khoitrananh.20@gmail.com> - Trieu-Dang Tran <nhut1202@gmail.com> - Minh-An Dao <minhan7497@gmail.com> Can Tho University.
+ (c) 2020 Minh-Luan Nguyen <nmluan1998@gmail.com> - Minh-Tri Ha <dannyct97@gmail.com> - Anh-Khoi Tran <khoitrananh.20@gmail.com> - Trieu-Dang Nguyen <trieu14dang91998@gmail.com> - Minh-An Dao <minhan7497@gmail.com> Can Tho University.
 
  <!-- Links -->
 
