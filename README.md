@@ -68,7 +68,7 @@ Develop by the MIS-CTU team during the Covid-19 pandemic.
 - Mr. Minh-Luan Nguyen was responsible for mechanical designing and building, product testing.
 - Mr. Minh-Tri Ha was responsible for mechanical building, report writing and photo taking.
 - Mr. Anh-Khoi Tran was responsible for web server designing and optimising.
-- Mr. Trieu-Dang Tran was responsible for supporting in hardware building.
+- Mr. Trieu-Dang Nguyen was responsible for supporting in hardware building.
 - Mr. Minh-An Dao was responsible for embedded software developing.
 
  (c) 2020 Minh-Luan Nguyen <nmluan1998@gmail.com> - Minh-Tri Ha <dannyct97@gmail.com> - Anh-Khoi Tran <khoitrananh.20@gmail.com> - Trieu-Dang Nguyen <trieu14dang91998@gmail.com> - Minh-An Dao <minhan7497@gmail.com> Can Tho University.
