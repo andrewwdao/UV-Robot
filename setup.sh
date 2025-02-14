@@ -112,6 +112,6 @@ echo
 echo
 echo "Done. Please reboot."
 echo
-echo "(c) 2020 Minh-An Dao <bit.ly/DMA-HomePage> <minhan7497@gmail.com>. All right reserved ."
+echo "(c) 2020 Minh-An Dao <bit.ly/DMA-HomePage> <darns.smiths.9f@icloud.com>. All right reserved ."
 
 ## (c) 2020 Minh-An Dao. All right reserved
